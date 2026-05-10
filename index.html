@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>単語クイズ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f0f11;
+  --surface: #18181c;
+  --surface2: #222228;
+  --border: #2e2e38;
+  --text: #e8e8f0;
+  --text2: #8888a0;
+  --text3: #55556a;
+  --accent: #7c6fff;
+  --accent-dim: #2a2560;
+  --green: #3ecf8e;
+  --green-dim: #0f2e20;
+  --red: #f26b6b;
+  --red-dim: #2e0f0f;
+  --yellow: #f0b429;
+  --yellow-dim: #2b1f06;
+  --radius: 8px;
+  --font-mono: 'DM Mono', monospace;
+  --font-body: 'Noto Sans JP', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* ── Layout ── */
+.app { max-width: 640px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 2rem; padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.logo { font-family: var(--font-mono); font-size: .85rem; color: var(--text2); letter-spacing: .1em; }
+.logo span { color: var(--accent); }
+
+/* ── Tabs ── */
+.tabs { display: flex; gap: 2px; background: var(--surface2); border-radius: calc(var(--radius) + 2px); padding: 3px; margin-bottom: 1.5rem; }
+.tab {
+  flex: 1; padding: 8px 12px; border: none; border-radius: var(--radius);
+  background: transparent; color: var(--text2); font-family: var(--font-body);
+  font-size: .85rem; cursor: pointer; transition: all .2s; white-space: nowrap;
+}
+.tab.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+
+/* ── Cards ── */
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 1rem;
+}
+.card-title { font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; color: var(--text3); margin-bottom: .75rem; font-family: var(--font-mono); }
+
+/* ── Word Manager ── */
+.word-input-row { display: flex; gap: 8px; margin-bottom: 1rem; }
+.word-input-row input {
+  flex: 1; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 9px 12px; color: var(--text);
+  font-family: var(--font-body); font-size: .9rem; outline: none; transition: border-color .2s;
+}
+.word-input-row input:focus { border-color: var(--accent); }
+.word-input-row input::placeholder { color: var(--text3); }
+.btn {
+  padding: 9px 16px; border: none; border-radius: var(--radius);
+  font-family: var(--font-body); font-size: .85rem; cursor: pointer; transition: all .2s; white-space: nowrap;
+}
+.btn-accent { background: var(--accent); color: #fff; }
+.btn-accent:hover { opacity: .85; }
+.btn-ghost { background: var(--surface2); color: var(--text2); border: 1px solid var(--border); }
+.btn-ghost:hover { color: var(--text); border-color: var(--text3); }
+.btn-danger { background: var(--red-dim); color: var(--red); border: 1px solid transparent; }
+.btn-danger:hover { border-color: var(--red); }
+.btn-sm { padding: 5px 10px; font-size: .78rem; }
+.btn-green { background: var(--green-dim); color: var(--green); border: 1px solid transparent; }
+.btn-green:hover { border-color: var(--green); }
+.btn-purple { background: var(--accent-dim); color: var(--accent); border: 1px solid transparent; }
+.btn-purple:hover { border-color: var(--accent); }
+
+.word-list { display: flex; flex-direction: column; gap: 4px; max-height: 320px; overflow-y: auto; }
+.word-list::-webkit-scrollbar { width: 4px; }
+.word-list::-webkit-scrollbar-track { background: transparent; }
+.word-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.word-item {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 8px 12px; font-size: .88rem;
+}
+.word-item .en { font-family: var(--font-mono); color: var(--text); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.word-item .jp { color: var(--text2); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.word-item .del { margin-left: auto; flex-shrink: 0; width: 22px; height: 22px; border: none; background: none; color: var(--text3); cursor: pointer; font-size: 1rem; border-radius: 4px; transition: color .2s; display: flex; align-items: center; justify-content: center; }
+.word-item .del:hover { color: var(--red); }
+.word-count { font-size: .78rem; color: var(--text3); font-family: var(--font-mono); margin-bottom: .5rem; }
+.import-row { display: flex; gap: 8px; margin-top: .75rem; }
+.import-row textarea {
+  flex: 1; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 9px 12px; color: var(--text);
+  font-family: var(--font-mono); font-size: .8rem; resize: vertical; min-height: 80px;
+  outline: none; transition: border-color .2s; line-height: 1.5;
+}
+.import-row textarea:focus { border-color: var(--accent); }
+.hint-text { font-size: .75rem; color: var(--text3); margin-top: .4rem; line-height: 1.5; }
+
+/* ── Quiz ── */
+.mode-row { display: flex; gap: 8px; margin-bottom: 1rem; }
+.mode-btn { flex: 1; padding: 7px; border: 1px solid var(--border); border-radius: var(--radius); background: transparent; color: var(--text2); font-family: var(--font-body); font-size: .82rem; cursor: pointer; transition: all .15s; }
+.mode-btn.active { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); }
+
+.chunk-nav { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 1rem; }
+.chunk-dot {
+  width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border);
+  background: transparent; font-size: .75rem; font-weight: 500; cursor: pointer;
+  color: var(--text2); transition: all .15s; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono);
+}
+.chunk-dot.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.chunk-dot.perfect { background: var(--green); color: #000; border-color: var(--green); }
+.chunk-dot.good { background: var(--green-dim); color: var(--green); border-color: var(--green); }
+.chunk-dot.mid { background: var(--yellow-dim); color: var(--yellow); border-color: var(--yellow); }
+.chunk-dot.bad { background: var(--red-dim); color: var(--red); border-color: var(--red); }
+.chunk-dot.review-btn { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); font-family: var(--font-body); font-size: .72rem; }
+.chunk-dot.review-btn.active { background: var(--accent); color: #fff; }
+
+.progress-bar { height: 2px; background: var(--surface2); border-radius: 1px; margin-bottom: 1.25rem; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--accent); border-radius: 1px; transition: width .4s ease; }
+
+.q-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.5rem; margin-bottom: .875rem;
+  position: relative;
+}
+.q-label { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--text3); margin-bottom: .5rem; font-family: var(--font-mono); }
+.q-word { font-size: 2.2rem; font-weight: 700; color: var(--text); line-height: 1.2; font-family: var(--font-mono); }
+.q-sub { font-size: .72rem; color: var(--text3); margin-top: .35rem; font-family: var(--font-mono); }
+.review-badge { display: inline-flex; align-items: center; gap: 5px; background: var(--accent-dim); color: var(--accent); font-size: .72rem; padding: 3px 10px; border-radius: 20px; margin-bottom: .75rem; font-family: var(--font-mono); }
+
+.input-row { display: flex; gap: 8px; margin-bottom: .5rem; }
+#ans-input {
+  flex: 1; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 10px 14px; color: var(--text);
+  font-family: var(--font-body); font-size: 1rem; outline: none; transition: all .2s;
+}
+#ans-input:focus { border-color: var(--accent); }
+#ans-input.ok { border-color: var(--green); background: var(--green-dim); color: var(--green); }
+#ans-input.ng { border-color: var(--red); background: var(--red-dim); color: var(--red); }
+.sub-btn {
+  padding: 10px 18px; border: none; border-radius: var(--radius);
+  background: var(--accent); color: #fff; font-family: var(--font-body);
+  font-size: .9rem; cursor: pointer; transition: opacity .15s; white-space: nowrap;
+}
+.sub-btn:hover { opacity: .82; }
+.sub-btn:disabled { opacity: .35; cursor: default; }
+
+.hint-row { display: flex; align-items: center; gap: 8px; min-height: 18px; margin-bottom: .75rem; }
+.hint-txt { font-size: .82rem; color: var(--text2); font-family: var(--font-mono); letter-spacing: .1em; }
+.hint-link { font-size: .75rem; color: var(--text3); background: none; border: none; cursor: pointer; text-decoration: underline; font-family: var(--font-body); }
+.hint-link:hover { color: var(--text2); }
+
+.feedback { padding: 10px 14px; border-radius: var(--radius); font-size: .88rem; margin-bottom: .75rem; display: none; }
+.feedback.show { display: block; }
+.feedback.ok { background: var(--green-dim); color: var(--green); border: 1px solid #1a4d35; }
+.feedback.ng { background: var(--red-dim); color: var(--red); border: 1px solid #4d1a1a; }
+.feedback strong { font-weight: 700; }
+
+.nav-row { display: flex; align-items: center; justify-content: space-between; }
+.counter { font-size: .78rem; color: var(--text3); font-family: var(--font-mono); }
+.next-btn { padding: 9px 18px; border: none; border-radius: var(--radius); background: var(--accent); color: #fff; font-size: .88rem; cursor: pointer; display: none; transition: opacity .15s; font-family: var(--font-body); }
+.next-btn:hover { opacity: .82; }
+
+/* ── Analysis ── */
+.stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 1rem; }
+.stat-box { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: .875rem; text-align: center; }
+.stat-val { font-size: 1.5rem; font-weight: 700; font-family: var(--font-mono); }
+.stat-lbl { font-size: .7rem; color: var(--text3); margin-top: 2px; }
+.thin-bar { height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; margin-bottom: 1rem; }
+.thin-bar-fill { height: 100%; border-radius: 3px; transition: width .6s ease; }
+.word-table { width: 100%; border-collapse: collapse; font-size: .83rem; margin-top: .75rem; }
+.word-table th { text-align: left; padding: 5px 8px; color: var(--text3); border-bottom: 1px solid var(--border); font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; font-family: var(--font-mono); font-weight: 400; }
+.word-table td { padding: 7px 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.word-table tr:last-child td { border-bottom: none; }
+.word-table .en { font-family: var(--font-mono); }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: .7rem; font-family: var(--font-mono); }
+.badge-ok { background: var(--green-dim); color: var(--green); }
+.badge-ng { background: var(--red-dim); color: var(--red); }
+.action-btn { width: 100%; padding: 11px; border: none; border-radius: var(--radius); font-family: var(--font-body); font-size: .9rem; cursor: pointer; margin-top: 8px; transition: opacity .15s; }
+.action-btn.primary { background: var(--accent); color: #fff; }
+.action-btn.primary:hover { opacity: .85; }
+.action-btn.secondary { background: var(--surface2); color: var(--text2); border: 1px solid var(--border); }
+.action-btn.secondary:hover { color: var(--text); border-color: var(--text3); }
+.action-btn.review { background: var(--accent-dim); color: var(--accent); }
+.action-btn.review:hover { opacity: .85; }
+
+.chunk-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.chunk-bar-label { font-size: .75rem; color: var(--text2); width: 36px; flex-shrink: 0; font-family: var(--font-mono); }
+.chunk-bar-track { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+.chunk-bar-fill { height: 100%; border-radius: 3px; }
+.chunk-bar-pct { font-size: .72rem; color: var(--text3); width: 32px; text-align: right; font-family: var(--font-mono); }
+
+/* ── Final ── */
+.final-score { font-size: 3.5rem; font-weight: 700; font-family: var(--font-mono); text-align: center; margin-bottom: .25rem; }
+.final-comment { text-align: center; font-size: .9rem; color: var(--text2); margin-bottom: 1.5rem; }
+.restart-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+
+/* ── Empty state ── */
+.empty { text-align: center; padding: 2rem 1rem; color: var(--text3); font-size: .9rem; }
+.empty span { display: block; font-size: 2rem; margin-bottom: .5rem; }
+
+/* ── Toast ── */
+.toast {
+  position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 10px 18px; font-size: .85rem; color: var(--text); box-shadow: 0 4px 20px rgba(0,0,0,.5);
+  transition: transform .3s ease; z-index: 100; white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 480px) {
+  .word-input-row { flex-direction: column; }
+  .q-word { font-size: 1.8rem; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo"><span>//</span> 単語クイズ</div>
+    <div style="font-size:.75rem;color:var(--text3);font-family:var(--font-mono);" id="word-count-header">0 語</div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('manage')">📝 単語管理</button>
+    <button class="tab" onclick="switchTab('quiz')">🎯 クイズ</button>
+  </div>
+
+  <!-- ── MANAGE TAB ── -->
+  <div id="tab-manage">
+    <div class="card">
+      <div class="card-title">単語を追加</div>
+      <div class="word-input-row">
+        <input type="text" id="in-en" placeholder="英語 (例: rapidly)" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" onkeydown="if(event.key==='Enter')focusJp()">
+        <input type="text" id="in-jp" placeholder="日本語 (例: 急速に)" autocomplete="off" onkeydown="if(event.key==='Enter')addWord()">
+        <button class="btn btn-accent" onclick="addWord()">追加</button>
+      </div>
+      <div class="card-title" style="margin-top:1rem;">まとめて追加（CSV形式）</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <textarea id="bulk-input" placeholder="英語,日本語&#10;rapidly,急速に&#10;vehicle,乗り物&#10;crop,作物"></textarea>
+        <div class="hint-text">1行につき「英語,日本語」の形式で入力してください</div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost" onclick="bulkImport()">一括追加</button>
+          <button class="btn btn-ghost" onclick="loadPreset()">サンプル30語を読み込む</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+        <div class="card-title" style="margin-bottom:0;">登録済み単語</div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-ghost btn-sm" onclick="exportWords()">エクスポート</button>
+          <button class="btn btn-danger btn-sm" onclick="clearAll()">全削除</button>
+        </div>
+      </div>
+      <div class="word-count" id="wc">0 語登録済み</div>
+      <div class="word-list" id="word-list"></div>
+      <div class="empty" id="empty-state"><span>📭</span>単語がまだ登録されていません</div>
+    </div>
+  </div>
+
+  <!-- ── QUIZ TAB ── -->
+  <div id="tab-quiz" style="display:none;">
+    <div id="quiz-empty" class="empty" style="display:none;padding:3rem 1rem;">
+      <span>📝</span>
+      単語を登録してからクイズを始めましょう<br>
+      <button class="btn btn-accent" style="margin-top:1rem;" onclick="switchTab('manage')">単語を登録する</button>
+    </div>
+    <div id="quiz-body">
+      <div class="mode-row">
+        <button class="mode-btn active" id="mb-en" onclick="setMode('en-jp')">英語 → 日本語</button>
+        <button class="mode-btn" id="mb-jp" onclick="setMode('jp-en')">日本語 → 英語</button>
+      </div>
+      <div class="chunk-nav" id="chunk-nav"></div>
+      <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+      <div id="main-area"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── State ──
+const CHUNK = 5;
+const STORE_KEY = 'quiz_words_v1';
+let words = [];
+let mode = 'en-jp';
+let chunkResults = [];
+let currentChunk = 0;
+let currentInChunk = 0;
+let totalCorrect = 0;
+let totalAnswered = 0;
+let answered = false;
+let hintLevel = 0;
+let chunkOrder = [];
+let isReview = false;
+let reviewQueue = [];
+let reviewIndex = 0;
+let reviewCorrect = 0;
+let reviewAnswered = 0;
+let allMissed = [];
+
+const PRESET = [
+  {en:"awfully",jp:"ひどく"},{en:"mechanical",jp:"機械的な"},{en:"sorrowfully",jp:"悲しそうに"},{en:"county",jp:"郡"},{en:"inspector",jp:"検査官"},
+  {en:"sector",jp:"部門"},{en:"satisfactory",jp:"満足のいく"},{en:"superior",jp:"優れた"},{en:"stupid",jp:"愚かな"},{en:"dispute",jp:"論争"},
+  {en:"whistle",jp:"口笛"},{en:"fraction",jp:"分数"},{en:"sigh",jp:"ため息"},{en:"flash",jp:"閃光"},{en:"contemporary",jp:"現代の"},
+  {en:"calculation",jp:"計算"},{en:"progress",jp:"進歩"},{en:"multiple",jp:"複数の"},{en:"categorize",jp:"分類する"},{en:"accurately",jp:"正確に"},
+  {en:"outperform",jp:"凌駕する"},{en:"detect",jp:"検出する"},{en:"diagnose",jp:"診断する"},{en:"treatment",jp:"治療"},{en:"monitor",jp:"監視する"},
+  {en:"similarly",jp:"同様に"},{en:"crop",jp:"作物"},{en:"productive",jp:"生産的な"},{en:"vehicle",jp:"乗り物"},{en:"rapidly",jp:"急速に"}
+];
+
+// ── Persistence ──
+function save() { localStorage.setItem(STORE_KEY, JSON.stringify(words)); }
+function load() {
+  try { words = JSON.parse(localStorage.getItem(STORE_KEY)) || []; } catch { words = []; }
+}
+
+// ── Word Manager ──
+function focusJp() { document.getElementById('in-jp').focus(); }
+
+function addWord() {
+  const en = document.getElementById('in-en').value.trim();
+  const jp = document.getElementById('in-jp').value.trim();
+  if (!en || !jp) { showToast('英語と日本語を入力してください'); return; }
+  if (words.some(w => w.en.toLowerCase() === en.toLowerCase())) { showToast('その単語はすでに登録されています'); return; }
+  words.push({ en, jp });
+  save(); renderWordList();
+  document.getElementById('in-en').value = '';
+  document.getElementById('in-jp').value = '';
+  document.getElementById('in-en').focus();
+  showToast(`「${en}」を追加しました`);
+}
+
+function deleteWord(i) {
+  words.splice(i, 1);
+  save(); renderWordList();
+}
+
+function clearAll() {
+  if (!confirm(`全${words.length}語を削除しますか？`)) return;
+  words = []; save(); renderWordList();
+}
+
+function loadPreset() {
+  const added = PRESET.filter(p => !words.some(w => w.en === p.en));
+  words = [...words, ...added];
+  save(); renderWordList();
+  showToast(`${added.length}語を追加しました`);
+}
+
+function bulkImport() {
+  const raw = document.getElementById('bulk-input').value.trim();
+  if (!raw) return;
+  const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+  let added = 0;
+  for (const line of lines) {
+    const parts = line.split(',');
+    if (parts.length < 2) continue;
+    const en = parts[0].trim(); const jp = parts.slice(1).join(',').trim();
+    if (!en || !jp) continue;
+    if (words.some(w => w.en.toLowerCase() === en.toLowerCase())) continue;
+    words.push({ en, jp }); added++;
+  }
+  save(); renderWordList();
+  document.getElementById('bulk-input').value = '';
+  showToast(`${added}語を追加しました`);
+}
+
+function exportWords() {
+  const csv = words.map(w => `${w.en},${w.jp}`).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'words.csv';
+  a.click();
+}
+
+function renderWordList() {
+  const list = document.getElementById('word-list');
+  const empty = document.getElementById('empty-state');
+  const wc = document.getElementById('wc');
+  const header = document.getElementById('word-count-header');
+  wc.textContent = `${words.length} 語登録済み`;
+  header.textContent = `${words.length} 語`;
+  if (words.length === 0) { list.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  list.innerHTML = words.map((w, i) => `
+    <div class="word-item">
+      <span class="en">${esc(w.en)}</span>
+      <span class="jp">${esc(w.jp)}</span>
+      <button class="del" onclick="deleteWord(${i})" title="削除">×</button>
+    </div>`).join('');
+}
+
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── Tab ──
+function switchTab(t) {
+  document.getElementById('tab-manage').style.display = t === 'manage' ? 'block' : 'none';
+  document.getElementById('tab-quiz').style.display = t === 'quiz' ? 'block' : 'none';
+  document.querySelectorAll('.tab').forEach((el, i) => el.classList.toggle('active', (i === 0) === (t === 'manage')));
+  if (t === 'quiz') initQuiz();
+}
+
+// ── Quiz Init ──
+function initQuiz() {
+  if (words.length === 0) {
+    document.getElementById('quiz-empty').style.display = 'block';
+    document.getElementById('quiz-body').style.display = 'none';
+    return;
+  }
+  document.getElementById('quiz-empty').style.display = 'none';
+  document.getElementById('quiz-body').style.display = 'block';
+  resetQuiz();
+}
+
+function resetQuiz() {
+  const n = Math.ceil(words.length / CHUNK);
+  chunkResults = Array.from({ length: n }, () => ({ done: false, correct: 0, total: 0, entries: [] }));
+  // set real totals
+  for (let c = 0; c < n; c++) chunkResults[c].total = chunkIndices(c).length;
+  currentChunk = 0; currentInChunk = 0; totalCorrect = 0; totalAnswered = 0;
+  answered = false; hintLevel = 0; isReview = false;
+  allMissed = []; reviewQueue = []; reviewIndex = 0; reviewCorrect = 0; reviewAnswered = 0;
+  startChunk(0);
+}
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('mb-en').classList.toggle('active', m === 'en-jp');
+  document.getElementById('mb-jp').classList.toggle('active', m === 'jp-en');
+  resetQuiz();
+}
+
+// ── Helpers ──
+function shuffle(a) { let b = [...a]; for (let i = b.length - 1; i > 0; i--) { let j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; }
+function normalize(s) { return s.trim().toLowerCase().replace(/[・。、\s]+/g, ''); }
+function getQ(idx) { return mode === 'en-jp' ? words[idx].en : words[idx].jp; }
+function getA(idx) { return mode === 'en-jp' ? words[idx].jp : words[idx].en; }
+function getQLabel() { return mode === 'en-jp' ? '英単語の意味を入力' : '日本語を英語で入力'; }
+function numChunks() { return Math.ceil(words.length / CHUNK); }
+function chunkIndices(c) { let s = c * CHUNK; return Array.from({ length: Math.min(CHUNK, words.length - s) }, (_, i) => s + i); }
+
+// ── Chunk flow ──
+function startChunk(c) {
+  currentChunk = c; currentInChunk = 0; answered = false; hintLevel = 0; isReview = false;
+  chunkOrder = shuffle(chunkIndices(c));
+  chunkResults[c].entries = [];
+  renderChunkNav(); renderQuestion();
+}
+
+function renderChunkNav() {
+  const nav = document.getElementById('chunk-nav');
+  nav.innerHTML = '';
+  for (let i = 0; i < numChunks(); i++) {
+    const r = chunkResults[i];
+    let cls = 'chunk-dot';
+    if (!isReview && i === currentChunk) cls += ' active';
+    else if (r.done) {
+      const p = r.correct / r.total;
+      cls += p === 1 ? ' perfect' : p >= 0.8 ? ' good' : p >= 0.6 ? ' mid' : ' bad';
+    }
+    const btn = document.createElement('button');
+    btn.className = cls; btn.textContent = i + 1;
+    if (r.done) btn.onclick = () => { isReview = false; showChunkAnalysis(i); };
+    nav.appendChild(btn);
+  }
+  if (allMissed.length > 0) {
+    const unique = [...new Set(allMissed)];
+    const rb = document.createElement('button');
+    rb.className = 'chunk-dot review-btn' + (isReview ? ' active' : '');
+    rb.textContent = '復';
+    rb.title = `復習 (${unique.length}語)`;
+    rb.onclick = startReview;
+    nav.appendChild(rb);
+  }
+}
+
+// ── Question render ──
+function renderQuestion() {
+  if (currentInChunk >= chunkOrder.length) { finishChunk(); return; }
+  const idx = chunkOrder[currentInChunk];
+  answered = false; hintLevel = 0;
+  document.getElementById('prog-fill').style.width = Math.round(totalAnswered / words.length * 100) + '%';
+  document.getElementById('main-area').innerHTML = `
+    <div class="q-card">
+      <div class="q-label">${getQLabel()}</div>
+      <div class="q-word">${esc(getQ(idx))}</div>
+      <div class="q-sub">グループ ${currentChunk + 1} — ${currentInChunk + 1} / ${chunkOrder.length}</div>
+    </div>
+    <div class="input-row">
+      <input type="text" id="ans-input" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <button class="sub-btn" id="sub-btn" onclick="checkAns()">確認</button>
+    </div>
+    <div class="hint-row">
+      <span class="hint-txt" id="hint-txt"></span>
+      <button class="hint-link" id="hint-btn" onclick="showHint()">ヒント</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+    <div class="nav-row">
+      <span class="counter">${totalAnswered + 1} / ${words.length}</span>
+      <button class="next-btn" id="next-btn" onclick="nextQ()">次へ →</button>
+    </div>`;
+  bindInput(() => checkAns(), () => nextQ());
+}
+
+function renderReviewQuestion() {
+  if (reviewIndex >= reviewQueue.length) { finishReview(); return; }
+  const idx = reviewQueue[reviewIndex];
+  answered = false; hintLevel = 0;
+  document.getElementById('prog-fill').style.width = Math.round(reviewIndex / reviewQueue.length * 100) + '%';
+  document.getElementById('main-area').innerHTML = `
+    <div class="review-badge">🔁 復習モード — ${reviewIndex + 1} / ${reviewQueue.length}</div>
+    <div class="q-card">
+      <div class="q-label">${getQLabel()}</div>
+      <div class="q-word">${esc(getQ(idx))}</div>
+      <div class="q-sub">間違えた単語の復習</div>
+    </div>
+    <div class="input-row">
+      <input type="text" id="ans-input" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <button class="sub-btn" id="sub-btn" onclick="checkReviewAns()">確認</button>
+    </div>
+    <div class="hint-row">
+      <span class="hint-txt" id="hint-txt"></span>
+      <button class="hint-link" id="hint-btn" onclick="showHint()">ヒント</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+    <div class="nav-row">
+      <span class="counter">${reviewIndex + 1} / ${reviewQueue.length}</span>
+      <button class="next-btn" id="next-btn" onclick="nextReviewQ()">次へ →</button>
+    </div>`;
+  bindInput(() => checkReviewAns(), () => nextReviewQ());
+}
+
+function bindInput(onEnterCheck, onEnterNext) {
+  const inp = document.getElementById('ans-input');
+  inp.focus();
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { answered ? onEnterNext() : onEnterCheck(); }
+  });
+}
+
+function showHint() {
+  const idx = isReview ? reviewQueue[reviewIndex] : chunkOrder[currentInChunk];
+  const ans = getA(idx);
+  hintLevel = Math.min(hintLevel + 2, ans.length - 1);
+  document.getElementById('hint-txt').textContent = ans.split('').map((c, i) => i < hintLevel ? c : '_').join('');
+  if (hintLevel >= ans.length - 1) document.getElementById('hint-btn').style.display = 'none';
+}
+
+function doCheck(idx, onOk, onNg) {
+  if (answered) return;
+  const ans = getA(idx);
+  const inp = document.getElementById('ans-input');
+  if (!inp.value.trim()) return;
+  answered = true;
+  document.getElementById('sub-btn').disabled = true;
+  document.getElementById('hint-btn').style.display = 'none';
+  const ok = normalize(inp.value) === normalize(ans);
+  inp.className = ok ? 'ok' : 'ng';
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show ' + (ok ? 'ok' : 'ng');
+  fb.innerHTML = ok ? '正解！' : `不正解。正解は <strong>${esc(ans)}</strong>`;
+  document.getElementById('next-btn').style.display = 'inline-block';
+  document.getElementById('next-btn').focus();
+  ok ? onOk() : onNg();
+}
+
+function checkAns() {
+  const idx = chunkOrder[currentInChunk];
+  doCheck(idx,
+    () => { totalCorrect++; chunkResults[currentChunk].correct++; chunkResults[currentChunk].entries.push({ idx, ok: true }); totalAnswered++; },
+    () => { chunkResults[currentChunk].entries.push({ idx, ok: false }); totalAnswered++; allMissed.push(idx); }
+  );
+}
+
+function checkReviewAns() {
+  const idx = reviewQueue[reviewIndex];
+  doCheck(idx,
+    () => { reviewCorrect++; reviewAnswered++; },
+    () => { reviewAnswered++; allMissed.push(idx); }
+  );
+}
+
+function nextQ() { currentInChunk++; renderQuestion(); }
+function nextReviewQ() { reviewIndex++; renderReviewQuestion(); }
+
+function finishChunk() {
+  chunkResults[currentChunk].done = true;
+  renderChunkNav();
+  showChunkAnalysis(currentChunk);
+}
+
+// ── Analysis ──
+function showChunkAnalysis(c) {
+  const r = chunkResults[c];
+  const pct = Math.round(r.correct / r.total * 100);
+  const col = pct === 100 ? 'var(--green)' : pct >= 80 ? '#80cc44' : pct >= 60 ? 'var(--yellow)' : 'var(--red)';
+  const label = pct === 100 ? '完璧' : pct >= 80 ? '良好' : pct >= 60 ? 'まずまず' : '要復習';
+  const rows = r.entries.map(e => `
+    <tr>
+      <td class="en">${esc(words[e.idx].en)}</td>
+      <td>${esc(words[e.idx].jp)}</td>
+      <td><span class="badge ${e.ok ? 'badge-ok' : 'badge-ng'}">${e.ok ? '正解' : '不正解'}</span></td>
+    </tr>`).join('');
+  const allDone = chunkResults.every(x => x.done);
+  const isCurrentDone = c === currentChunk && r.done && !isReview;
+  const nc = currentChunk + 1;
+  let nextBtn = '';
+  if (allDone) nextBtn = `<button class="action-btn primary" onclick="showFinal()">全体結果を見る →</button>`;
+  else if (isCurrentDone && nc < numChunks()) {
+    const from = nc * CHUNK + 1, to = Math.min((nc + 1) * CHUNK, words.length);
+    nextBtn = `<button class="action-btn primary" onclick="startChunk(${nc})">グループ ${nc + 1} へ（${from}〜${to}番）→</button>`;
+  }
+  const uniqueMissed = [...new Set(allMissed)];
+  const reviewBtn = uniqueMissed.length > 0
+    ? `<button class="action-btn review" onclick="startReview()">🔁 間違えた単語を復習 (${uniqueMissed.length}語)</button>` : '';
+
+  document.getElementById('main-area').innerHTML = `
+    <div class="card">
+      <div class="card-title">グループ ${c + 1} の結果</div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="stat-val">${r.correct}/${r.total}</div><div class="stat-lbl">正解数</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:${col}">${pct}%</div><div class="stat-lbl">正解率</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:${col};font-size:1.1rem;">${label}</div><div class="stat-lbl">評価</div></div>
+      </div>
+      <div class="thin-bar"><div class="thin-bar-fill" style="width:${pct}%;background:${col};"></div></div>
+      <table class="word-table">
+        <thead><tr><th>英語</th><th>日本語</th><th>結果</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      ${reviewBtn}${nextBtn}
+    </div>`;
+  document.getElementById('prog-fill').style.width = Math.round(totalAnswered / words.length * 100) + '%';
+}
+
+// ── Review ──
+function startReview() {
+  const unique = [...new Set(allMissed)];
+  if (unique.length === 0) return;
+  isReview = true;
+  reviewQueue = shuffle(unique);
+  reviewIndex = 0; reviewCorrect = 0; reviewAnswered = 0;
+  answered = false; hintLevel = 0;
+  renderChunkNav(); renderReviewQuestion();
+}
+
+function finishReview() {
+  const total = reviewQueue.length;
+  const pct = Math.round(reviewCorrect / total * 100);
+  const col = pct === 100 ? 'var(--green)' : pct >= 60 ? 'var(--yellow)' : 'var(--red)';
+  const unique = [...new Set(allMissed)];
+  const retryBtn = unique.length > 0
+    ? `<button class="action-btn review" onclick="startReview()">🔁 もう一度復習 (${unique.length}語)</button>` : '';
+  const allDone = chunkResults.every(r => r.done);
+  document.getElementById('prog-fill').style.width = '100%';
+  renderChunkNav();
+  document.getElementById('main-area').innerHTML = `
+    <div class="card">
+      <div class="card-title">復習完了</div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="stat-val">${reviewCorrect}/${total}</div><div class="stat-lbl">正解数</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:${col}">${pct}%</div><div class="stat-lbl">正解率</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:${col};font-size:1.1rem;">${pct === 100 ? '完璧' : pct >= 80 ? '良好' : pct >= 60 ? 'まずまず' : '要復習'}</div><div class="stat-lbl">評価</div></div>
+      </div>
+      ${retryBtn}
+      ${allDone ? `<button class="action-btn secondary" onclick="showFinal()">全体結果を見る</button>` : ''}
+    </div>`;
+}
+
+// ── Final ──
+function showFinal() {
+  const pct = Math.round(totalCorrect / words.length * 100);
+  const comment = pct === 100 ? '完璧！全問正解！' : pct >= 80 ? 'すばらしい！' : pct >= 60 ? 'もう少し！' : '復習しよう！';
+  const barRows = chunkResults.map((r, i) => {
+    const p = Math.round(r.correct / r.total * 100);
+    const col = p === 100 ? 'var(--green)' : p >= 80 ? '#80cc44' : p >= 60 ? 'var(--yellow)' : 'var(--red)';
+    return `<div class="chunk-bar-row">
+      <span class="chunk-bar-label">G${i + 1}</span>
+      <div class="chunk-bar-track"><div class="chunk-bar-fill" style="width:${p}%;background:${col};"></div></div>
+      <span class="chunk-bar-pct">${p}%</span>
+    </div>`;
+  }).join('');
+  const unique = [...new Set(allMissed)];
+  const reviewBtn = unique.length > 0
+    ? `<button class="action-btn review" onclick="startReview()" style="margin-bottom:8px;">🔁 間違えた単語をまとめて復習 (${unique.length}語)</button>` : '';
+  document.getElementById('prog-fill').style.width = '100%';
+  document.getElementById('main-area').innerHTML = `
+    <div class="final-score" style="color:${pct===100?'var(--green)':'var(--text)'}">${totalCorrect}<span style="font-size:1.5rem;color:var(--text3)">/${words.length}</span></div>
+    <div class="final-comment">正解率 ${pct}% — ${comment}</div>
+    <div class="card" style="margin-bottom:.75rem;">
+      <div class="card-title">グループ別スコア</div>
+      ${barRows}
+    </div>
+    ${reviewBtn}
+    <div class="restart-row">
+      <button class="btn btn-ghost" onclick="setMode('en-jp')">英語 → 日本語</button>
+      <button class="btn btn-accent" onclick="resetQuiz()">もう一度</button>
+      <button class="btn btn-ghost" onclick="setMode('jp-en')">日本語 → 英語</button>
+    </div>`;
+}
+
+// ── Toast ──
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+// ── Boot ──
+load();
+renderWordList();
+</script>
+</body>
+</html>
