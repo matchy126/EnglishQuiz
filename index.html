@@ -170,7 +170,13 @@ textarea:focus{border-color:var(--accent);}
 .modal h3{font-size:1rem;margin-bottom:1rem;}
 .modal-actions{display:flex;gap:8px;margin-top:1rem;justify-content:flex-end;}
 .preview-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;font-size:.83rem;margin-top:.75rem;}
-@media(max-width:480px){.q-word{font-size:1.8rem;}.flex-row{flex-direction:column;}.flex-row>input,.flex-row>.btn{width:100%;}}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.875rem;}
+.choice-btn{padding:12px 14px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface2);font-family:var(--body);font-size:.88rem;color:var(--text);cursor:pointer;text-align:left;line-height:1.4;transition:all .15s;}
+.choice-btn:hover:not(:disabled){background:var(--surface);border-color:var(--text3);}
+.choice-btn.c-ok{background:var(--green-dim);border-color:var(--green);color:var(--green);}
+.choice-btn.c-ng{background:var(--red-dim);border-color:var(--red);color:var(--red);}
+.choice-btn:disabled{cursor:default;}
+@media(max-width:480px){.choices{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -246,9 +252,10 @@ textarea:focus{border-color:var(--accent);}
         <div class="card-title">単元を選択</div>
         <div class="unit-selector" id="unit-selector"></div>
       </div>
-      <div class="mode-row">
+      <div class="mode-row" id="mode-row">
         <button class="mode-btn active" id="mb-en" onclick="setMode('en-jp')">英語 → 日本語</button>
         <button class="mode-btn" id="mb-jp" onclick="setMode('jp-en')">日本語 → 英語</button>
+        <button class="mode-btn" id="mb-mc" onclick="setMode('mc')" style="display:none;">定義 → 4択</button>
       </div>
       <div class="chunk-nav" id="chunk-nav"></div>
       <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
@@ -587,6 +594,7 @@ function initQuiz(){
   if(!qUnitId||!getU(qUnitId)||!getU(qUnitId).words.length)qUnitId=db.units.find(u=>u.words.length>0)?.id||null;
   renderUSel();startForUnit();
 }
+function isEiEi(){return (getU(qUnitId)?.name||'').includes('英英');}
 function renderUSel(){
   document.getElementById('unit-selector').innerHTML=
     db.units.filter(u=>u.words.length>0).map(u=>`
@@ -594,7 +602,20 @@ function renderUSel(){
         ${esc(u.name)}<span style="opacity:.6;font-size:.75em;margin-left:4px;">${u.words.length}語</span>
       </button>`).join('');
 }
-function pickUnit(id){qUnitId=id;renderUSel();startForUnit();}
+function updateModeButtons(){
+  const ei=isEiEi();
+  document.getElementById('mb-mc').style.display=ei?'':'none';
+  document.getElementById('mb-en').classList.toggle('active',mode==='en-jp');
+  document.getElementById('mb-jp').classList.toggle('active',mode==='jp-en');
+  document.getElementById('mb-mc').classList.toggle('active',mode==='mc');
+}
+function pickUnit(id){
+  qUnitId=id;
+  // reset to mc if eiEi, else en-jp
+  if(isEiEi()&&mode!=='mc') mode='mc';
+  else if(!isEiEi()&&mode==='mc') mode='en-jp';
+  renderUSel();updateModeButtons();startForUnit();
+}
 function startForUnit(){const u=getU(qUnitId);if(!u)return;qWords=u.words;resetQuiz();}
 function resetQuiz(){
   const n=Math.ceil(qWords.length/CHUNK);
@@ -604,18 +625,22 @@ function resetQuiz(){
   startChunk(0);
 }
 function setMode(m){
-  mode=m;
-  document.getElementById('mb-en').classList.toggle('active',m==='en-jp');
-  document.getElementById('mb-jp').classList.toggle('active',m==='jp-en');
-  resetQuiz();
+  mode=m;updateModeButtons();resetQuiz();
 }
 function shuf(a){let b=[...a];for(let i=b.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
 function norm(s){return s.trim().toLowerCase().replace(/[・。、\s]+/g,'');}
+// mc mode: question=definition(jp), answer=word(en)
 function getQ(i){return mode==='en-jp'?qWords[i].en:qWords[i].jp;}
-function getA(i){return mode==='en-jp'?qWords[i].jp:qWords[i].en;}
-function qlabel(){return mode==='en-jp'?'英単語の意味を入力':'日本語を英語で入力';}
+function getA(i){return mode==='en-jp'?qWords[i].jp:mode==='jp-en'?qWords[i].en:qWords[i].en;}
+function qlabel(){return mode==='en-jp'?'英単語の意味を入力':mode==='jp-en'?'日本語を英語で入力':'定義に当てはまる単語を選んでください';}
 function nChunks(){return Math.ceil(qWords.length/CHUNK);}
 function cIdx(c){let s=c*CHUNK;return Array.from({length:Math.min(CHUNK,qWords.length-s)},(_,i)=>s+i);}
+// generate 4 choices for mc mode
+function makeChoices(correctIdx){
+  const pool=qWords.map((_,i)=>i).filter(i=>i!==correctIdx);
+  const wrong=shuf(pool).slice(0,3);
+  return shuf([correctIdx,...wrong]);
+}
 
 function startChunk(c){
   cChunk=c;cInChunk=0;answered=false;hintLv=0;isRev=false;
@@ -645,6 +670,9 @@ function renderQ(){
   const idx=cOrder[cInChunk];answered=false;hintLv=0;
   document.getElementById('prog-fill').style.width=Math.round(tAnswered/qWords.length*100)+'%';
   const uname=getU(qUnitId)?.name||'';
+  if(mode==='mc'){renderQmc(idx,uname);}else{renderQtype(idx,uname);}
+}
+function renderQtype(idx,uname){
   document.getElementById('main-area').innerHTML=`
     <div class="q-card">
       <div class="q-label">${qlabel()}</div>
@@ -662,6 +690,42 @@ function renderQ(){
       <button class="next-btn" id="next-btn" onclick="nextQ()">次へ →</button>
     </div>`;
   bindInp(checkAns,nextQ);
+}
+function renderQmc(idx,uname){
+  const choices=makeChoices(idx);
+  const btns=choices.map(ci=>`
+    <button class="choice-btn" onclick="checkMC(${ci},${idx})">${esc(qWords[ci].en)}</button>`).join('');
+  document.getElementById('main-area').innerHTML=`
+    <div class="q-card">
+      <div class="q-label">${qlabel()}</div>
+      <div class="q-word" style="font-size:1.15rem;font-family:var(--body);font-weight:400;line-height:1.55;">${esc(qWords[idx].jp)}</div>
+      <div class="q-sub">${esc(uname)} · グループ${cChunk+1} — ${cInChunk+1}/${cOrder.length}</div>
+    </div>
+    <div class="choices">${btns}</div>
+    <div class="feedback" id="feedback"></div>
+    <div class="nav-row">
+      <span class="counter">${tAnswered+1} / ${qWords.length}</span>
+      <button class="next-btn" id="next-btn" onclick="nextQ()">次へ →</button>
+    </div>`;
+}
+function checkMC(chosen,correct){
+  if(answered)return;
+  answered=true;
+  const ok=chosen===correct;
+  document.querySelectorAll('.choice-btn').forEach(b=>{
+    b.disabled=true;
+    if(b.textContent.trim()===qWords[correct].en) b.classList.add('c-ok');
+  });
+  if(!ok) document.querySelectorAll('.choice-btn')[
+    [...document.querySelectorAll('.choice-btn')].findIndex(b=>b.textContent.trim()===qWords[chosen].en)
+  ]?.classList.add('c-ng');
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(ok?'ok':'ng');
+  fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(qWords[correct].en)}</strong>`;
+  document.getElementById('next-btn').style.display='inline-block';
+  document.getElementById('next-btn').focus();
+  if(ok){tCorrect++;cResults[cChunk].correct++;cResults[cChunk].entries.push({idx:correct,ok:true});tAnswered++;}
+  else{cResults[cChunk].entries.push({idx:correct,ok:false});tAnswered++;missed.push(correct);}
 }
 function renderRevQ(){
   if(revIdx>=revQ.length){finishRev();return;}
