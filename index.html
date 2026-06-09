@@ -449,7 +449,7 @@ function exportCSV(){
 }
 // ══ Default units (seeded on first load) ══
 const DEFAULTS=[
-  {name:'Unit2 Reading1, 2',words:[
+  {name:'EngComm3 U2R1, 2',words:[
     {en:'contemporary',jp:'現代の'},{en:'calculation',jp:'計算'},{en:'progress',jp:'進歩する'},
     {en:'multiple',jp:'多数の'},{en:'categorize',jp:'…を分類する'},{en:'accurately',jp:'正確に'},
     {en:'outperform',jp:'…よりすぐれている'},{en:'detect',jp:'…を検出する'},{en:'diagnose',jp:'…を診断する'},
@@ -462,7 +462,7 @@ const DEFAULTS=[
     {en:'whistle',jp:'口笛を吹く'},{en:'fraction',jp:'分数'},{en:'sigh',jp:'ため息'},
     {en:'flash',jp:'ぴかっと光る'}
   ]},
-  {name:'Unit1 Reading1, 2',words:[
+  {name:'EngComm3 U1R1, 2',words:[
     {en:'congratulation',jp:'おめでとう'},{en:'frustrated',jp:'ストレスがたまった'},{en:'inevitably',jp:'必然的に'},
     {en:'overwhelm',jp:'…を圧倒する'},{en:'systematic',jp:'系統だった'},{en:'confidence',jp:'自信'},
     {en:'overcome',jp:'…を克服する'},{en:'stretch',jp:'…（の能力）を伸ばす'},{en:'academically',jp:'勉強に関して'},
@@ -474,7 +474,7 @@ const DEFAULTS=[
     {en:'affectionate',jp:'愛情の込もった'},{en:'effectively',jp:'効果的に'},{en:'despair',jp:'絶望する'},
     {en:'periodic',jp:'定期的な'}
   ]},
-  {name:'Unit1 Reading1 英英',words:[
+  {name:'EngComm3 U1R1 英英',words:[
     {en:'recall',jp:'to think of something from the past'},
     {en:'implication',jp:'a possible outcome of an action or event'},
     {en:'actively',jp:'in an active or positive way'},
@@ -506,7 +506,7 @@ const DEFAULTS=[
     {en:'combat',jp:'to fight against something'},
     {en:'periodic',jp:'happening regularly'}
   ]},
-  {name:'Unit2 Reading1 英英',words:[
+  {name:'EngComm3 U2R1 英英',words:[
     {en:'contemporary',jp:'being part of the present; modern'},
     {en:'mimic',jp:'to act in the exact same way as someone or something'},
     {en:'dive',jp:'[take a deep ... into] = to research something further than has already been done'},
@@ -549,6 +549,36 @@ const DEFAULTS=[
     {en:'traffic pattern',jp:'any regular movement of vehicles or people'},
     {en:'advance',jp:'to develop, improve or move forward'},
     {en:'rapidly',jp:'very quickly and suddenly'}
+  ]},
+  {name:'LogExp3 動名詞',words:[
+    {en:'practice',jp:'S+V+V-ing をとる動詞（練習する）'},
+    {en:'enjoy',jp:'S+V+V-ing をとる動詞（楽しむ）'},
+    {en:'be used to V-ing',jp:'S+V+V-ing をとる表現（〜することに慣れている）'},
+    {en:'mind',jp:'S+V+V-ing をとる動詞（気にする）'},
+    {en:'consider',jp:'S+V+V-ing をとる動詞（検討する）'},
+    {en:'imagine',jp:'S+V+V-ing をとる動詞（想像する）'},
+    {en:'look forward to V-ing',jp:'S+V+V-ing をとる表現（〜するのを楽しみにする）'},
+    {en:'stop',jp:'S+V+V-ing をとる動詞（〜するのをやめる） / to V で「〜するために立ち止まる」と意味が変わる'},
+    {en:'quit',jp:'S+V+V-ing をとる動詞（やめる）'},
+    {en:'give up',jp:'S+V+V-ing をとる動詞（あきらめる）'},
+    {en:'finish',jp:'S+V+V-ing をとる動詞（終える）'},
+    {en:'miss',jp:'S+V+V-ing をとる動詞（〜しそこなう・〜しないのが惜しい）'},
+    {en:'avoid',jp:'S+V+V-ing をとる動詞（避ける）'},
+    {en:'escape',jp:'S+V+V-ing をとる動詞（逃れる）'},
+    {en:'help',jp:'S+V+V-ing をとる動詞（避ける／help doing）'},
+    {en:'put off',jp:'S+V+V-ing をとる動詞（延期する）'},
+    {en:'postpone',jp:'S+V+V-ing をとる動詞（延期する）'},
+    {en:'object to V-ing',jp:'S+V+V-ing をとる表現（〜することに反対する）'},
+    {en:'be opposed to V-ing',jp:'S+V+V-ing をとる表現（〜することに反対している）'},
+    {en:'deny',jp:'S+V+V-ing をとる動詞（否定する）'},
+    {en:'resist',jp:'S+V+V-ing をとる動詞（抵抗する）'},
+    {en:'remember V-ing',jp:'to V と意味が違う：V-ing＝〜したことを覚えている / to V＝忘れずに〜する'},
+    {en:'forget V-ing',jp:'to V と意味が違う：V-ing＝〜したことを忘れる / to V＝〜するのを忘れる'},
+    {en:'regret V-ing',jp:'to V と意味が違う：V-ing＝〜したことを後悔する / to V＝残念ながら〜する'},
+    {en:'mean V-ing',jp:'to V と意味が違う：V-ing＝〜することを意味する / to V＝〜するつもりである'},
+    {en:'try V-ing',jp:'to V と意味が違う：V-ing＝試しに〜してみる / to V＝〜しようとする'},
+    {en:'need V-ing',jp:'to V と意味が違う：V-ing＝〜される必要がある（受動的） / to V＝〜する必要がある'},
+    {en:'want V-ing',jp:'to V と意味が違う：V-ing＝〜される必要がある（口語的） / to V＝〜したい'}
   ]}
 ];
 function seedDefaults(){
@@ -594,7 +624,7 @@ function initQuiz(){
   if(!qUnitId||!getU(qUnitId)||!getU(qUnitId).words.length)qUnitId=db.units.find(u=>u.words.length>0)?.id||null;
   renderUSel();startForUnit();
 }
-function isEiEi(){return (getU(qUnitId)?.name||'').includes('英英');}
+function isEiEi(){const n=getU(qUnitId)?.name||'';return n.includes('英英')||n.includes('動名詞');}
 function renderUSel(){
   document.getElementById('unit-selector').innerHTML=
     db.units.filter(u=>u.words.length>0).map(u=>`
