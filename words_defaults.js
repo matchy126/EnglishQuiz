@@ -3,7 +3,7 @@
 
 // ══ Default units (seeded on first load) ══
 const DEFAULTS=[
-  {name:'EngComm3 U2R1, 2',words:[
+  {name:'EngComm3 U2R 英日',words:[
     {en:'contemporary',jp:'現代の'},{en:'calculation',jp:'計算'},{en:'progress',jp:'進歩する'},
     {en:'multiple',jp:'多数の'},{en:'categorize',jp:'…を分類する'},{en:'accurately',jp:'正確に'},
     {en:'outperform',jp:'…よりすぐれている'},{en:'detect',jp:'…を検出する'},{en:'diagnose',jp:'…を診断する'},
@@ -16,7 +16,7 @@ const DEFAULTS=[
     {en:'whistle',jp:'口笛を吹く'},{en:'fraction',jp:'分数'},{en:'sigh',jp:'ため息'},
     {en:'flash',jp:'ぴかっと光る'}
   ]},
-  {name:'EngComm3 U1R1, 2',words:[
+  {name:'EngComm3 U1 英日',words:[
     {en:'congratulation',jp:'おめでとう'},{en:'frustrated',jp:'ストレスがたまった'},{en:'inevitably',jp:'必然的に'},
     {en:'overwhelm',jp:'…を圧倒する'},{en:'systematic',jp:'系統だった'},{en:'confidence',jp:'自信'},
     {en:'overcome',jp:'…を克服する'},{en:'stretch',jp:'…（の能力）を伸ばす'},{en:'academically',jp:'勉強に関して'},
