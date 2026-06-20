@@ -190,7 +190,8 @@ textarea:focus{border-color:var(--accent);}
   </header>
   <div class="tabs">
     <button class="tab active" onclick="switchTab('manage')">📝 単語管理</button>
-    <button class="tab" onclick="switchTab('quiz')">🎯 クイズ</button>
+    <button class="tab" onclick="switchTab('quiz')">🎯 マイ単元</button>
+    <button class="tab" onclick="switchTab('target')">📖 TARGET1900</button>
   </div>
 
   <!-- ══ MANAGE ══ -->
@@ -262,9 +263,22 @@ textarea:focus{border-color:var(--accent);}
       <div id="main-area"></div>
     </div>
   </div>
+  <!-- ══ TARGET1900 ══ -->
+  <div id="tab-target" style="display:none;">
+    <div class="card" style="margin-bottom:1rem;">
+      <div class="card-title">単元を選択</div>
+      <div class="unit-selector" id="t-unit-selector"></div>
+    </div>
+    <div class="mode-row">
+      <button class="mode-btn active" id="tm-en" onclick="setTMode('en-jp')">英語 → 日本語</button>
+      <button class="mode-btn" id="tm-jp" onclick="setTMode('jp-en')">日本語 → 英語</button>
+      <button class="mode-btn" id="tm-mc" onclick="setTMode('mc')">英語 → 4択</button>
+    </div>
+    <div class="chunk-nav" id="t-chunk-nav"></div>
+    <div class="progress-bar"><div class="progress-fill" id="t-prog-fill" style="width:0%"></div></div>
+    <div id="t-main-area"></div>
+  </div>
 </div>
-
-<!-- Modal: unit name -->
 <div class="modal-overlay" id="unit-modal" style="display:none;" onclick="if(event.target===this)closeModal('unit-modal')">
   <div class="modal">
     <h3 id="unit-modal-h">新しい単元を作成</h3>
@@ -296,6 +310,315 @@ textarea:focus{border-color:var(--accent);}
 
 <div class="toast" id="toast"></div>
 
+<script>
+// ═══════════════════════════════════════════════
+// TARGET1900 単語データ
+// 単語を追加する場合はこのセクションを編集してください
+// ═══════════════════════════════════════════════
+// TARGET1900 単語データ (1-300)
+const TARGET1900_DATA = [
+  {no:1, en:'create', jp:'を創り出す；を引き起こす'},
+  {no:2, en:'increase', jp:'増加する；を増やす'},
+  {no:3, en:'improve', jp:'を向上させる；よくなる'},
+  {no:4, en:'mean', jp:'を意味する；（...する）つもりである'},
+  {no:5, en:'own', jp:'を所有している；（事実・罪など）を認める'},
+  {no:6, en:'include', jp:'を含む'},
+  {no:7, en:'consider', jp:'を見なす；について考える'},
+  {no:8, en:'allow', jp:'を許す；を与える；考慮に入れる'},
+  {no:9, en:'suggest', jp:'を提案する；を暗示する'},
+  {no:10, en:'produce', jp:'を生産する；を取り出す'},
+  {no:11, en:'decide', jp:'を決める；に決着をつける'},
+  {no:12, en:'offer', jp:'を提供する，申し出る'},
+  {no:13, en:'require', jp:'を要求する；を必要とする'},
+  {no:14, en:'share', jp:'を共有する；を分担する'},
+  {no:15, en:'store', jp:'を保存する；を蓄える'},
+  {no:16, en:'tend', jp:'傾向がある；を世話する'},
+  {no:17, en:'concern', jp:'心配している；（～に）関係する；に関連する'},
+  {no:18, en:'describe', jp:'について述べる，を説明する'},
+  {no:19, en:'involve', jp:'を関与させる；を伴う'},
+  {no:20, en:'reduce', jp:'を減らす；を（～に）変える'},
+  {no:21, en:'design', jp:'を設計する；を計画する'},
+  {no:22, en:'force', jp:'に強いる；を強要する'},
+  {no:23, en:'limit', jp:'を制限する'},
+  {no:24, en:'bear', jp:'に耐える；を負う；を産む；を心に抱く'},
+  {no:25, en:'affect', jp:'に影響を及ぼす；を感動させる'},
+  {no:26, en:'deal', jp:'〔deal withで〕を処理する；〔deal inで〕を商う'},
+  {no:27, en:'avoid', jp:'を避ける'},
+  {no:28, en:'relate', jp:'を関連づける；（～に）関連する'},
+  {no:29, en:'realize', jp:'に気づく；を実現する'},
+  {no:30, en:'encourage', jp:'を奨励する；を励ます'},
+  {no:31, en:'compare', jp:'を比較する；を（～に）たとえる'},
+  {no:32, en:'measure', jp:'を測る；を評価する'},
+  {no:33, en:'exist', jp:'存在する；生存する'},
+  {no:34, en:'mark', jp:'に印をつける；を示す；に汚れをつける'},
+  {no:35, en:'challenge', jp:'に異議を唱える；（人）に挑む'},
+  {no:36, en:'depend', jp:'頼る；～次第である'},
+  {no:37, en:'object', jp:'反対する'},
+  {no:38, en:'demand', jp:'を要求する'},
+  {no:39, en:'found', jp:'を設立する；（理論など）を築く'},
+  {no:40, en:'complete', jp:'を完成させる，仕上げる'},
+  {no:41, en:'idea', jp:'考え，思いつき；理解；見解；概念'},
+  {no:42, en:'accord', jp:'一致；合意，協定'},
+  {no:43, en:'company', jp:'会社；仲間；一緒にいること；一座'},
+  {no:44, en:'interest', jp:'興味；利子；利害'},
+  {no:45, en:'research', jp:'研究，調査'},
+  {no:46, en:'cause', jp:'原因；理由；大義'},
+  {no:47, en:'reason', jp:'理由；根拠；理性；分別'},
+  {no:48, en:'effect', jp:'影響，効果；結果'},
+  {no:49, en:'influence', jp:'影響（力）'},
+  {no:50, en:'situation', jp:'状況；（人の置かれた）立場'},
+  {no:51, en:'environment', jp:'環境'},
+  {no:52, en:'skill', jp:'技能；熟練'},
+  {no:53, en:'matter', jp:'事柄；問題；困難；物質'},
+  {no:54, en:'view', jp:'見解；見方；眺め'},
+  {no:55, en:'value', jp:'価値；価格；評価；価値観'},
+  {no:56, en:'species', jp:'（生物の）種；種類'},
+  {no:57, en:'thought', jp:'考え；思考'},
+  {no:58, en:'knowledge', jp:'知識；認識'},
+  {no:59, en:'memory', jp:'記憶（力）；思い出'},
+  {no:60, en:'practice', jp:'実践，実行；慣習；練習'},
+  {no:61, en:'benefit', jp:'利益，恩恵；給付金'},
+  {no:62, en:'theory', jp:'学説；理論；原理；推測'},
+  {no:63, en:'issue', jp:'問題（点）；発行（物）；発表'},
+  {no:64, en:'experiment', jp:'実験'},
+  {no:65, en:'article', jp:'記事；条項；品物'},
+  {no:66, en:'focus', jp:'焦点；関心の的'},
+  {no:67, en:'subject', jp:'話題；科目；主題；被験者'},
+  {no:68, en:'project', jp:'計画；事業；研究計画'},
+  {no:69, en:'quality', jp:'質；特質'},
+  {no:70, en:'role', jp:'役割；役'},
+  {no:71, en:'term', jp:'用語；条件；間柄；学期'},
+  {no:72, en:'statement', jp:'声明；主張；明細書'},
+  {no:73, en:'material', jp:'材料，素材；資料；生地'},
+  {no:74, en:'evidence', jp:'証拠'},
+  {no:75, en:'source', jp:'源，根源；出所，情報源'},
+  {no:76, en:'community', jp:'共同社会；地域社会；地域住民'},
+  {no:77, en:'technology', jp:'科学技術；応用技術'},
+  {no:78, en:'culture', jp:'文化；教養；耕作；養殖'},
+  {no:79, en:'appropriate', jp:'（～に）適切な'},
+  {no:80, en:'likely', jp:'ありそうな'},
+  {no:81, en:'possible', jp:'可能な；可能性のある'},
+  {no:82, en:'individual', jp:'個々の；個人の'},
+  {no:83, en:'public', jp:'公の；公衆の；公開の'},
+  {no:84, en:'common', jp:'共通の；普通の；一般の'},
+  {no:85, en:'certain', jp:'確信して；確かな；ある；一定の'},
+  {no:86, en:'similar', jp:'似ている，類似した；同様の'},
+  {no:87, en:'recent', jp:'最近の'},
+  {no:88, en:'major', jp:'主要な；大きい（ほうの）'},
+  {no:89, en:'patient', jp:'忍耐強い；勤勉な'},
+  {no:90, en:'particular', jp:'特定の；特別の'},
+  {no:91, en:'physical', jp:'身体の；物質的な；物理学の'},
+  {no:92, en:'various', jp:'さまざまな；いくつかの'},
+  {no:93, en:'available', jp:'手に入る；利用できる；手が空いている'},
+  {no:94, en:'native', jp:'出生地の；原産の；生得の'},
+  {no:95, en:'political', jp:'政治（上）の'},
+  {no:96, en:'due', jp:'予定された；支払期日で；しかるべき'},
+  {no:97, en:'blank', jp:'空白の；無表情な；がらんとした'},
+  {no:98, en:'ancient', jp:'古代の；昔からの'},
+  {no:99, en:'correct', jp:'正しい；適切な'},
+  {no:100, en:'despite', jp:'～にもかかわらず'},
+  {no:101, en:'notice', jp:'に気づく'},
+  {no:102, en:'refer', jp:'言及する；参照する'},
+  {no:103, en:'approach', jp:'に近づく；に取り組む'},
+  {no:104, en:'wonder', jp:'かなと思う；（に）驚く'},
+  {no:105, en:'imagine', jp:'（を）想像する；（を）推測する'},
+  {no:106, en:'recognize', jp:'を識別できる；を認める'},
+  {no:107, en:'solve', jp:'を解く，解明する；（困難など）を解決する'},
+  {no:108, en:'occur', jp:'起こる；心に浮かぶ；現れる'},
+  {no:109, en:'argue', jp:'と主張する；議論する'},
+  {no:110, en:'claim', jp:'と主張する；を要求する'},
+  {no:111, en:'express', jp:'を表す，述べる'},
+  {no:112, en:'draw', jp:'を引き出す；を引く；を描く；近づく'},
+  {no:113, en:'waste', jp:'を浪費する，無駄にする'},
+  {no:114, en:'advance', jp:'を進歩させる；を進める；進歩する'},
+  {no:115, en:'spread', jp:'を広める；広がる'},
+  {no:116, en:'prepare', jp:'を準備する；を調理する'},
+  {no:117, en:'gain', jp:'を獲得する；（を）増す'},
+  {no:118, en:'achieve', jp:'を達成する；を成し遂げる'},
+  {no:119, en:'establish', jp:'を確立する；を設立する'},
+  {no:120, en:'supply', jp:'を供給する'},
+  {no:121, en:'suppose', jp:'と思う；と仮定する'},
+  {no:122, en:'perform', jp:'（を）行う；（を）演じる，（を）演奏する'},
+  {no:123, en:'prefer', jp:'のほうを好む'},
+  {no:124, en:'determine', jp:'を決定する；を正確に知る'},
+  {no:125, en:'treat', jp:'を扱う；を治療する'},
+  {no:126, en:'prove', jp:'を証明する；判明する，わかる'},
+  {no:127, en:'apply', jp:'を適用する；申し込む；適用される'},
+  {no:128, en:'mention', jp:'に言及する；と言う'},
+  {no:129, en:'communicate', jp:'（～と）情報交換をする；を伝達する'},
+  {no:130, en:'contain', jp:'を含む；を収容する；（感情など）を抑える'},
+  {no:131, en:'contact', jp:'と連絡を取る；接触する'},
+  {no:132, en:'regard', jp:'を見なす；を見る；を評価する'},
+  {no:133, en:'respect', jp:'を尊敬する；を尊重する'},
+  {no:134, en:'search', jp:'捜す；を捜索する；を詳しく調べる'},
+  {no:135, en:'connect', jp:'をつなぐ；を関連づける'},
+  {no:136, en:'decline', jp:'減少する；衰退する；を断る'},
+  {no:137, en:'prevent', jp:'を妨げる；を防ぐ'},
+  {no:138, en:'suffer', jp:'苦しむ；患う；（苦痛など）を経験する'},
+  {no:139, en:'survive', jp:'を切り抜けて生き残る；より長生きする'},
+  {no:140, en:'publish', jp:'を出版する；を公表する'},
+  {no:141, en:'opportunity', jp:'機会'},
+  {no:142, en:'task', jp:'（課せられた）仕事，作業；課題'},
+  {no:143, en:'industry', jp:'産業；勤勉'},
+  {no:144, en:'medium', jp:'（情報伝達の）媒体；手段'},
+  {no:145, en:'economy', jp:'経済（状態）；節約'},
+  {no:146, en:'policy', jp:'政策，方針；主義'},
+  {no:147, en:'account', jp:'説明；勘定；口座'},
+  {no:148, en:'trade', jp:'貿易；商売，取引'},
+  {no:149, en:'model', jp:'模範；モデル；模型；型'},
+  {no:150, en:'figure', jp:'数字；姿；人物；図表'},
+  {no:151, en:'cell', jp:'細胞；独房；電池'},
+  {no:152, en:'image', jp:'印象，イメージ；画像；像'},
+  {no:153, en:'emotion', jp:'感情，情動；感動'},
+  {no:154, en:'stress', jp:'ストレス；圧力；強調'},
+  {no:155, en:'decade', jp:'10年間'},
+  {no:156, en:'range', jp:'範囲；射程距離；（同類の）組'},
+  {no:157, en:'character', jp:'性格，個性；特徴；登場人物；文字'},
+  {no:158, en:'advantage', jp:'利点；優勢；有利'},
+  {no:159, en:'phrase', jp:'句；成句；言葉遣い'},
+  {no:160, en:'damage', jp:'損害，損傷；損害賠償金'},
+  {no:161, en:'impact', jp:'影響；衝突；衝撃（力）'},
+  {no:162, en:'method', jp:'方法；体系；秩序'},
+  {no:163, en:'resource', jp:'資源；資金；才覚'},
+  {no:164, en:'region', jp:'地域；領域；部位'},
+  {no:165, en:'medicine', jp:'薬；医学'},
+  {no:166, en:'detail', jp:'詳細（な情報），細部'},
+  {no:167, en:'feature', jp:'特徴；顔つき；特集記事'},
+  {no:168, en:'function', jp:'機能；関数'},
+  {no:169, en:'access', jp:'利用，入手；接近（の機会・方法・権利）'},
+  {no:170, en:'item', jp:'品目，項目；記事'},
+  {no:171, en:'income', jp:'収入；所得'},
+  {no:172, en:'attitude', jp:'態度；考え方，心構え'},
+  {no:173, en:'site', jp:'用地，場所；跡地；サイト'},
+  {no:174, en:'aspect', jp:'（物事の）側面；観点；様相'},
+  {no:175, en:'structure', jp:'構造；体系；構造物'},
+  {no:176, en:'habit', jp:'習慣，癖'},
+  {no:177, en:'link', jp:'関連，つながり；交通手段；リンク'},
+  {no:178, en:'instance', jp:'（具体的な）例，実例；場合'},
+  {no:179, en:'positive', jp:'肯定的な；積極的な；確信して；陽性の'},
+  {no:180, en:'negative', jp:'否定的な；消極的な；陰性の'},
+  {no:181, en:'complex', jp:'複雑な；複合（体）の'},
+  {no:182, en:'current', jp:'現在の；現代の；通用している'},
+  {no:183, en:'mental', jp:'精神の；知能の；頭の中で行う'},
+  {no:184, en:'specific', jp:'特定の；明確な，具体的な；特有の'},
+  {no:185, en:'significant', jp:'重要な，重大な；意義深い'},
+  {no:186, en:'essential', jp:'必要不可欠な；本質的な'},
+  {no:187, en:'official', jp:'公用の；公式の；役所の'},
+  {no:188, en:'financial', jp:'財政（上）の；財界の'},
+  {no:189, en:'academic', jp:'学問の；大学の'},
+  {no:190, en:'aware', jp:'気づいて，知って'},
+  {no:191, en:'worth', jp:'（...する）に値する；の価値がある'},
+  {no:192, en:'potential', jp:'潜在的な；可能性を秘めた'},
+  {no:193, en:'active', jp:'積極的な；活動的な；効力のある'},
+  {no:194, en:'digital', jp:'デジタル方式の；デジタル表示の'},
+  {no:195, en:'mobile', jp:'可動式の；流動性のある'},
+  {no:196, en:'novel', jp:'斬新な，目新しい'},
+  {no:197, en:'plastic', jp:'柔軟な；プラスチックの'},
+  {no:198, en:'chemical', jp:'化学の，化学的な'},
+  {no:199, en:'necessary', jp:'必要な'},
+  {no:200, en:'eventually', jp:'結局（は）'},
+  {no:201, en:'identify', jp:'を特定する；を（～と）同一視する'},
+  {no:202, en:'represent', jp:'を表す；を代表する；に相当する'},
+  {no:203, en:'indicate', jp:'を指し示す；を述べる'},
+  {no:204, en:'manage', jp:'をなんとか成し遂げる；を管理する'},
+  {no:205, en:'attend', jp:'に出席する；を世話する；に対処する'},
+  {no:206, en:'maintain', jp:'を維持する；と主張する；を養う'},
+  {no:207, en:'survey', jp:'を調査する；をじろじろ見る；を概観する'},
+  {no:208, en:'replace', jp:'に取って代わる；を取り替える'},
+  {no:209, en:'sort', jp:'を（～に）分類する；をえり分ける'},
+  {no:210, en:'conduct', jp:'（調査・実験など）を実施する；を導く'},
+  {no:211, en:'associate', jp:'を結び付けて考える；（～と）交際する'},
+  {no:212, en:'attempt', jp:'を試みる，企てる'},
+  {no:213, en:'promote', jp:'を促進する；昇進する'},
+  {no:214, en:'earn', jp:'を稼ぐ；を得る；をもたらす'},
+  {no:215, en:'unite', jp:'を団結させる；（を）結合する；団結する'},
+  {no:216, en:'feed', jp:'に食べ物を与える；に供給する；餌を食べる'},
+  {no:217, en:'seek', jp:'を追い求める；（助けなど）を要請する'},
+  {no:218, en:'observe', jp:'に気づく；を観察する；を遵守する'},
+  {no:219, en:'reveal', jp:'を明らかにする；を見せる'},
+  {no:220, en:'estimate', jp:'と推定する；を見積もる；を評価する'},
+  {no:221, en:'reflect', jp:'を反映する；（を）反射する；（を）熟考する'},
+  {no:222, en:'attract', jp:'を引きつける'},
+  {no:223, en:'decrease', jp:'減少する；を減らす'},
+  {no:224, en:'ignore', jp:'を無視する'},
+  {no:225, en:'match', jp:'（と）合う；に匹敵する；一致する'},
+  {no:226, en:'define', jp:'を定義する；を明確にする'},
+  {no:227, en:'adapt', jp:'適応する；を（～に）適合させる'},
+  {no:228, en:'contribute', jp:'貢献する；（を）寄付する；（を）寄稿する'},
+  {no:229, en:'exchange', jp:'（を）交換する；両替する'},
+  {no:230, en:'display', jp:'を示す；を発揮する；を展示する'},
+  {no:231, en:'respond', jp:'反応する；答える'},
+  {no:232, en:'hide', jp:'を隠す；隠れる'},
+  {no:233, en:'doubt', jp:'ではないと思う；を疑う'},
+  {no:234, en:'remove', jp:'を取り除く；を解雇する'},
+  {no:235, en:'wind', jp:'（ねじなど）を巻く；（道などが）曲がりくねる'},
+  {no:236, en:'assume', jp:'を当然のことと思う，と仮定する；を引き受ける'},
+  {no:237, en:'relax', jp:'くつろぐ；緩む；をくつろがせる'},
+  {no:238, en:'satisfy', jp:'を満足させる；（条件など）を満たす'},
+  {no:239, en:'desire', jp:'を強く望む'},
+  {no:240, en:'succeed', jp:'（～に）成功する；（～を）継承する'},
+  {no:241, en:'concept', jp:'概念；考え；コンセプト'},
+  {no:242, en:'fashion', jp:'流行，ファッション；方法，流儀'},
+  {no:243, en:'device', jp:'装置，機器；方策；デバイス'},
+  {no:244, en:'charge', jp:'料金；世話；管理；告発'},
+  {no:245, en:'contrast', jp:'（～との）対照'},
+  {no:246, en:'colleague', jp:'（職場の）同僚'},
+  {no:247, en:'pain', jp:'苦痛，痛み；苦悩；骨折り'},
+  {no:248, en:'bill', jp:'請求書；勘定書；法案'},
+  {no:249, en:'content', jp:'内容，中身；コンテンツ'},
+  {no:250, en:'section', jp:'部門；部分；地区；欄'},
+  {no:251, en:'audience', jp:'聴衆，観客；視聴者'},
+  {no:252, en:'surface', jp:'表面；外見'},
+  {no:253, en:'crop', jp:'作物；収穫高'},
+  {no:254, en:'topic', jp:'話題，トピック；主題'},
+  {no:255, en:'technique', jp:'技術；技巧；手法'},
+  {no:256, en:'status', jp:'地位；状態'},
+  {no:257, en:'option', jp:'選択（の自由）；選択肢'},
+  {no:258, en:'reward', jp:'報酬；報い'},
+  {no:259, en:'race', jp:'人種；民族；競争'},
+  {no:260, en:'crime', jp:'罪，犯罪；違法行為'},
+  {no:261, en:'conflict', jp:'争い；論争；不一致'},
+  {no:262, en:'struggle', jp:'闘い；懸命の努力'},
+  {no:263, en:'context', jp:'状況，背景；文脈'},
+  {no:264, en:'debate', jp:'討論，論争；討論会'},
+  {no:265, en:'fuel', jp:'燃料；勢いを増加させるもの'},
+  {no:266, en:'pollution', jp:'汚染，公害'},
+  {no:267, en:'trend', jp:'（～への）傾向；流行'},
+  {no:268, en:'balance', jp:'均衡，バランス；平衡；残高'},
+  {no:269, en:'traffic', jp:'交通；通行；交通量'},
+  {no:270, en:'strategy', jp:'戦略'},
+  {no:271, en:'basis', jp:'基礎；根拠；基準'},
+  {no:272, en:'consequence', jp:'結果；重大性'},
+  {no:273, en:'aim', jp:'目的，目標；狙い'},
+  {no:274, en:'ancestor', jp:'祖先；原型'},
+  {no:275, en:'gene', jp:'遺伝子'},
+  {no:276, en:'track', jp:'跡；軌道；番線；走路'},
+  {no:277, en:'revolution', jp:'革命；回転；公転'},
+  {no:278, en:'progress', jp:'進歩；前進'},
+  {no:279, en:'cognitive', jp:'認知の'},
+  {no:280, en:'ideal', jp:'理想的な；観念的な'},
+  {no:281, en:'efficient', jp:'効率的な；有能な'},
+  {no:282, en:'universal', jp:'普遍的な；宇宙の；万能の'},
+  {no:283, en:'vast', jp:'莫大な；広大な'},
+  {no:284, en:'extra', jp:'追加の，余分の；別勘定の'},
+  {no:285, en:'entire', jp:'全体の，全部の；完全な'},
+  {no:286, en:'familiar', jp:'精通している；よく知られている'},
+  {no:287, en:'obvious', jp:'明らかな'},
+  {no:288, en:'moral', jp:'道徳（上）の，倫理的な'},
+  {no:289, en:'ordinary', jp:'一般の，普通の；並の'},
+  {no:290, en:'equal', jp:'（～に）等しい；匹敵する；平等な'},
+  {no:291, en:'previous', jp:'以前の，前の'},
+  {no:292, en:'false', jp:'間違った；虚偽の；偽の'},
+  {no:293, en:'rare', jp:'まれな，珍しい；希少な'},
+  {no:294, en:'legal', jp:'法律の；合法の'},
+  {no:295, en:'independent', jp:'（～から）独立した'},
+  {no:296, en:'extreme', jp:'極端な；極度の，過激な'},
+  {no:297, en:'actual', jp:'実際の，現実の'},
+  {no:298, en:'willing', jp:'いとわない，かまわないと思う'},
+  {no:299, en:'urban', jp:'都市の；都会的な'},
+  {no:300, en:'whereas', jp:'～するのに（対し），～する一方'},
+];
+</script>
 <script>
 // ══ Storage ══
 const SK='quiz_v2';
@@ -506,50 +829,6 @@ const DEFAULTS=[
     {en:'combat',jp:'to fight against something'},
     {en:'periodic',jp:'happening regularly'}
   ]},
-  {name:'EngComm3 U2R1 英英',words:[
-    {en:'contemporary',jp:'being part of the present; modern'},
-    {en:'mimic',jp:'to act in the exact same way as someone or something'},
-    {en:'dive',jp:'[take a deep ... into] = to research something further than has already been done'},
-    {en:'algorithm',jp:'a set of instructions that are followed to solve a problem or calculate something'},
-    {en:'mathematician',jp:'someone who specializes in mathematics'},
-    {en:'calculation',jp:'the process of numbers to figure out an amount'},
-    {en:'progress',jp:'to improve or develop'},
-    {en:'interconnected',jp:'being joined together'},
-    {en:'neuron',jp:'a nerve cell that relays information between the brain and other parts of the body'},
-    {en:'neural network',jp:'a computer system or program that is designed to work in ways similar to the human brain'},
-    {en:'multiple',jp:'many; related to many people, things, etc.'},
-    {en:'layer',jp:'something, such as a thin sheet of material, that covers a surface or is between two things'},
-    {en:'deep learning',jp:'a type of machine learning that helps artificial intelligence behave in the same way as the human brain'},
-    {en:'solely',jp:'only; involving no one or nothing else'},
-    {en:'supercomputer',jp:'a powerful computer with great memory and speed'},
-    {en:'categorize',jp:'to group people or things according to their type'},
-    {en:'accurately',jp:'in a way that is exact and correct'},
-    {en:'outperform',jp:'to do better than someone or something'},
-    {en:'service',jp:'a business that offers help or work but not goods'},
-    {en:'profile',jp:'a short description giving important information about a person, place or thing'},
-    {en:'user',jp:'someone who uses something, usually a product or service'},
-    {en:'voice recognition',jp:'a technology in which a computer can understand and follow instructions from a human voice'},
-    {en:'enable',jp:'to make something possible for someone'},
-    {en:'caption',jp:'words that are printed below a picture explaining what it is in it'},
-    {en:'detect',jp:'to notice something, especially something that is not easily seen or heard'},
-    {en:'plagiarism',jp:'copying someone else\'s words, ideas or works and pretending they are your own'},
-    {en:'healthcare',jp:'the activity or business of looking after people\'s health'},
-    {en:'diagnose',jp:'to find out and say what the cause of an illness is'},
-    {en:'treatment',jp:'something that is done to cure a person who is sick or injured'},
-    {en:'monitor',jp:'to watch and check a situation carefully over a period of time to see how it changes'},
-    {en:'similarly',jp:'in a way that is almost the same'},
-    {en:'crop',jp:'a plant that is grown by farmers, especially in large quantities, and usually used for food'},
-    {en:'weather pattern',jp:'when the weather stays the same for a period of time'},
-    {en:'warehouse',jp:'a large building for storing goods before they are sent out to businesses, shops, etc.'},
-    {en:'automate',jp:'to use machines and computers to do a job that would otherwise be done by people'},
-    {en:'productive',jp:'making or providing a large amount of something'},
-    {en:'self-driving',jp:'having the ability to move by itself without being controlled by a human'},
-    {en:'vehicle',jp:'a machine with an engine, such as a car or truck, that is used to transport people and goods'},
-    {en:'road sign',jp:'a notice on a road that gives information such as warnings and directions'},
-    {en:'traffic pattern',jp:'any regular movement of vehicles or people'},
-    {en:'advance',jp:'to develop, improve or move forward'},
-    {en:'rapidly',jp:'very quickly and suddenly'}
-  ]},
   {name:'LogExp3 動名詞',words:[
     {en:'practice',jp:'S+V+V-ing をとる動詞（練習する）'},
     {en:'enjoy',jp:'S+V+V-ing をとる動詞（楽しむ）'},
@@ -581,8 +860,14 @@ const DEFAULTS=[
     {en:'want V-ing',jp:'to V と意味が違う：V-ing＝〜される必要がある（口語的） / to V＝〜したい'}
   ]}
 ];
+const REMOVED_DEFAULTS=['EngComm3 U2R1 英英'];
 function seedDefaults(){
   let changed=false;
+  // 廃止されたデフォルト単元を削除
+  REMOVED_DEFAULTS.forEach(name=>{
+    const idx=db.units.findIndex(u=>u.name===name);
+    if(idx>=0){db.units.splice(idx,1);changed=true;}
+  });
   DEFAULTS.forEach(d=>{
     if(!db.units.find(u=>u.name===d.name)){
       db.units.push({id:uid(),name:d.name,words:d.words});
@@ -605,8 +890,11 @@ function resetAll(){
 function switchTab(t){
   document.getElementById('tab-manage').style.display=t==='manage'?'block':'none';
   document.getElementById('tab-quiz').style.display=t==='quiz'?'block':'none';
-  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',(i===0)===(t==='manage')));
+  document.getElementById('tab-target').style.display=t==='target'?'block':'none';
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',
+    (i===0&&t==='manage')||(i===1&&t==='quiz')||(i===2&&t==='target')));
   if(t==='quiz')initQuiz();
+  if(t==='target')initTarget();
 }
 
 // ══ Quiz ══
@@ -885,6 +1173,276 @@ function showFinal(){
       <button class="btn btn-ghost" onclick="setMode('en-jp')">英語 → 日本語</button>
       <button class="btn btn-accent" onclick="resetQuiz()">もう一度</button>
       <button class="btn btn-ghost" onclick="setMode('jp-en')">日本語 → 英語</button>
+    </div>`;
+}
+
+// ══ TARGET 1900 ══
+// TARGET1900_DATAはtarget1900.jsで定義済みとして使用
+const T_CHUNK=30;
+const T_SECTIONS=[];
+for(let i=0;i<TARGET1900_DATA.length;i+=T_CHUNK){
+  const s=i+1,e=Math.min(i+T_CHUNK,TARGET1900_DATA.length);
+  T_SECTIONS.push({label:`No.${s}–${e}`,words:TARGET1900_DATA.slice(i,i+T_CHUNK)});
+}
+
+let tqSec=0,tqMode='en-jp';
+let tqWords=[],tqResults=[],tqChunk=0,tqInChunk=0,tqOk=0,tqAns=0;
+let tqAnswered=false,tqHintLv=0,tqOrder=[];
+let tqMissed=[],tqIsRev=false,tqRevQ=[],tqRevIdx=0,tqRevOk=0,tqRevAns=0;
+const TQCHUNK=5;
+
+function initTarget(){
+  renderTSel();
+  tqSec=0;startTSection();
+}
+function renderTSel(){
+  document.getElementById('t-unit-selector').innerHTML=
+    T_SECTIONS.map((s,i)=>`<button class="unit-sel-btn${i===tqSec?' active':''}" onclick="pickTSec(${i})">${esc(s.label)}</button>`).join('');
+}
+function pickTSec(i){tqSec=i;renderTSel();startTSection();}
+function setTMode(m){tqMode=m;document.getElementById('tm-en').classList.toggle('active',m==='en-jp');document.getElementById('tm-jp').classList.toggle('active',m==='jp-en');document.getElementById('tm-mc').classList.toggle('active',m==='mc');resetTQuiz();}
+function startTSection(){tqWords=T_SECTIONS[tqSec].words;resetTQuiz();}
+function resetTQuiz(){
+  const n=Math.ceil(tqWords.length/TQCHUNK);
+  tqResults=Array.from({length:n},(_,c)=>({done:false,correct:0,total:Math.min(TQCHUNK,tqWords.length-c*TQCHUNK),entries:[]}));
+  tqChunk=0;tqInChunk=0;tqOk=0;tqAns=0;tqAnswered=false;tqHintLv=0;tqIsRev=false;
+  tqMissed=[];tqRevQ=[];tqRevIdx=0;tqRevOk=0;tqRevAns=0;
+  tqStartChunk(0);
+}
+function tqNChunks(){return Math.ceil(tqWords.length/TQCHUNK);}
+function tqCIdx(c){let s=c*TQCHUNK;return Array.from({length:Math.min(TQCHUNK,tqWords.length-s)},(_,i)=>s+i);}
+function tqGetQ(i){return tqMode==='en-jp'?tqWords[i].en:tqWords[i].jp;}
+function tqGetA(i){return tqMode==='en-jp'?tqWords[i].jp:tqWords[i].en;}
+function tqQlabel(){return tqMode==='en-jp'?'英単語の意味を入力':tqMode==='jp-en'?'日本語を英語で入力':'英語に対応する日本語を選んでください';}
+
+function tqStartChunk(c){
+  tqChunk=c;tqInChunk=0;tqAnswered=false;tqHintLv=0;tqIsRev=false;
+  tqOrder=shuf(tqCIdx(c));tqResults[c].entries=[];
+  renderTNav();renderTQ();
+}
+function renderTNav(){
+  const nav=document.getElementById('t-chunk-nav');nav.innerHTML='';
+  for(let i=0;i<tqNChunks();i++){
+    const r=tqResults[i];let cls='chunk-dot';
+    if(!tqIsRev&&i===tqChunk)cls+=' active';
+    else if(r.done){const p=r.correct/r.total;cls+=p===1?' perfect':p>=.8?' good':p>=.6?' mid':' bad';}
+    const b=document.createElement('button');b.className=cls;b.textContent=i+1;
+    if(r.done)b.onclick=()=>{tqIsRev=false;showTAnalysis(i);};
+    nav.appendChild(b);
+  }
+  if(tqMissed.length){
+    const u=[...new Set(tqMissed)];
+    const rb=document.createElement('button');
+    rb.className='review-pill'+(tqIsRev?' active':'');
+    rb.textContent=`🔁 復習 ${u.length}語`;rb.onclick=startTRev;
+    nav.appendChild(rb);
+  }
+}
+function tqMakeChoices(correctIdx){
+  const pool=tqWords.map((_,i)=>i).filter(i=>i!==correctIdx);
+  const wrong=shuf(pool).slice(0,3);
+  return shuf([correctIdx,...wrong]);
+}
+function renderTQ(){
+  if(tqInChunk>=tqOrder.length){finishTChunk();return;}
+  const idx=tqOrder[tqInChunk];tqAnswered=false;tqHintLv=0;
+  document.getElementById('t-prog-fill').style.width=Math.round(tqAns/tqWords.length*100)+'%';
+  const sLabel=T_SECTIONS[tqSec].label;
+  if(tqMode==='mc'){renderTQmc(idx,sLabel);return;}
+  document.getElementById('t-main-area').innerHTML=`
+    <div class="q-card">
+      <div class="q-label">${tqQlabel()}</div>
+      <div class="q-word">${esc(tqGetQ(idx))}</div>
+      <div class="q-sub">TARGET1900 ${esc(sLabel)} · グループ${tqChunk+1} — ${tqInChunk+1}/${tqOrder.length}</div>
+    </div>
+    <div class="input-row">
+      <input type="text" id="t-ans-input" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <button class="sub-btn" id="t-sub-btn" onclick="checkTAns()">確認</button>
+    </div>
+    <div class="hint-row"><span class="hint-txt" id="t-hint-txt"></span><button class="hint-link" id="t-hint-btn" onclick="doTHint()">ヒント</button></div>
+    <div class="feedback" id="t-feedback"></div>
+    <div class="nav-row">
+      <span class="counter">${tqAns+1} / ${tqWords.length}</span>
+      <button class="next-btn" id="t-next-btn" onclick="nextTQ()">次へ →</button>
+    </div>`;
+  const inp=document.getElementById('t-ans-input');inp.focus();
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter'){tqAnswered?nextTQ():checkTAns();}});
+}
+function renderTQmc(idx,sLabel){
+  const choices=tqMakeChoices(idx);
+  const btns=choices.map(ci=>`<button class="choice-btn" onclick="checkTMC(${ci},${idx})">${esc(tqWords[ci].jp)}</button>`).join('');
+  document.getElementById('t-main-area').innerHTML=`
+    <div class="q-card">
+      <div class="q-label">${tqQlabel()}</div>
+      <div class="q-word">${esc(tqWords[idx].en)}</div>
+      <div class="q-sub">TARGET1900 ${esc(sLabel)} · グループ${tqChunk+1} — ${tqInChunk+1}/${tqOrder.length}</div>
+    </div>
+    <div class="choices">${btns}</div>
+    <div class="feedback" id="t-feedback"></div>
+    <div class="nav-row">
+      <span class="counter">${tqAns+1} / ${tqWords.length}</span>
+      <button class="next-btn" id="t-next-btn" onclick="nextTQ()">次へ →</button>
+    </div>`;
+}
+function checkTMC(chosen,correct){
+  if(tqAnswered)return;
+  tqAnswered=true;
+  const ok=chosen===correct;
+  document.querySelectorAll('#t-main-area .choice-btn').forEach(b=>{
+    b.disabled=true;
+    if(b.textContent.trim()===tqWords[correct].jp)b.classList.add('c-ok');
+  });
+  if(!ok){
+    const btns=[...document.querySelectorAll('#t-main-area .choice-btn')];
+    const ci=btns.findIndex(b=>b.textContent.trim()===tqWords[chosen].jp);
+    if(ci>=0)btns[ci].classList.add('c-ng');
+  }
+  const fb=document.getElementById('t-feedback');
+  fb.className='feedback show '+(ok?'ok':'ng');
+  fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(tqWords[correct].jp)}</strong>`;
+  document.getElementById('t-next-btn').style.display='inline-block';
+  document.getElementById('t-next-btn').focus();
+  if(ok){tqOk++;tqResults[tqChunk].correct++;tqResults[tqChunk].entries.push({idx:correct,ok:true});tqAns++;}
+  else{tqResults[tqChunk].entries.push({idx:correct,ok:false});tqAns++;tqMissed.push(correct);}
+}
+function doTHint(){
+  const idx=tqIsRev?tqRevQ[tqRevIdx]:tqOrder[tqInChunk];
+  const ans=tqGetA(idx);tqHintLv=Math.min(tqHintLv+2,ans.length-1);
+  document.getElementById('t-hint-txt').textContent=ans.split('').map((c,i)=>i<tqHintLv?c:'_').join('');
+  if(tqHintLv>=ans.length-1)document.getElementById('t-hint-btn').style.display='none';
+}
+function checkTAns(){
+  if(tqAnswered)return;
+  const idx=tqOrder[tqInChunk];
+  const ans=tqGetA(idx);
+  const inp=document.getElementById('t-ans-input');
+  if(!inp.value.trim())return;
+  tqAnswered=true;
+  document.getElementById('t-sub-btn').disabled=true;
+  document.getElementById('t-hint-btn').style.display='none';
+  const ok=norm(inp.value)===norm(ans);
+  inp.className=ok?'ok':'ng';
+  const fb=document.getElementById('t-feedback');
+  fb.className='feedback show '+(ok?'ok':'ng');
+  fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(ans)}</strong>`;
+  document.getElementById('t-next-btn').style.display='inline-block';
+  document.getElementById('t-next-btn').focus();
+  if(ok){tqOk++;tqResults[tqChunk].correct++;tqResults[tqChunk].entries.push({idx,ok:true});tqAns++;}
+  else{tqResults[tqChunk].entries.push({idx,ok:false});tqAns++;tqMissed.push(idx);}
+}
+function nextTQ(){tqInChunk++;renderTQ();}
+function finishTChunk(){tqResults[tqChunk].done=true;renderTNav();showTAnalysis(tqChunk);}
+
+function showTAnalysis(c){
+  const r=tqResults[c];const pct=Math.round(r.correct/r.total*100);
+  const col=pct===100?'var(--green)':pct>=80?'#4fa832':pct>=60?'var(--yellow)':'var(--red)';
+  const lbl=pct===100?'完璧':pct>=80?'良好':pct>=60?'まずまず':'要復習';
+  const rows=r.entries.map(e=>`<tr><td class="en">${esc(tqWords[e.idx].en)}</td><td>${esc(tqWords[e.idx].jp)}</td><td><span class="badge ${e.ok?'badge-ok':'badge-ng'}">${e.ok?'正解':'不正解'}</span></td></tr>`).join('');
+  const allDone=tqResults.every(x=>x.done);
+  const isCur=c===tqChunk&&r.done&&!tqIsRev;const nc=tqChunk+1;
+  let nBtn='';
+  if(allDone)nBtn=`<button class="action-btn primary" onclick="showTFinal()">全体結果を見る →</button>`;
+  else if(isCur&&nc<tqNChunks()){const f=nc*TQCHUNK+1,t=Math.min((nc+1)*TQCHUNK,tqWords.length);nBtn=`<button class="action-btn primary" onclick="tqStartChunk(${nc})">グループ${nc+1}へ（${f}〜${t}番）→</button>`;}
+  const uniq=[...new Set(tqMissed)];
+  const rBtn=uniq.length?`<button class="action-btn review-act" onclick="startTRev()">🔁 間違えた単語を復習 (${uniq.length}語)</button>`:'';
+  document.getElementById('t-main-area').innerHTML=`
+    <div class="card">
+      <div class="card-title">グループ${c+1}の結果</div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="stat-val">${r.correct}/${r.total}</div><div class="stat-lbl">正解数</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:${col}">${pct}%</div><div class="stat-lbl">正解率</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:${col};font-size:1.1rem;">${lbl}</div><div class="stat-lbl">評価</div></div>
+      </div>
+      <div class="thin-bar"><div class="thin-bar-fill" style="width:${pct}%;background:${col}"></div></div>
+      <table class="word-table"><thead><tr><th>英語</th><th>日本語</th><th>結果</th></tr></thead><tbody>${rows}</tbody></table>
+      ${rBtn}${nBtn}
+    </div>`;
+  document.getElementById('t-prog-fill').style.width=Math.round(tqAns/tqWords.length*100)+'%';
+}
+function startTRev(){
+  const uniq=[...new Set(tqMissed)];if(!uniq.length)return;
+  tqIsRev=true;tqRevQ=shuf(uniq);tqRevIdx=0;tqRevOk=0;tqRevAns=0;tqAnswered=false;tqHintLv=0;
+  renderTNav();renderTRevQ();
+}
+function renderTRevQ(){
+  if(tqRevIdx>=tqRevQ.length){finishTRev();return;}
+  const idx=tqRevQ[tqRevIdx];tqAnswered=false;tqHintLv=0;
+  document.getElementById('t-prog-fill').style.width=Math.round(tqRevIdx/tqRevQ.length*100)+'%';
+  document.getElementById('t-main-area').innerHTML=`
+    <div class="review-badge">🔁 復習モード — ${tqRevIdx+1}/${tqRevQ.length}</div>
+    <div class="q-card">
+      <div class="q-label">${tqQlabel()}</div>
+      <div class="q-word">${esc(tqGetQ(idx))}</div>
+      <div class="q-sub">TARGET1900 — 間違えた単語の復習</div>
+    </div>
+    <div class="input-row">
+      <input type="text" id="t-ans-input" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <button class="sub-btn" id="t-sub-btn" onclick="checkTRevAns()">確認</button>
+    </div>
+    <div class="hint-row"><span class="hint-txt" id="t-hint-txt"></span><button class="hint-link" id="t-hint-btn" onclick="doTHint()">ヒント</button></div>
+    <div class="feedback" id="t-feedback"></div>
+    <div class="nav-row">
+      <span class="counter">${tqRevIdx+1} / ${tqRevQ.length}</span>
+      <button class="next-btn" id="t-next-btn" onclick="nextTRevQ()">次へ →</button>
+    </div>`;
+  const inp=document.getElementById('t-ans-input');inp.focus();
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter'){tqAnswered?nextTRevQ():checkTRevAns();}});
+}
+function checkTRevAns(){
+  if(tqAnswered)return;
+  const idx=tqRevQ[tqRevIdx];
+  const ans=tqGetA(idx);
+  const inp=document.getElementById('t-ans-input');
+  if(!inp.value.trim())return;
+  tqAnswered=true;
+  document.getElementById('t-sub-btn').disabled=true;
+  document.getElementById('t-hint-btn').style.display='none';
+  const ok=norm(inp.value)===norm(ans);
+  inp.className=ok?'ok':'ng';
+  const fb=document.getElementById('t-feedback');
+  fb.className='feedback show '+(ok?'ok':'ng');
+  fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(ans)}</strong>`;
+  document.getElementById('t-next-btn').style.display='inline-block';
+  document.getElementById('t-next-btn').focus();
+  if(ok){tqRevOk++;tqRevAns++;}else{tqRevAns++;tqMissed.push(idx);}
+}
+function nextTRevQ(){tqRevIdx++;renderTRevQ();}
+function finishTRev(){
+  const pct=Math.round(tqRevOk/tqRevQ.length*100);
+  const col=pct===100?'var(--green)':pct>=60?'var(--yellow)':'var(--red)';
+  const uniq=[...new Set(tqMissed)];
+  document.getElementById('t-prog-fill').style.width='100%';renderTNav();
+  document.getElementById('t-main-area').innerHTML=`
+    <div class="card">
+      <div class="card-title">復習完了</div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="stat-val">${tqRevOk}/${tqRevQ.length}</div><div class="stat-lbl">正解数</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:${col}">${pct}%</div><div class="stat-lbl">正解率</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:${col};font-size:1.1rem;">${pct===100?'完璧':pct>=80?'良好':pct>=60?'まずまず':'要復習'}</div><div class="stat-lbl">評価</div></div>
+      </div>
+      ${uniq.length?`<button class="action-btn review-act" onclick="startTRev()">🔁 もう一度復習 (${uniq.length}語)</button>`:''}
+      ${tqResults.every(r=>r.done)?`<button class="action-btn secondary" onclick="showTFinal()">全体結果を見る</button>`:''}
+    </div>`;
+}
+function showTFinal(){
+  const pct=Math.round(tqOk/tqWords.length*100);
+  const bars=tqResults.map((r,i)=>{
+    const p=Math.round(r.correct/r.total*100);
+    const col=p===100?'var(--green)':p>=80?'#4fa832':p>=60?'var(--yellow)':'var(--red)';
+    return `<div class="chunk-bar-row"><span class="chunk-bar-label">G${i+1}</span><div class="chunk-bar-track"><div class="chunk-bar-fill" style="width:${p}%;background:${col}"></div></div><span class="chunk-bar-pct">${p}%</span></div>`;
+  }).join('');
+  const uniq=[...new Set(tqMissed)];
+  document.getElementById('t-prog-fill').style.width='100%';
+  document.getElementById('t-main-area').innerHTML=`
+    <div class="final-score" style="color:${pct===100?'var(--green)':'var(--text)'}">${tqOk}<span style="font-size:1.5rem;color:var(--text3)">/${tqWords.length}</span></div>
+    <div class="final-comment">正解率 ${pct}% — ${pct===100?'完璧！全問正解！':pct>=80?'すばらしい！':pct>=60?'もう少し！':'復習しよう！'}</div>
+    <div class="card" style="margin-bottom:.75rem;"><div class="card-title">グループ別スコア</div>${bars}</div>
+    ${uniq.length?`<button class="action-btn review-act" onclick="startTRev()" style="margin-bottom:8px;">🔁 間違えた単語をまとめて復習 (${uniq.length}語)</button>`:''}
+    <div class="restart-row">
+      <button class="btn btn-ghost" onclick="setTMode('en-jp')">英語 → 日本語</button>
+      <button class="btn btn-ghost" onclick="setTMode('mc')">英語 → 4択</button>
+      <button class="btn btn-accent" onclick="resetTQuiz()">もう一度</button>
+      <button class="btn btn-ghost" onclick="setTMode('jp-en')">日本語 → 英語</button>
     </div>`;
 }
 
