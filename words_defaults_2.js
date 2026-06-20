@@ -1,4 +1,4 @@
-const DEFAULTS = [
+DEFAULTS.push(
   {
     name: 'EngComm3 U3R1 英日',
     words: [
@@ -196,4 +196,4 @@ const DEFAULTS = [
       {en:'purposely',jp:'consciously'}
     ]
   }
-];
+);
