@@ -335,7 +335,7 @@ function parseJSWords(text){
     // JSON風に変換（シングルクォート→ダブルクォート、キー名にクォート追加）
     let json=m[1]
       .replace(/\/\*[\s\S]*?\*\//g,'').replace(/\/\/[^\n]*/g,'') // コメント除去
-      .replace(/(\w+)\s*:/g,'"$1":'')           // キーをクォート
+      .replace(/(\w+)\s*:/g,'"$1":')           // キーをクォート
       .replace(/'([^']*)'/g,'"$1"')             // シングル→ダブル
       .replace(/,\s*}/g,'}').replace(/,\s*]/g,']'); // trailing comma
     return JSON.parse(json);
