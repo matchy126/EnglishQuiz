@@ -225,17 +225,17 @@ textarea:focus{border-color:var(--accent);}
           <button class="btn btn-accent" onclick="addWord()">追加</button>
         </div>
 
-        <div class="card-title" style="margin-top:1rem;">まとめて追加（JSファイル）</div>
+        <div class="card-title" style="margin-top:1rem;">まとめて追加（CSV）</div>
         <div class="drop-zone" id="bulk-drop" onclick="document.getElementById('bulk-file').click()"
           ondragover="dzOver(event,this)" ondragleave="dzOut(this)" ondrop="dzDrop(event,this,'bulk')">
-          <input type="file" id="bulk-file" accept=".js" style="display:none" onchange="fileSelected(event,'bulk')">
-          📄 JSファイルをドロップ、またはクリックして選択
+          <input type="file" id="bulk-file" accept=".csv,.txt" style="display:none" onchange="fileSelected(event,'bulk')">
+          📄 CSVファイルをドロップ、またはクリックして選択
         </div>
-        <div class="hint-text" style="margin-bottom:.75rem;">形式: <code>const WORDS_DATA = [{en:'word', jp:'意味'}, ...];</code></div>
-        <textarea id="bulk-text" rows="6" placeholder="直接CSV入力も可:&#10;rapidly,急速に&#10;vehicle,乗り物&#10;crop,作物"></textarea>
+        <div class="hint-text" style="margin-bottom:.75rem;">形式: <code>英語,日本語</code>（1行1単語）　ファイル名が単元名になります。</div>
+        <textarea id="bulk-text" rows="6" placeholder="直接入力も可:&#10;rapidly,急速に&#10;vehicle,乗り物&#10;crop,作物"></textarea>
         <div class="btn-row">
-          <button class="btn btn-ghost" onclick="bulkFromText()">CSVテキストから追加</button>
-          <button class="btn btn-ghost" onclick="exportJS()">JSで書き出す</button>
+          <button class="btn btn-ghost" onclick="bulkFromText()">テキストから追加</button>
+          <button class="btn btn-ghost" onclick="exportCSV()">CSVで書き出す</button>
           <button class="btn btn-danger btn-sm" onclick="clearWords()">単語を全削除</button>
         </div>
       </div>
@@ -256,7 +256,7 @@ textarea:focus{border-color:var(--accent);}
       <div class="mode-row" id="mode-row">
         <button class="mode-btn active" id="mb-en" onclick="setMode('en-jp')">英語 → 日本語</button>
         <button class="mode-btn" id="mb-jp" onclick="setMode('jp-en')">日本語 → 英語</button>
-        <button class="mode-btn" id="mb-mc" onclick="setMode('mc')" style="display:none;">定義 → 4択</button>
+        <button class="mode-btn" id="mb-mc" onclick="setMode('mc')">英語 → 4択</button>
       </div>
       <div class="chunk-nav" id="chunk-nav"></div>
       <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
@@ -293,14 +293,14 @@ textarea:focus{border-color:var(--accent);}
 <!-- Modal: import CSV as new unit -->
 <div class="modal-overlay" id="import-modal" style="display:none;" onclick="if(event.target===this)closeModal('import-modal')">
   <div class="modal">
-    <h3>JSファイルから単元を追加</h3>
-    <p style="font-size:.85rem;color:var(--text2);margin-bottom:.875rem;">単語データJSファイルを選択してください。ファイル内の <code>const WORDS_DATA = [...]</code> を読み込みます。ファイル名が単元名になります。</p>
+    <h3>CSVファイルから単元を作成</h3>
+    <p style="font-size:.85rem;color:var(--text2);margin-bottom:.875rem;">CSVファイル（英語,日本語 形式）を選択してください。ファイル名が単元名になります。</p>
     <div class="drop-zone" id="import-drop" onclick="document.getElementById('import-file').click()"
       ondragover="dzOver(event,this)" ondragleave="dzOut(this)" ondrop="dzDrop(event,this,'import')">
-      <input type="file" id="import-file" accept=".js" style="display:none" onchange="fileSelected(event,'import')">
-      📄 JSファイルをドロップ、またはクリックして選択
+      <input type="file" id="import-file" accept=".csv,.txt" style="display:none" onchange="fileSelected(event,'import')">
+      📄 CSVファイルをドロップ、またはクリックして選択
     </div>
-    <p style="font-size:.78rem;color:var(--text3);margin-top:.5rem;font-family:var(--mono);">形式例： const WORDS_DATA = [{en:'word', jp:'意味'}, ...];</p>
+    <p style="font-size:.78rem;color:var(--text3);margin-top:.5rem;font-family:var(--mono);">形式例： rapidly,急速に</p>
     <div id="import-preview"></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal('import-modal')">キャンセル</button>
@@ -328,21 +328,15 @@ function getU(id){return db.units.find(u=>u.id===id);}
 function selU(){return getU(selId);}
 
 // ══ CSV parse ══
-function parseJSWords(text){
-  // const WORDS_DATA = [{en:..., jp:...}, ...]; 形式を読む
-  const m=text.match(/const\s+\w+\s*=\s*(\[[\s\S]*?\]);/);
-  if(!m)return [];
-  try{
-    // JSON風に変換（シングルクォート→ダブルクォート、キー名にクォート追加）
-    let json=m[1]
-      .replace(/\/\*[\s\S]*?\*\//g,'').replace(/\/\/[^\n]*/g,'') // コメント除去
-      .replace(/(\w+)\s*:/g,'"$1":')           // キーをクォート
-      .replace(/'([^']*)'/g,'"$1"')             // シングル→ダブル
-      .replace(/,\s*}/g,'}').replace(/,\s*]/g,']'); // trailing comma
-    return JSON.parse(json);
-  }catch(e){
-    console.warn('JS parse error:',e);return [];
+function parseCSV(text){
+  const out=[];
+  for(const line of text.split('\n')){
+    const t=line.trim();if(!t)continue;
+    const i=t.indexOf(',');if(i<0)continue;
+    const en=t.slice(0,i).trim(),jp=t.slice(i+1).trim();
+    if(en&&jp)out.push({en,jp});
   }
+  return out;
 }
 
 
@@ -429,8 +423,8 @@ function fileSelected(e,mode){const f=e.target.files[0];if(f)readFile(f,mode);e.
 function readFile(file,mode){
   const r=new FileReader();
   r.onload=ev=>{
-    const words=parseJSWords(ev.target.result);
-    const name=file.name.replace(/\.js$/i,'');
+    const words=parseCSV(ev.target.result);
+    const name=file.name.replace(/\.(csv|txt)$/i,'');
     if(mode==='bulk'){
       const u=selU();if(!u){showToast('先に単元を選択してください');return;}
       let n=0;words.forEach(w=>{if(!u.words.some(x=>x.en.toLowerCase()===w.en.toLowerCase())){u.words.push(w);n++;}});
@@ -466,13 +460,11 @@ function confirmImport(){
 }
 
 // ══ Export / Preset ══
-function exportJS(){
+function exportCSV(){
   const u=selU();if(!u)return;
-  const body=u.words.map(w=>`  {en:${JSON.stringify(w.en)}, jp:${JSON.stringify(w.jp)}}`).join(',\n');
-  const text=`// ${u.name}\nconst WORDS_DATA = [\n${body}\n];\n`;
   const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([text],{type:'text/javascript'}));
-  a.download=`${u.name}.js`;a.click();
+  a.href=URL.createObjectURL(new Blob([u.words.map(w=>`${w.en},${w.jp}`).join('\n')],{type:'text/csv'}));
+  a.download=`${u.name}.csv`;a.click();
 }
 const REMOVED_DEFAULTS=['EngComm3 U2R1 英英','Unit2 Reading1 英英'];
 function seedDefaults(){
@@ -535,17 +527,12 @@ function renderUSel(){
       </button>`).join('');
 }
 function updateModeButtons(){
-  const ei=isEiEi();
-  document.getElementById('mb-mc').style.display=ei?'':'none';
   document.getElementById('mb-en').classList.toggle('active',mode==='en-jp');
   document.getElementById('mb-jp').classList.toggle('active',mode==='jp-en');
   document.getElementById('mb-mc').classList.toggle('active',mode==='mc');
 }
 function pickUnit(id){
   qUnitId=id;
-  // reset to mc if eiEi, else en-jp
-  if(isEiEi()&&mode!=='mc') mode='mc';
-  else if(!isEiEi()&&mode==='mc') mode='en-jp';
   renderUSel();updateModeButtons();startForUnit();
 }
 function startForUnit(){const u=getU(qUnitId);if(!u)return;qWords=u.words;resetQuiz();}
@@ -564,7 +551,7 @@ function norm(s){return s.trim().toLowerCase().replace(/[・。、\s]+/g,'');}
 // mc mode: question=definition(jp), answer=word(en)
 function getQ(i){return mode==='en-jp'?qWords[i].en:qWords[i].jp;}
 function getA(i){return mode==='en-jp'?qWords[i].jp:mode==='jp-en'?qWords[i].en:qWords[i].en;}
-function qlabel(){return mode==='en-jp'?'英単語の意味を入力':mode==='jp-en'?'日本語を英語で入力':'定義に当てはまる単語を選んでください';}
+function qlabel(){return mode==='en-jp'?'英単語の意味を入力':mode==='jp-en'?'日本語を英語で入力':'英単語の意味を4択で選んでください';}
 function nChunks(){return Math.ceil(qWords.length/CHUNK);}
 function cIdx(c){let s=c*CHUNK;return Array.from({length:Math.min(CHUNK,qWords.length-s)},(_,i)=>s+i);}
 // generate 4 choices for mc mode
@@ -626,11 +613,11 @@ function renderQtype(idx,uname){
 function renderQmc(idx,uname){
   const choices=makeChoices(idx);
   const btns=choices.map(ci=>`
-    <button class="choice-btn" onclick="checkMC(${ci},${idx})">${esc(qWords[ci].en)}</button>`).join('');
+    <button class="choice-btn" onclick="checkMC(${ci},${idx})">${esc(qWords[ci].jp)}</button>`).join('');
   document.getElementById('main-area').innerHTML=`
     <div class="q-card">
       <div class="q-label">${qlabel()}</div>
-      <div class="q-word" style="font-size:1.15rem;font-family:var(--body);font-weight:400;line-height:1.55;">${esc(qWords[idx].jp)}</div>
+      <div class="q-word">${esc(qWords[idx].en)}</div>
       <div class="q-sub">${esc(uname)} · グループ${cChunk+1} — ${cInChunk+1}/${cOrder.length}</div>
     </div>
     <div class="choices">${btns}</div>
@@ -646,14 +633,14 @@ function checkMC(chosen,correct){
   const ok=chosen===correct;
   document.querySelectorAll('.choice-btn').forEach(b=>{
     b.disabled=true;
-    if(b.textContent.trim()===qWords[correct].en) b.classList.add('c-ok');
+    if(b.textContent.trim()===qWords[correct].jp) b.classList.add('c-ok');
   });
   if(!ok) document.querySelectorAll('.choice-btn')[
-    [...document.querySelectorAll('.choice-btn')].findIndex(b=>b.textContent.trim()===qWords[chosen].en)
+    [...document.querySelectorAll('.choice-btn')].findIndex(b=>b.textContent.trim()===qWords[chosen].jp)
   ]?.classList.add('c-ng');
   const fb=document.getElementById('feedback');
   fb.className='feedback show '+(ok?'ok':'ng');
-  fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(qWords[correct].en)}</strong>`;
+  fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(qWords[correct].jp)}</strong>`;
   document.getElementById('next-btn').style.display='inline-block';
   document.getElementById('next-btn').focus();
   if(ok){tCorrect++;cResults[cChunk].correct++;cResults[cChunk].entries.push({idx:correct,ok:true});tAnswered++;}
@@ -785,6 +772,7 @@ function showFinal(){
     ${uniq.length?`<button class="action-btn review-act" onclick="startRev()" style="margin-bottom:8px;">🔁 間違えた単語をまとめて復習 (${uniq.length}語)</button>`:''}
     <div class="restart-row">
       <button class="btn btn-ghost" onclick="setMode('en-jp')">英語 → 日本語</button>
+      <button class="btn btn-ghost" onclick="setMode('mc')">英語 → 4択</button>
       <button class="btn btn-accent" onclick="resetQuiz()">もう一度</button>
       <button class="btn btn-ghost" onclick="setMode('jp-en')">日本語 → 英語</button>
     </div>`;
