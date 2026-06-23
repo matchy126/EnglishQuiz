@@ -4,15 +4,22 @@
 
 ## 使い方
 
-### クイズ
+### マイ単元クイズ
 
-1. 「🎯 クイズ」タブを開く
+1. 「🎯 マイ単元」タブを開く
 2. 上部で単元を選択
-3. **英語 → 日本語** または **日本語 → 英語** モードを選ぶ
-4. 答えをタイピングして「確認」または **Enter** キーで送信
+3. **英語 → 日本語**、**日本語 → 英語**、または **英語 → 4択** モードを選ぶ
+4. 答えをタイピングして「確認」または **Enter** キーで送信（4択モードはクリック）
 5. 5単語ごとにグループ結果を表示
 6. 間違えた単語は「🔁 復習」ボタンでまとめて復習できる
 7. 全グループ終了後にグループ別スコアを表示
+
+### TARGET1900クイズ
+
+1. 「📖 TARGET1900」タブを開く
+2. 上部でセクション（No.1–30、No.31–60 …）を選択
+3. モードを選んでクイズ開始
+4. 操作はマイ単元クイズと同じ
 
 ### 単語管理
 
@@ -49,24 +56,31 @@ vehicle,a machine with an engine used to transport people and goods
 
 | 単元名 | 語数 | 内容 |
 |---|---|---|
-| Unit1 Reading1, 2 | 28語 | 英日 |
-| Unit1 Reading1 英英 | 30語 | 英英（定義文） |
-| Unit2 Reading1, 2 | 31語 | 英日 |
-| Unit2 Reading1 英英 | 42語 | 英英（定義文） |
+| EngComm3 U2R 英日 | 31語 | 英日 |
+| EngComm3 U1 英日 | 28語 | 英日 |
+| EngComm3 U1R1 英英 | 30語 | 英英（定義文） |
+| LogExp3 動名詞 | 28語 | 動名詞構文 |
+| EngComm3 U3R1 英日 | 16語 | 英日 |
+| EngComm3 U3R2 英日 | 14語 | 英日 |
+| EngComm3 U4R1 英日 | 17語 | 英日 |
+| EngComm3 U4R2 英日 | 14語 | 英日 |
+| EngComm3 U3R1 英英 | 49語 | 英英（定義文） |
+| EngComm3 U4R1 英英 | 51語 | 英英（定義文） |
+
+TARGET1900（No.1–300）は「📖 TARGET1900」タブに内蔵されています。
 
 ---
 
 ## GitHub Pages への公開
 
 1. GitHubで新しいリポジトリを作成
-2. `quiz.html` を `index.html` にリネームしてルートにアップロード（または `quiz.html` のままアップロード）
+2. 以下のファイルをすべてルートにアップロード
 3. Settings → Pages → Source を `main` ブランチに設定
 4. 数分後に公開される
 
 **URL例**
 ```
 https://ユーザー名.github.io/リポジトリ名/
-https://ユーザー名.github.io/リポジトリ名/quiz.html
 ```
 
 ---
@@ -84,6 +98,9 @@ https://ユーザー名.github.io/リポジトリ名/quiz.html
 ## ファイル構成
 
 ```
-quiz.html   # アプリ本体（これ1ファイルのみ）
-README.md   # このファイル
+index.html           # アプリ本体
+words_defaults.js    # デフォルト単元データ（U1〜U3）
+words_defaults_2.js  # デフォルト単元データ（U3〜U4）
+words_target1900.js  # TARGET1900 単語データ（No.1–300）
+README.md            # このファイル
 ```
