@@ -88,10 +88,26 @@ textarea:focus{border-color:var(--accent);}
 .btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:.625rem;}
 /* Import banner */
 .import-banner{background:var(--accent-dim);border:1px solid var(--accent);border-radius:var(--r);padding:12px 16px;margin-bottom:1rem;font-size:.88rem;color:var(--accent);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-/* Quiz unit selector */
-.unit-selector{display:flex;flex-wrap:wrap;gap:6px;}
-.unit-sel-btn{padding:6px 14px;border:1px solid var(--border);border-radius:20px;background:transparent;font-family:var(--body);font-size:.82rem;cursor:pointer;color:var(--text2);transition:all .15s;}
-.unit-sel-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+/* Quiz unit selector — grouped grid */
+.unit-group{margin-bottom:.75rem;}
+.unit-group:last-child{margin-bottom:0;}
+.unit-group-label{font-size:.68rem;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;padding:0 2px;}
+.unit-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.unit-sel-btn{padding:7px 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);font-family:var(--body);font-size:.8rem;cursor:pointer;color:var(--text2);transition:all .15s;text-align:left;display:flex;flex-direction:column;gap:2px;}
+.unit-sel-btn:hover{border-color:var(--text3);color:var(--text);}
+.unit-sel-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);}
+.unit-sel-btn .usl-cnt{font-size:.7rem;opacity:.65;font-family:var(--mono);}
+/* TARGET slider */
+.t-slider-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.6rem;}
+.t-slider-range{font-size:1rem;font-weight:600;color:var(--text);font-family:var(--body);}
+.t-slider-sub{font-size:.72rem;color:var(--text3);}
+.t-slider-row{display:flex;align-items:center;gap:8px;}
+.t-slider-nav{width:30px;height:30px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);color:var(--text);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s;flex-shrink:0;}
+.t-slider-nav:hover:not(:disabled){background:var(--surface2);}
+.t-slider-nav:disabled{opacity:.25;cursor:default;}
+.t-track{flex:1;height:3px;background:var(--border);border-radius:2px;position:relative;cursor:pointer;}
+.t-track-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .15s;}
+.t-track-thumb{width:14px;height:14px;border-radius:50%;background:var(--accent);border:2px solid var(--surface);box-shadow:0 0 0 1.5px var(--accent);position:absolute;top:50%;transform:translate(-50%,-50%);transition:left .15s;pointer-events:none;}
 /* Quiz */
 .mode-row{display:flex;gap:8px;margin-bottom:1rem;}
 .mode-btn{flex:1;padding:7px;border:1px solid var(--border);border-radius:var(--r);background:transparent;color:var(--text2);font-family:var(--body);font-size:.82rem;cursor:pointer;transition:all .15s;}
@@ -251,7 +267,7 @@ textarea:focus{border-color:var(--accent);}
     <div id="quiz-body" style="display:none;">
       <div class="card" style="margin-bottom:1rem;">
         <div class="card-title">単元を選択</div>
-        <div class="unit-selector" id="unit-selector"></div>
+        <div id="unit-selector"></div>
       </div>
       <div class="mode-row" id="mode-row">
         <button class="mode-btn active" id="mb-en" onclick="setMode('en-jp')">英語 → 日本語</button>
@@ -266,8 +282,19 @@ textarea:focus{border-color:var(--accent);}
   <!-- ══ TARGET1900 ══ -->
   <div id="tab-target" style="display:none;">
     <div class="card" style="margin-bottom:1rem;">
-      <div class="card-title">単元を選択</div>
-      <div class="unit-selector" id="t-unit-selector"></div>
+      <div class="card-title">範囲を選択</div>
+      <div class="t-slider-top">
+        <span class="t-slider-range" id="t-step-range">No.1–50</span>
+        <span class="t-slider-sub" id="t-step-sub">1 / 20</span>
+      </div>
+      <div class="t-slider-row">
+        <button class="t-slider-nav" id="t-prev-btn" onclick="tStepNav(-1)" disabled>&#8249;</button>
+        <div class="t-track" id="t-track">
+          <div class="t-track-fill" id="t-track-fill" style="width:0%"></div>
+          <div class="t-track-thumb" id="t-track-thumb" style="left:0%"></div>
+        </div>
+        <button class="t-slider-nav" id="t-next-btn" onclick="tStepNav(1)">&#8250;</button>
+      </div>
     </div>
     <div class="mode-row">
       <button class="mode-btn active" id="tm-en" onclick="setTMode('en-jp')">英語 → 日本語</button>
@@ -520,11 +547,28 @@ function initQuiz(){
 }
 function isEiEi(){const n=getU(qUnitId)?.name||'';return n.includes('英英')||n.includes('動名詞');}
 function renderUSel(){
-  document.getElementById('unit-selector').innerHTML=
-    db.units.filter(u=>u.words.length>0).map(u=>`
-      <button class="unit-sel-btn${u.id===qUnitId?' active':''}" onclick="pickUnit('${u.id}')">
-        ${esc(u.name)}<span style="opacity:.6;font-size:.75em;margin-left:4px;">${u.words.length}語</span>
-      </button>`).join('');
+  const units=db.units.filter(u=>u.words.length>0);
+  // グループ化：最初の単語をプレフィックスとして使用
+  const groups={};
+  units.forEach(u=>{
+    const parts=u.name.split(' ');
+    const prefix=parts.length>1?parts[0]:'その他';
+    const label=parts.length>1?parts.slice(1).join(' '):u.name;
+    if(!groups[prefix])groups[prefix]=[];
+    groups[prefix].push({u,label});
+  });
+  const html=Object.entries(groups).map(([prefix,items])=>`
+    <div class="unit-group">
+      <div class="unit-group-label">${esc(prefix)}</div>
+      <div class="unit-grid">
+        ${items.map(({u,label})=>`
+          <button class="unit-sel-btn${u.id===qUnitId?' active':''}" onclick="pickUnit('${u.id}')">
+            <span>${esc(label)}</span>
+            <span class="usl-cnt">${u.words.length}語</span>
+          </button>`).join('')}
+      </div>
+    </div>`).join('');
+  document.getElementById('unit-selector').innerHTML=html;
 }
 function updateModeButtons(){
   document.getElementById('mb-en').classList.toggle('active',mode==='en-jp');
@@ -780,7 +824,7 @@ function showFinal(){
 
 // ══ TARGET 1900 ══
 // TARGET1900_DATAはtarget1900.jsで定義済みとして使用
-const T_CHUNK=30;
+const T_CHUNK=50;
 const T_SECTIONS=[];
 for(let i=0;i<TARGET1900_DATA.length;i+=T_CHUNK){
   const s=i+1,e=Math.min(i+T_CHUNK,TARGET1900_DATA.length);
@@ -794,14 +838,32 @@ let tqMissed=[],tqIsRev=false,tqRevQ=[],tqRevIdx=0,tqRevOk=0,tqRevAns=0;
 const TQCHUNK=5;
 
 function initTarget(){
-  renderTSel();
+  initTSlider();
+  updateTStepper();
   tqSec=0;startTSection();
 }
-function renderTSel(){
-  document.getElementById('t-unit-selector').innerHTML=
-    T_SECTIONS.map((s,i)=>`<button class="unit-sel-btn${i===tqSec?' active':''}" onclick="pickTSec(${i})">${esc(s.label)}</button>`).join('');
+function initTSlider(){
+  const track=document.getElementById('t-track');
+  if(track._bound)return;
+  track._bound=true;
+  track.addEventListener('click',e=>{
+    const r=track.getBoundingClientRect();
+    const pct=(e.clientX-r.left)/r.width;
+    pickTSec(Math.max(0,Math.min(T_SECTIONS.length-1,Math.round(pct*(T_SECTIONS.length-1)))));
+  });
 }
-function pickTSec(i){tqSec=i;renderTSel();startTSection();}
+function updateTStepper(){
+  const s=T_SECTIONS[tqSec];
+  const pct=T_SECTIONS.length>1?Math.round(tqSec/(T_SECTIONS.length-1)*100):0;
+  document.getElementById('t-step-range').textContent=s.label;
+  document.getElementById('t-step-sub').textContent=`${tqSec+1} / ${T_SECTIONS.length}`;
+  document.getElementById('t-prev-btn').disabled=tqSec===0;
+  document.getElementById('t-next-btn').disabled=tqSec===T_SECTIONS.length-1;
+  document.getElementById('t-track-fill').style.width=pct+'%';
+  document.getElementById('t-track-thumb').style.left=pct+'%';
+}
+function tStepNav(dir){pickTSec(Math.max(0,Math.min(T_SECTIONS.length-1,tqSec+dir)));}
+function pickTSec(i){tqSec=i;updateTStepper();startTSection();}
 function setTMode(m){tqMode=m;document.getElementById('tm-en').classList.toggle('active',m==='en-jp');document.getElementById('tm-jp').classList.toggle('active',m==='jp-en');document.getElementById('tm-mc').classList.toggle('active',m==='mc');resetTQuiz();}
 function startTSection(){tqWords=T_SECTIONS[tqSec].words;resetTQuiz();}
 function resetTQuiz(){

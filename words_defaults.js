@@ -3,7 +3,7 @@
 
 // ══ Default units (seeded on first load) ══
 const DEFAULTS=[
-  {name:'EngComm3 U2R 英日',words:[
+  {name:'EngComm3 U2 英日',words:[
     {en:'contemporary',jp:'現代の'},{en:'calculation',jp:'計算'},{en:'progress',jp:'進歩する'},
     {en:'multiple',jp:'多数の'},{en:'categorize',jp:'…を分類する'},{en:'accurately',jp:'正確に'},
     {en:'outperform',jp:'…よりすぐれている'},{en:'detect',jp:'…を検出する'},{en:'diagnose',jp:'…を診断する'},

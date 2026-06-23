@@ -7,7 +7,7 @@
 ### マイ単元クイズ
 
 1. 「🎯 マイ単元」タブを開く
-2. 上部で単元を選択
+2. 単元をプレフィックス（`EngComm3`、`LogExp3` など）ごとにグループ表示された一覧から選択
 3. **英語 → 日本語**、**日本語 → 英語**、または **英語 → 4択** モードを選ぶ
 4. 答えをタイピングして「確認」または **Enter** キーで送信（4択モードはクリック）
 5. 5単語ごとにグループ結果を表示
@@ -17,7 +17,9 @@
 ### TARGET1900クイズ
 
 1. 「📖 TARGET1900」タブを開く
-2. 上部でセクション（No.1–30、No.31–60 …）を選択
+2. スライダーで範囲（50語ごと）を選択
+   - `‹` `›` ボタンで1ステップずつ移動
+   - トラックをクリックして任意の範囲に直接ジャンプ
 3. モードを選んでクイズ開始
 4. 操作はマイ単元クイズと同じ
 
@@ -54,6 +56,8 @@ vehicle,a machine with an engine used to transport people and goods
 
 ## デフォルト単元
 
+単元名の最初の単語がグループ名として自動的に使われます（例：`EngComm3`、`LogExp3`）。
+
 | 単元名 | 語数 | 内容 |
 |---|---|---|
 | EngComm3 U2R 英日 | 31語 | 英日 |
@@ -67,7 +71,7 @@ vehicle,a machine with an engine used to transport people and goods
 | EngComm3 U3R1 英英 | 49語 | 英英（定義文） |
 | EngComm3 U4R1 英英 | 51語 | 英英（定義文） |
 
-TARGET1900（No.1–300）は「📖 TARGET1900」タブに内蔵されています。
+TARGET1900（No.1–1000）は「📖 TARGET1900」タブに内蔵されています。50語ごとに区切られています。
 
 ---
 
@@ -101,6 +105,6 @@ https://ユーザー名.github.io/リポジトリ名/
 index.html           # アプリ本体
 words_defaults.js    # デフォルト単元データ（U1〜U3）
 words_defaults_2.js  # デフォルト単元データ（U3〜U4）
-words_target1900.js  # TARGET1900 単語データ（No.1–300）
+words_target1900.js  # TARGET1900 単語データ（No.1–1000）
 README.md            # このファイル
 ```
