@@ -37,30 +37,24 @@ body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:1
 header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem;padding-bottom:1rem;border-bottom:1px solid var(--border);}
 .logo{font-family:var(--mono);font-size:.85rem;color:var(--text2);letter-spacing:.1em;}
 .logo span{color:var(--accent);}
-/* Tabs */
 .tabs{display:flex;gap:2px;background:var(--surface2);border-radius:calc(var(--r)+2px);padding:3px;margin-bottom:1.5rem;}
 .tab{flex:1;padding:8px 10px;border:none;border-radius:var(--r);background:transparent;color:var(--text2);font-family:var(--body);font-size:.83rem;cursor:pointer;transition:all .2s;white-space:nowrap;}
 .tab.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow);}
-/* Cards */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:1rem;}
 .card-title{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:.75rem;font-family:var(--mono);}
-/* Buttons */
 .btn{padding:9px 16px;border:none;border-radius:var(--r);font-family:var(--body);font-size:.85rem;cursor:pointer;transition:all .2s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;}
 .btn-accent{background:var(--accent);color:#fff;}.btn-accent:hover{opacity:.85;}
 .btn-ghost{background:var(--surface2);color:var(--text2);border:1px solid var(--border);}.btn-ghost:hover{color:var(--text);border-color:var(--text3);}
 .btn-danger{background:var(--red-dim);color:var(--red);border:1px solid transparent;}.btn-danger:hover{border-color:var(--red);}
 .btn-sm{padding:5px 10px;font-size:.78rem;}
-/* Inputs */
 input[type=text]{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;color:var(--text);font-family:var(--body);font-size:.9rem;outline:none;transition:border-color .2s;width:100%;}
 input[type=text]:focus{border-color:var(--accent);}
 input::placeholder{color:var(--text3);}
 textarea{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;color:var(--text);font-family:var(--mono);font-size:.83rem;outline:none;transition:border-color .2s;line-height:1.7;resize:vertical;width:100%;}
 textarea:focus{border-color:var(--accent);}
 .hint-text{font-size:.73rem;color:var(--text3);margin-top:.4rem;line-height:1.5;}
-/* Drop zone */
 .drop-zone{border:1.5px dashed var(--border);border-radius:var(--r);padding:1.1rem;text-align:center;cursor:pointer;transition:all .2s;color:var(--text3);font-size:.85rem;margin-bottom:.5rem;}
 .drop-zone:hover,.drop-zone.drag-over{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
-/* Unit list */
 .unit-list{display:flex;flex-direction:column;gap:6px;}
 .unit-item{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;cursor:pointer;transition:all .15s;}
 .unit-item:hover{border-color:var(--accent);}
@@ -71,8 +65,6 @@ textarea:focus{border-color:var(--accent);}
 .icon-btn{width:26px;height:26px;border:none;background:none;color:var(--text3);cursor:pointer;border-radius:4px;font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:color .2s;}
 .icon-btn:hover{color:var(--red);}
 .icon-btn.edit-ico:hover{color:var(--accent);}
-.icon-btn.share-ico:hover{color:var(--green);}
-/* Word list */
 .word-list{display:flex;flex-direction:column;gap:4px;max-height:300px;overflow-y:auto;}
 .word-list::-webkit-scrollbar{width:4px;}
 .word-list::-webkit-scrollbar-track{background:transparent;}
@@ -82,33 +74,12 @@ textarea:focus{border-color:var(--accent);}
 .word-item .jp{color:var(--text2);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .word-item .del{margin-left:auto;flex-shrink:0;width:22px;height:22px;border:none;background:none;color:var(--text3);cursor:pointer;font-size:1rem;border-radius:4px;transition:color .2s;display:flex;align-items:center;justify-content:center;}
 .word-item .del:hover{color:var(--red);}
-/* Flex helpers */
 .flex-row{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;}
 .flex-row>input{flex:1;min-width:120px;}
 .btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:.625rem;}
-/* Import banner */
-.import-banner{background:var(--accent-dim);border:1px solid var(--accent);border-radius:var(--r);padding:12px 16px;margin-bottom:1rem;font-size:.88rem;color:var(--accent);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-/* Quiz unit selector — grouped grid */
-.unit-group{margin-bottom:.75rem;}
-.unit-group:last-child{margin-bottom:0;}
-.unit-group-label{font-size:.68rem;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;padding:0 2px;}
-.unit-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
-.unit-sel-btn{padding:7px 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);font-family:var(--body);font-size:.8rem;cursor:pointer;color:var(--text2);transition:all .15s;text-align:left;display:flex;flex-direction:column;gap:2px;}
-.unit-sel-btn:hover{border-color:var(--text3);color:var(--text);}
-.unit-sel-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);}
-.unit-sel-btn .usl-cnt{font-size:.7rem;opacity:.65;font-family:var(--mono);}
-/* TARGET slider */
-.t-slider-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.6rem;}
-.t-slider-range{font-size:1rem;font-weight:600;color:var(--text);font-family:var(--body);}
-.t-slider-sub{font-size:.72rem;color:var(--text3);}
-.t-slider-row{display:flex;align-items:center;gap:8px;}
-.t-slider-nav{width:30px;height:30px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);color:var(--text);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s;flex-shrink:0;}
-.t-slider-nav:hover:not(:disabled){background:var(--surface2);}
-.t-slider-nav:disabled{opacity:.25;cursor:default;}
-.t-track{flex:1;height:3px;background:var(--border);border-radius:2px;position:relative;cursor:pointer;}
-.t-track-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .15s;}
-.t-track-thumb{width:14px;height:14px;border-radius:50%;background:var(--accent);border:2px solid var(--surface);box-shadow:0 0 0 1.5px var(--accent);position:absolute;top:50%;transform:translate(-50%,-50%);transition:left .15s;pointer-events:none;}
-/* Quiz */
+.unit-selector{display:flex;flex-wrap:wrap;gap:6px;}
+.unit-sel-btn{padding:6px 14px;border:1px solid var(--border);border-radius:20px;background:transparent;font-family:var(--body);font-size:.82rem;cursor:pointer;color:var(--text2);transition:all .15s;}
+.unit-sel-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
 .mode-row{display:flex;gap:8px;margin-bottom:1rem;}
 .mode-btn{flex:1;padding:7px;border:1px solid var(--border);border-radius:var(--r);background:transparent;color:var(--text2);font-family:var(--body);font-size:.82rem;cursor:pointer;transition:all .15s;}
 .mode-btn.active{background:var(--accent-dim);color:var(--accent);border-color:var(--accent);}
@@ -129,10 +100,10 @@ textarea:focus{border-color:var(--accent);}
 .q-sub{font-size:.72rem;color:var(--text3);margin-top:.35rem;font-family:var(--mono);}
 .review-badge{display:inline-flex;align-items:center;gap:5px;background:var(--accent-dim);color:var(--accent);font-size:.72rem;padding:3px 10px;border-radius:20px;margin-bottom:.75rem;font-family:var(--mono);}
 .input-row{display:flex;gap:8px;margin-bottom:.5rem;}
-#ans-input{flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:var(--r);font-size:1rem;font-family:var(--body);color:var(--text);background:var(--surface2);outline:none;transition:all .2s;}
-#ans-input:focus{border-color:var(--accent);}
-#ans-input.ok{border-color:var(--green);background:var(--green-dim);color:var(--green);}
-#ans-input.ng{border-color:var(--red);background:var(--red-dim);color:var(--red);}
+.ans-input{flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:var(--r);font-size:1rem;font-family:var(--body);color:var(--text);background:var(--surface2);outline:none;transition:all .2s;}
+.ans-input:focus{border-color:var(--accent);}
+.ans-input.ok{border-color:var(--green);background:var(--green-dim);color:var(--green);}
+.ans-input.ng{border-color:var(--red);background:var(--red-dim);color:var(--red);}
 .sub-btn{padding:10px 18px;border:none;border-radius:var(--r);background:var(--accent);color:#fff;font-family:var(--body);font-size:.9rem;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
 .sub-btn:hover{opacity:.82;}.sub-btn:disabled{opacity:.35;cursor:default;}
 .hint-row{display:flex;align-items:center;gap:8px;min-height:18px;margin-bottom:.75rem;}
@@ -148,7 +119,6 @@ textarea:focus{border-color:var(--accent);}
 .counter{font-size:.78rem;color:var(--text3);font-family:var(--mono);}
 .next-btn{padding:9px 18px;border:none;border-radius:var(--r);background:var(--accent);color:#fff;font-size:.88rem;cursor:pointer;display:none;transition:opacity .15s;font-family:var(--body);}
 .next-btn:hover{opacity:.82;}
-/* Analysis */
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem;}
 .stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:.875rem;text-align:center;}
 .stat-val{font-size:1.5rem;font-weight:700;font-family:var(--mono);}
@@ -175,12 +145,10 @@ textarea:focus{border-color:var(--accent);}
 .final-score{font-size:3.5rem;font-weight:700;font-family:var(--mono);text-align:center;margin-bottom:.25rem;}
 .final-comment{text-align:center;font-size:.9rem;color:var(--text2);margin-bottom:1.5rem;}
 .restart-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
-/* Empty / Toast */
 .empty{text-align:center;padding:2rem 1rem;color:var(--text3);font-size:.9rem;}
 .empty .eico{display:block;font-size:2rem;margin-bottom:.5rem;}
 .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:10px 18px;font-size:.85rem;color:var(--text);box-shadow:0 4px 20px rgba(0,0,0,.3);transition:transform .3s ease;z-index:100;white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);}
-/* Modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem;}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:calc(var(--r)*1.5);padding:1.5rem;width:100%;max-width:460px;box-shadow:0 8px 32px rgba(0,0,0,.3);}
 .modal h3{font-size:1rem;margin-bottom:1rem;}
@@ -212,7 +180,6 @@ textarea:focus{border-color:var(--accent);}
 
   <!-- ══ MANAGE ══ -->
   <div id="tab-manage">
-    <!-- Unit list -->
     <div class="card">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
         <div class="card-title" style="margin-bottom:0;">単元</div>
@@ -224,15 +191,12 @@ textarea:focus{border-color:var(--accent);}
       <div class="unit-list" id="unit-list"></div>
       <div class="empty" id="unit-empty"><span class="eico">📂</span>単元がまだありません<br>「新しい単元」または「インポート」で追加できます</div>
     </div>
-
-    <!-- Word management -->
     <div id="word-area" style="display:none;">
       <div class="card">
         <div class="card-title" id="word-list-title">登録済み単語</div>
         <div class="word-list" id="word-list"></div>
         <div class="empty" id="word-empty"><span class="eico">📭</span>この単元に単語がありません</div>
       </div>
-
       <div class="card">
         <div class="card-title" id="word-add-title">単語を追加</div>
         <div class="flex-row" style="margin-bottom:.75rem;">
@@ -240,7 +204,6 @@ textarea:focus{border-color:var(--accent);}
           <input type="text" id="in-jp" placeholder="日本語 (例: 急速に)" autocomplete="off" onkeydown="if(event.key==='Enter')addWord()">
           <button class="btn btn-accent" onclick="addWord()">追加</button>
         </div>
-
         <div class="card-title" style="margin-top:1rem;">まとめて追加（CSV）</div>
         <div class="drop-zone" id="bulk-drop" onclick="document.getElementById('bulk-file').click()"
           ondragover="dzOver(event,this)" ondragleave="dzOut(this)" ondrop="dzDrop(event,this,'bulk')">
@@ -267,45 +230,37 @@ textarea:focus{border-color:var(--accent);}
     <div id="quiz-body" style="display:none;">
       <div class="card" style="margin-bottom:1rem;">
         <div class="card-title">単元を選択</div>
-        <div id="unit-selector"></div>
+        <div class="unit-selector" id="unit-selector"></div>
       </div>
-      <div class="mode-row" id="mode-row">
-        <button class="mode-btn active" id="mb-en" onclick="setMode('en-jp')">英語 → 日本語</button>
-        <button class="mode-btn" id="mb-jp" onclick="setMode('jp-en')">日本語 → 英語</button>
-        <button class="mode-btn" id="mb-mc" onclick="setMode('mc')">英語 → 4択</button>
+      <div class="mode-row">
+        <button class="mode-btn" data-mode="en-jp" onclick="Q.setMode('en-jp')">英語 → 日本語</button>
+        <button class="mode-btn" data-mode="jp-en" onclick="Q.setMode('jp-en')">日本語 → 英語</button>
+        <button class="mode-btn" data-mode="mc" onclick="Q.setMode('mc')">英語 → 4択</button>
       </div>
       <div class="chunk-nav" id="chunk-nav"></div>
       <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
       <div id="main-area"></div>
     </div>
   </div>
+
   <!-- ══ TARGET1900 ══ -->
   <div id="tab-target" style="display:none;">
     <div class="card" style="margin-bottom:1rem;">
-      <div class="card-title">範囲を選択</div>
-      <div class="t-slider-top">
-        <span class="t-slider-range" id="t-step-range">No.1–50</span>
-        <span class="t-slider-sub" id="t-step-sub">1 / 20</span>
-      </div>
-      <div class="t-slider-row">
-        <button class="t-slider-nav" id="t-prev-btn" onclick="tStepNav(-1)" disabled>&#8249;</button>
-        <div class="t-track" id="t-track">
-          <div class="t-track-fill" id="t-track-fill" style="width:0%"></div>
-          <div class="t-track-thumb" id="t-track-thumb" style="left:0%"></div>
-        </div>
-        <button class="t-slider-nav" id="t-next-btn" onclick="tStepNav(1)">&#8250;</button>
-      </div>
+      <div class="card-title">単元を選択</div>
+      <div class="unit-selector" id="t-unit-selector"></div>
     </div>
     <div class="mode-row">
-      <button class="mode-btn active" id="tm-en" onclick="setTMode('en-jp')">英語 → 日本語</button>
-      <button class="mode-btn" id="tm-jp" onclick="setTMode('jp-en')">日本語 → 英語</button>
-      <button class="mode-btn" id="tm-mc" onclick="setTMode('mc')">英語 → 4択</button>
+      <button class="mode-btn" data-mode="en-jp" onclick="T.setMode('en-jp')">英語 → 日本語</button>
+      <button class="mode-btn" data-mode="jp-en" onclick="T.setMode('jp-en')">日本語 → 英語</button>
+      <button class="mode-btn" data-mode="mc" onclick="T.setMode('mc')">英語 → 4択</button>
     </div>
     <div class="chunk-nav" id="t-chunk-nav"></div>
     <div class="progress-bar"><div class="progress-fill" id="t-prog-fill" style="width:0%"></div></div>
     <div id="t-main-area"></div>
   </div>
 </div>
+
+<!-- Modal: unit name -->
 <div class="modal-overlay" id="unit-modal" style="display:none;" onclick="if(event.target===this)closeModal('unit-modal')">
   <div class="modal">
     <h3 id="unit-modal-h">新しい単元を作成</h3>
@@ -317,7 +272,7 @@ textarea:focus{border-color:var(--accent);}
   </div>
 </div>
 
-<!-- Modal: import CSV as new unit -->
+<!-- Modal: import CSV -->
 <div class="modal-overlay" id="import-modal" style="display:none;" onclick="if(event.target===this)closeModal('import-modal')">
   <div class="modal">
     <h3>CSVファイルから単元を作成</h3>
@@ -345,7 +300,7 @@ textarea:focus{border-color:var(--accent);}
 // ══ Storage ══
 const SK='quiz_v2';
 let db={units:[]};
-let selId=null, editId=null;
+let selId=null,editId=null,pending=null;
 
 function save(){localStorage.setItem(SK,JSON.stringify(db));}
 function load(){try{db=JSON.parse(localStorage.getItem(SK))||{units:[]};}catch{db={units:[]};}if(!db.units)db.units=[];}
@@ -353,6 +308,10 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function getU(id){return db.units.find(u=>u.id===id);}
 function selU(){return getU(selId);}
+function shuf(a){let b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+function norm(s){return s.trim().toLowerCase().replace(/[・。、\s]+/g,'');}
+function scoreColor(p){return p===100?'var(--green)':p>=80?'#4fa832':p>=60?'var(--yellow)':'var(--red)';}
+function scoreLbl(p){return p===100?'完璧':p>=80?'良好':p>=60?'まずまず':'要復習';}
 
 // ══ CSV parse ══
 function parseCSV(text){
@@ -366,12 +325,10 @@ function parseCSV(text){
   return out;
 }
 
-
-// ══ Render ══
+// ══ Manage: Units ══
 function renderUnits(){
   const ul=document.getElementById('unit-list'),ue=document.getElementById('unit-empty');
-  const hi=document.getElementById('header-info');
-  hi.textContent=`${db.units.length}単元 / ${db.units.reduce((s,u)=>s+u.words.length,0)}語`;
+  document.getElementById('header-info').textContent=`${db.units.length}単元 / ${db.units.reduce((s,u)=>s+u.words.length,0)}語`;
   if(!db.units.length){ul.innerHTML='';ue.style.display='block';return;}
   ue.style.display='none';
   ul.innerHTML=db.units.map(u=>`
@@ -402,7 +359,7 @@ function renderWords(){
     </div>`).join('');
 }
 
-// ══ Unit CRUD ══
+// ══ Manage: Unit CRUD ══
 function openNewUnitModal(){editId=null;document.getElementById('unit-modal-h').textContent='新しい単元を作成';document.getElementById('unit-name-input').value='';document.getElementById('unit-modal').style.display='flex';setTimeout(()=>document.getElementById('unit-name-input').focus(),50);}
 function openEditUnit(id){editId=id;document.getElementById('unit-modal-h').textContent='単元名を変更';document.getElementById('unit-name-input').value=getU(id).name;document.getElementById('unit-modal').style.display='flex';setTimeout(()=>document.getElementById('unit-name-input').focus(),50);}
 function saveUnit(){
@@ -420,7 +377,7 @@ function deleteUnit(id){
 }
 function closeModal(id){document.getElementById(id).style.display='none';}
 
-// ══ Word CRUD ══
+// ══ Manage: Word CRUD ══
 function addWord(){
   const u=selU();if(!u)return;
   const en=document.getElementById('in-en').value.trim(),jp=document.getElementById('in-jp').value.trim();
@@ -433,7 +390,7 @@ function addWord(){
 function delWord(i){const u=selU();if(!u)return;u.words.splice(i,1);save();renderWords();renderUnits();}
 function clearWords(){const u=selU();if(!u||!confirm(`「${u.name}」の単語${u.words.length}語を全削除しますか？`))return;u.words=[];save();renderWords();renderUnits();}
 
-// ══ Bulk add (text) ══
+// ══ Manage: Bulk / File ══
 function bulkFromText(){
   const u=selU();if(!u){showToast('先に単元を選択してください');return;}
   const words=parseCSV(document.getElementById('bulk-text').value);
@@ -441,8 +398,6 @@ function bulkFromText(){
   save();renderWords();renderUnits();document.getElementById('bulk-text').value='';
   showToast(`${n}語を追加しました`);
 }
-
-// ══ File drag & drop ══
 function dzOver(e,el){e.preventDefault();el.classList.add('drag-over');}
 function dzOut(el){el.classList.remove('drag-over');}
 function dzDrop(e,el,mode){e.preventDefault();el.classList.remove('drag-over');const f=e.dataTransfer.files[0];if(f)readFile(f,mode);}
@@ -457,7 +412,6 @@ function readFile(file,mode){
       let n=0;words.forEach(w=>{if(!u.words.some(x=>x.en.toLowerCase()===w.en.toLowerCase())){u.words.push(w);n++;}});
       save();renderWords();renderUnits();showToast(`「${name}」から${n}語を追加`);
     } else {
-      // import as new unit — show preview
       if(!words.length){showToast('単語が見つかりませんでした');return;}
       pending={name,words};
       document.getElementById('import-preview').innerHTML=`
@@ -485,634 +439,378 @@ function confirmImport(){
   db.units.push(nu);save();selId=nu.id;renderUnits();renderWords();
   closeModal('import-modal');showToast(`「${nu.name}」を追加（${nu.words.length}語）`);pending=null;
 }
-
-// ══ Export / Preset ══
 function exportCSV(){
   const u=selU();if(!u)return;
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([u.words.map(w=>`${w.en},${w.jp}`).join('\n')],{type:'text/csv'}));
   a.download=`${u.name}.csv`;a.click();
 }
+
+// ══ Seed / Reset ══
 const REMOVED_DEFAULTS=['EngComm3 U2R1 英英','Unit2 Reading1 英英'];
 function seedDefaults(){
   let changed=false;
-  // 廃止されたデフォルト単元を削除
   REMOVED_DEFAULTS.forEach(name=>{
     const idx=db.units.findIndex(u=>u.name===name);
     if(idx>=0){db.units.splice(idx,1);changed=true;}
   });
   DEFAULTS.forEach(d=>{
-    if(!db.units.find(u=>u.name===d.name)){
-      db.units.push({id:uid(),name:d.name,words:d.words});
-      changed=true;
-    }
+    if(!db.units.find(u=>u.name===d.name)){db.units.push({id:uid(),name:d.name,words:d.words});changed=true;}
   });
   if(changed)save();
 }
 function resetAll(){
   if(!confirm('すべての単元とデータを削除してデフォルトに戻しますか？'))return;
-  localStorage.removeItem(SK);
-  db={units:[]};
-  seedDefaults();
-  selId=db.units[0]?.id||null;
-  renderUnits();renderWords();
-  showToast('リセットしました');
+  localStorage.removeItem(SK);db={units:[]};seedDefaults();
+  selId=db.units[0]?.id||null;renderUnits();renderWords();showToast('リセットしました');
 }
 
 // ══ Tab ══
 function switchTab(t){
-  document.getElementById('tab-manage').style.display=t==='manage'?'block':'none';
-  document.getElementById('tab-quiz').style.display=t==='quiz'?'block':'none';
-  document.getElementById('tab-target').style.display=t==='target'?'block':'none';
-  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',
-    (i===0&&t==='manage')||(i===1&&t==='quiz')||(i===2&&t==='target')));
+  ['manage','quiz','target'].forEach(id=>document.getElementById('tab-'+id).style.display=t===id?'block':'none');
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['manage','quiz','target'][i]===t));
   if(t==='quiz')initQuiz();
   if(t==='target')initTarget();
 }
 
-// ══ Quiz ══
-const CHUNK=5;
-let qUnitId=null,qWords=[];
-let mode='en-jp';
-let cResults=[],cChunk=0,cInChunk=0,tCorrect=0,tAnswered=0;
-let answered=false,hintLv=0,cOrder=[];
-let isRev=false,revQ=[],revIdx=0,revOk=0,revAns=0,missed=[];
+// ══ Quiz Engine (shared) ══
+// 共通化されたクイズエンジン。マイ単元(Q)とTARGET1900(T)の両方で使用。
+class QuizEngine {
+  constructor(cfg){
+    // cfg: {navId, fillId, areaId, tabId, CHUNK}
+    this.navId=cfg.navId;this.fillId=cfg.fillId;this.areaId=cfg.areaId;
+    this.tabId=cfg.tabId;this.CHUNK=cfg.CHUNK||5;
+    this.words=[];this.mode='en-jp';
+    this.results=[];this.chunk=0;this.inChunk=0;this.ok=0;this.ans=0;
+    this.answered=false;this.hintLv=0;this.order=[];
+    this.missed=[];this.isRev=false;this.revQ=[];this.revIdx=0;this.revOk=0;this.revAns=0;
+  }
+  get area(){return document.getElementById(this.areaId);}
+  get fill(){return document.getElementById(this.fillId);}
+
+  setWords(words){this.words=words;this.reset();}
+  setMode(m){
+    this.mode=m;
+    document.querySelectorAll(`#${this.tabId} .mode-btn`).forEach(b=>{
+      b.classList.toggle('active',b.dataset.mode===m);
+    });
+    this.reset();
+  }
+  reset(){
+    const n=Math.ceil(this.words.length/this.CHUNK);
+    this.results=Array.from({length:n},(_,c)=>({done:false,correct:0,total:Math.min(this.CHUNK,this.words.length-c*this.CHUNK),entries:[]}));
+    this.chunk=0;this.inChunk=0;this.ok=0;this.ans=0;
+    this.answered=false;this.hintLv=0;this.isRev=false;
+    this.missed=[];this.revQ=[];this.revIdx=0;this.revOk=0;this.revAns=0;
+    this.startChunk(0);
+  }
+  nChunks(){return Math.ceil(this.words.length/this.CHUNK);}
+  chunkIdx(c){const s=c*this.CHUNK;return Array.from({length:Math.min(this.CHUNK,this.words.length-s)},(_,i)=>s+i);}
+  makeChoices(ci){return shuf([ci,...shuf(this.words.map((_,i)=>i).filter(i=>i!==ci)).slice(0,3)]);}
+  getQ(i){return this.mode==='en-jp'?this.words[i].en:this.words[i].jp;}
+  getA(i){return this.mode==='en-jp'?this.words[i].jp:this.words[i].en;}
+  qlabel(){return this.mode==='en-jp'?'英単語の意味を入力':this.mode==='jp-en'?'日本語を英語で入力':'英語に対応する日本語を選んでください';}
+
+  startChunk(c){
+    this.chunk=c;this.inChunk=0;this.answered=false;this.hintLv=0;this.isRev=false;
+    this.order=shuf(this.chunkIdx(c));this.results[c].entries=[];
+    this.renderNav();this.renderQ();
+  }
+  renderNav(){
+    const nav=document.getElementById(this.navId);nav.innerHTML='';
+    const self=this;
+    for(let i=0;i<this.nChunks();i++){
+      const r=this.results[i];
+      let cls='chunk-dot';
+      if(!this.isRev&&i===this.chunk)cls+=' active';
+      else if(r.done){const p=r.correct/r.total;cls+=p===1?' perfect':p>=.8?' good':p>=.6?' mid':' bad';}
+      const b=document.createElement('button');b.className=cls;b.textContent=i+1;
+      if(r.done)b.onclick=(j=>()=>{self.isRev=false;self.showAnalysis(j);})(i);
+      nav.appendChild(b);
+    }
+    if(this.missed.length){
+      const u=[...new Set(this.missed)];
+      const rb=document.createElement('button');
+      rb.className='review-pill'+(this.isRev?' active':'');
+      rb.textContent=`🔁 復習 ${u.length}語`;rb.onclick=()=>this.startRev();
+      nav.appendChild(rb);
+    }
+  }
+  renderQ(){
+    if(this.inChunk>=this.order.length){this.finishChunk();return;}
+    const idx=this.order[this.inChunk];
+    this.answered=false;this.hintLv=0;
+    this.fill.style.width=Math.round(this.ans/this.words.length*100)+'%';
+    if(this.mode==='mc'){this.renderMC(idx);}else{this.renderType(idx);}
+  }
+  renderType(idx){
+    this.area.innerHTML=`
+      <div class="q-card">
+        <div class="q-label">${this.qlabel()}</div>
+        <div class="q-word">${esc(this.getQ(idx))}</div>
+        <div class="q-sub">${this.subtitle()} · グループ${this.chunk+1} — ${this.inChunk+1}/${this.order.length}</div>
+      </div>
+      <div class="input-row">
+        <input class="ans-input" id="${this.areaId}-inp" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+        <button class="sub-btn" id="${this.areaId}-sub" onclick="_qe_check('${this.areaId}')">確認</button>
+      </div>
+      <div class="hint-row"><span class="hint-txt" id="${this.areaId}-ht"></span><button class="hint-link" id="${this.areaId}-hb" onclick="_qe_hint('${this.areaId}')">ヒント</button></div>
+      <div class="feedback" id="${this.areaId}-fb"></div>
+      <div class="nav-row">
+        <span class="counter">${this.ans+1} / ${this.words.length}</span>
+        <button class="next-btn" id="${this.areaId}-nx" onclick="_qe_next('${this.areaId}')">次へ →</button>
+      </div>`;
+    const inp=document.getElementById(this.areaId+'-inp');inp.focus();
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter'){this.answered?this.nextQ():this.checkAns();}});
+  }
+  renderMC(idx){
+    const choices=this.makeChoices(idx);
+    const id=this.areaId;
+    this.area.innerHTML=`
+      <div class="q-card">
+        <div class="q-label">${this.qlabel()}</div>
+        <div class="q-word">${esc(this.words[idx].en)}</div>
+        <div class="q-sub">${this.subtitle()} · グループ${this.chunk+1} — ${this.inChunk+1}/${this.order.length}</div>
+      </div>
+      <div class="choices">${choices.map(ci=>`<button class="choice-btn" onclick="_qe_mc('${id}',${ci},${idx})">${esc(this.words[ci].jp)}</button>`).join('')}</div>
+      <div class="feedback" id="${id}-fb"></div>
+      <div class="nav-row">
+        <span class="counter">${this.ans+1} / ${this.words.length}</span>
+        <button class="next-btn" id="${id}-nx" onclick="_qe_next('${id}')">次へ →</button>
+      </div>`;
+  }
+  renderRevQ(){
+    if(this.revIdx>=this.revQ.length){this.finishRev();return;}
+    const idx=this.revQ[this.revIdx];
+    this.answered=false;this.hintLv=0;
+    this.fill.style.width=Math.round(this.revIdx/this.revQ.length*100)+'%';
+    this.area.innerHTML=`
+      <div class="review-badge">🔁 復習モード — ${this.revIdx+1}/${this.revQ.length}</div>
+      <div class="q-card">
+        <div class="q-label">${this.qlabel()}</div>
+        <div class="q-word">${esc(this.getQ(idx))}</div>
+        <div class="q-sub">間違えた単語の復習</div>
+      </div>
+      <div class="input-row">
+        <input class="ans-input" id="${this.areaId}-inp" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+        <button class="sub-btn" id="${this.areaId}-sub" onclick="_qe_rcheck('${this.areaId}')">確認</button>
+      </div>
+      <div class="hint-row"><span class="hint-txt" id="${this.areaId}-ht"></span><button class="hint-link" id="${this.areaId}-hb" onclick="_qe_hint('${this.areaId}')">ヒント</button></div>
+      <div class="feedback" id="${this.areaId}-fb"></div>
+      <div class="nav-row">
+        <span class="counter">${this.revIdx+1} / ${this.revQ.length}</span>
+        <button class="next-btn" id="${this.areaId}-nx" onclick="_qe_rnext('${this.areaId}')">次へ →</button>
+      </div>`;
+    const inp=document.getElementById(this.areaId+'-inp');inp.focus();
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter'){this.answered?this.nextRevQ():this.checkRevAns();}});
+  }
+  doHint(){
+    const idx=this.isRev?this.revQ[this.revIdx]:this.order[this.inChunk];
+    const ans=this.getA(idx);
+    this.hintLv=Math.min(this.hintLv+2,ans.length-1);
+    document.getElementById(this.areaId+'-ht').textContent=ans.split('').map((c,i)=>i<this.hintLv?c:'_').join('');
+    if(this.hintLv>=ans.length-1)document.getElementById(this.areaId+'-hb').style.display='none';
+  }
+  _doCheck(ans,inp,onOk,onNg){
+    if(this.answered)return;
+    if(!inp.value.trim())return;
+    this.answered=true;
+    document.getElementById(this.areaId+'-sub').disabled=true;
+    document.getElementById(this.areaId+'-hb').style.display='none';
+    const ok=norm(inp.value)===norm(ans);
+    inp.className='ans-input '+(ok?'ok':'ng');
+    const fb=document.getElementById(this.areaId+'-fb');
+    fb.className='feedback show '+(ok?'ok':'ng');
+    fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(ans)}</strong>`;
+    const nx=document.getElementById(this.areaId+'-nx');nx.style.display='inline-block';nx.focus();
+    ok?onOk():onNg();
+  }
+  checkAns(){
+    const idx=this.order[this.inChunk],ans=this.getA(idx),inp=document.getElementById(this.areaId+'-inp');
+    this._doCheck(ans,inp,
+      ()=>{this.ok++;this.results[this.chunk].correct++;this.results[this.chunk].entries.push({idx,ok:true});this.ans++;},
+      ()=>{this.results[this.chunk].entries.push({idx,ok:false});this.ans++;this.missed.push(idx);}
+    );
+  }
+  checkRevAns(){
+    const idx=this.revQ[this.revIdx],ans=this.getA(idx),inp=document.getElementById(this.areaId+'-inp');
+    this._doCheck(ans,inp,()=>{this.revOk++;this.revAns++;},()=>{this.revAns++;this.missed.push(idx);});
+  }
+  checkMC(chosen,correct){
+    if(this.answered)return;
+    this.answered=true;
+    const ok=chosen===correct;
+    document.querySelectorAll(`#${this.areaId} .choice-btn`).forEach(b=>{
+      b.disabled=true;
+      if(b.textContent.trim()===this.words[correct].jp)b.classList.add('c-ok');
+    });
+    if(!ok){
+      const btns=[...document.querySelectorAll(`#${this.areaId} .choice-btn`)];
+      btns.find(b=>b.textContent.trim()===this.words[chosen].jp)?.classList.add('c-ng');
+    }
+    const fb=document.getElementById(this.areaId+'-fb');
+    fb.className='feedback show '+(ok?'ok':'ng');
+    fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(this.words[correct].jp)}</strong>`;
+    const nx=document.getElementById(this.areaId+'-nx');nx.style.display='inline-block';nx.focus();
+    if(ok){this.ok++;this.results[this.chunk].correct++;this.results[this.chunk].entries.push({idx:correct,ok:true});this.ans++;}
+    else{this.results[this.chunk].entries.push({idx:correct,ok:false});this.ans++;this.missed.push(correct);}
+  }
+  nextQ(){this.inChunk++;this.renderQ();}
+  nextRevQ(){this.revIdx++;this.renderRevQ();}
+  finishChunk(){this.results[this.chunk].done=true;this.renderNav();this.showAnalysis(this.chunk);}
+  showAnalysis(c){
+    const r=this.results[c];
+    const pct=Math.round(r.correct/r.total*100);
+    const col=scoreColor(pct),lbl=scoreLbl(pct);
+    const rows=r.entries.map(e=>`<tr><td class="en">${esc(this.words[e.idx].en)}</td><td>${esc(this.words[e.idx].jp)}</td><td><span class="badge ${e.ok?'badge-ok':'badge-ng'}">${e.ok?'正解':'不正解'}</span></td></tr>`).join('');
+    const allDone=this.results.every(x=>x.done);
+    const isCur=c===this.chunk&&r.done&&!this.isRev;
+    const nc=this.chunk+1;
+    let nBtn='';
+    if(allDone)nBtn=`<button class="action-btn primary" onclick="_qe_final('${this.areaId}')">全体結果を見る →</button>`;
+    else if(isCur&&nc<this.nChunks()){const f=nc*this.CHUNK+1,t=Math.min((nc+1)*this.CHUNK,this.words.length);nBtn=`<button class="action-btn primary" onclick="_qe_sc('${this.areaId}',${nc})">グループ${nc+1}へ（${f}〜${t}番）→</button>`;}
+    const uniq=[...new Set(this.missed)];
+    const rBtn=uniq.length?`<button class="action-btn review-act" onclick="_qe_rev('${this.areaId}')">🔁 間違えた単語を復習 (${uniq.length}語)</button>`:'';
+    this.area.innerHTML=`
+      <div class="card">
+        <div class="card-title">グループ${c+1}の結果</div>
+        <div class="stats-grid">
+          <div class="stat-box"><div class="stat-val">${r.correct}/${r.total}</div><div class="stat-lbl">正解数</div></div>
+          <div class="stat-box"><div class="stat-val" style="color:${col}">${pct}%</div><div class="stat-lbl">正解率</div></div>
+          <div class="stat-box"><div class="stat-val" style="color:${col};font-size:1.1rem;">${lbl}</div><div class="stat-lbl">評価</div></div>
+        </div>
+        <div class="thin-bar"><div class="thin-bar-fill" style="width:${pct}%;background:${col}"></div></div>
+        <table class="word-table"><thead><tr><th>英語</th><th>日本語</th><th>結果</th></tr></thead><tbody>${rows}</tbody></table>
+        ${rBtn}${nBtn}
+      </div>`;
+    this.fill.style.width=Math.round(this.ans/this.words.length*100)+'%';
+  }
+  startRev(){
+    const uniq=[...new Set(this.missed)];if(!uniq.length)return;
+    this.isRev=true;this.revQ=shuf(uniq);this.revIdx=0;this.revOk=0;this.revAns=0;this.answered=false;this.hintLv=0;
+    this.renderNav();this.renderRevQ();
+  }
+  finishRev(){
+    const pct=Math.round(this.revOk/this.revQ.length*100);
+    const col=scoreColor(pct);
+    const uniq=[...new Set(this.missed)];
+    this.fill.style.width='100%';this.renderNav();
+    this.area.innerHTML=`
+      <div class="card">
+        <div class="card-title">復習完了</div>
+        <div class="stats-grid">
+          <div class="stat-box"><div class="stat-val">${this.revOk}/${this.revQ.length}</div><div class="stat-lbl">正解数</div></div>
+          <div class="stat-box"><div class="stat-val" style="color:${col}">${pct}%</div><div class="stat-lbl">正解率</div></div>
+          <div class="stat-box"><div class="stat-val" style="color:${col};font-size:1.1rem;">${scoreLbl(pct)}</div><div class="stat-lbl">評価</div></div>
+        </div>
+        ${uniq.length?`<button class="action-btn review-act" onclick="_qe_rev('${this.areaId}')">🔁 もう一度復習 (${uniq.length}語)</button>`:''}
+        ${this.results.every(r=>r.done)?`<button class="action-btn secondary" onclick="_qe_final('${this.areaId}')">全体結果を見る</button>`:''}
+      </div>`;
+  }
+  showFinal(){
+    const pct=Math.round(this.ok/this.words.length*100);
+    const bars=this.results.map((r,i)=>{
+      const p=Math.round(r.correct/r.total*100),col=scoreColor(p);
+      return `<div class="chunk-bar-row"><span class="chunk-bar-label">G${i+1}</span><div class="chunk-bar-track"><div class="chunk-bar-fill" style="width:${p}%;background:${col}"></div></div><span class="chunk-bar-pct">${p}%</span></div>`;
+    }).join('');
+    const uniq=[...new Set(this.missed)];
+    this.fill.style.width='100%';
+    const id=this.areaId;
+    this.area.innerHTML=`
+      <div class="final-score" style="color:${pct===100?'var(--green)':'var(--text)'}">${this.ok}<span style="font-size:1.5rem;color:var(--text3)">/${this.words.length}</span></div>
+      <div class="final-comment">正解率 ${pct}% — ${pct===100?'完璧！全問正解！':pct>=80?'すばらしい！':pct>=60?'もう少し！':'復習しよう！'}</div>
+      <div class="card" style="margin-bottom:.75rem;"><div class="card-title">グループ別スコア</div>${bars}</div>
+      ${uniq.length?`<button class="action-btn review-act" onclick="_qe_rev('${id}')" style="margin-bottom:8px;">🔁 間違えた単語をまとめて復習 (${uniq.length}語)</button>`:''}
+      <div class="restart-row">
+        <button class="btn btn-ghost" onclick="_qe_mode('${id}','en-jp')">英語 → 日本語</button>
+        <button class="btn btn-ghost" onclick="_qe_mode('${id}','mc')">英語 → 4択</button>
+        <button class="btn btn-accent" onclick="_qe_rst('${id}')">もう一度</button>
+        <button class="btn btn-ghost" onclick="_qe_mode('${id}','jp-en')">日本語 → 英語</button>
+      </div>`;
+  }
+  subtitle(){return '';}// override in subclass
+}
+
+// ══ グローバルブリッジ（onclick文字列からエンジンへ） ══
+// HTMLのonclick属性からクラスのメソッドを呼ぶためのブリッジ関数
+const _engines={};
+function _qe_get(id){return _engines[id];}
+function _qe_check(id){_qe_get(id).checkAns();}
+function _qe_rcheck(id){_qe_get(id).checkRevAns();}
+function _qe_mc(id,ch,co){_qe_get(id).checkMC(ch,co);}
+function _qe_next(id){_qe_get(id).nextQ();}
+function _qe_rnext(id){_qe_get(id).nextRevQ();}
+function _qe_hint(id){_qe_get(id).doHint();}
+function _qe_rev(id){_qe_get(id).startRev();}
+function _qe_final(id){_qe_get(id).showFinal();}
+function _qe_sc(id,c){_qe_get(id).startChunk(c);}
+function _qe_rst(id){_qe_get(id).reset();}
+function _qe_mode(id,m){_qe_get(id).setMode(m);}
+
+// ══ マイ単元クイズ ══
+class MyQuiz extends QuizEngine {
+  constructor(){
+    super({navId:'chunk-nav',fillId:'prog-fill',areaId:'main-area',tabId:'tab-quiz',CHUNK:5});
+    _engines['main-area']=this;
+    this.unitId=null;
+  }
+  subtitle(){return getU(this.unitId)?.name||'';}
+  pickUnit(id){
+    this.unitId=id;
+    document.querySelectorAll('#unit-selector .unit-sel-btn').forEach(b=>b.classList.toggle('active',b.dataset.uid===id));
+    this.setWords(getU(id)?.words||[]);
+  }
+}
+const Q=new MyQuiz();
 
 function initQuiz(){
   const has=db.units.some(u=>u.words.length>0);
-  if(!has){document.getElementById('quiz-empty').style.display='block';document.getElementById('quiz-body').style.display='none';return;}
-  document.getElementById('quiz-empty').style.display='none';document.getElementById('quiz-body').style.display='block';
-  if(!qUnitId||!getU(qUnitId)||!getU(qUnitId).words.length)qUnitId=db.units.find(u=>u.words.length>0)?.id||null;
-  renderUSel();startForUnit();
-}
-function isEiEi(){const n=getU(qUnitId)?.name||'';return n.includes('英英')||n.includes('動名詞');}
-function renderUSel(){
-  const units=db.units.filter(u=>u.words.length>0);
-  // グループ化：最初の単語をプレフィックスとして使用
-  const groups={};
-  units.forEach(u=>{
-    const parts=u.name.split(' ');
-    const prefix=parts.length>1?parts[0]:'その他';
-    const label=parts.length>1?parts.slice(1).join(' '):u.name;
-    if(!groups[prefix])groups[prefix]=[];
-    groups[prefix].push({u,label});
-  });
-  const html=Object.entries(groups).map(([prefix,items])=>`
-    <div class="unit-group">
-      <div class="unit-group-label">${esc(prefix)}</div>
-      <div class="unit-grid">
-        ${items.map(({u,label})=>`
-          <button class="unit-sel-btn${u.id===qUnitId?' active':''}" onclick="pickUnit('${u.id}')">
-            <span>${esc(label)}</span>
-            <span class="usl-cnt">${u.words.length}語</span>
-          </button>`).join('')}
-      </div>
-    </div>`).join('');
-  document.getElementById('unit-selector').innerHTML=html;
-}
-function updateModeButtons(){
-  document.getElementById('mb-en').classList.toggle('active',mode==='en-jp');
-  document.getElementById('mb-jp').classList.toggle('active',mode==='jp-en');
-  document.getElementById('mb-mc').classList.toggle('active',mode==='mc');
-}
-function pickUnit(id){
-  qUnitId=id;
-  renderUSel();updateModeButtons();startForUnit();
-}
-function startForUnit(){const u=getU(qUnitId);if(!u)return;qWords=u.words;resetQuiz();}
-function resetQuiz(){
-  const n=Math.ceil(qWords.length/CHUNK);
-  cResults=Array.from({length:n},(_,c)=>({done:false,correct:0,total:Math.min(CHUNK,qWords.length-c*CHUNK),entries:[]}));
-  cChunk=0;cInChunk=0;tCorrect=0;tAnswered=0;
-  answered=false;hintLv=0;isRev=false;missed=[];revQ=[];revIdx=0;revOk=0;revAns=0;
-  startChunk(0);
-}
-function setMode(m){
-  mode=m;updateModeButtons();resetQuiz();
-}
-function shuf(a){let b=[...a];for(let i=b.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
-function norm(s){return s.trim().toLowerCase().replace(/[・。、\s]+/g,'');}
-// mc mode: question=definition(jp), answer=word(en)
-function getQ(i){return mode==='en-jp'?qWords[i].en:qWords[i].jp;}
-function getA(i){return mode==='en-jp'?qWords[i].jp:mode==='jp-en'?qWords[i].en:qWords[i].en;}
-function qlabel(){return mode==='en-jp'?'英単語の意味を入力':mode==='jp-en'?'日本語を英語で入力':'英単語の意味を4択で選んでください';}
-function nChunks(){return Math.ceil(qWords.length/CHUNK);}
-function cIdx(c){let s=c*CHUNK;return Array.from({length:Math.min(CHUNK,qWords.length-s)},(_,i)=>s+i);}
-// generate 4 choices for mc mode
-function makeChoices(correctIdx){
-  const pool=qWords.map((_,i)=>i).filter(i=>i!==correctIdx);
-  const wrong=shuf(pool).slice(0,3);
-  return shuf([correctIdx,...wrong]);
+  document.getElementById('quiz-empty').style.display=has?'none':'block';
+  document.getElementById('quiz-body').style.display=has?'block':'none';
+  if(!has)return;
+  if(!Q.unitId||!getU(Q.unitId)||!getU(Q.unitId).words.length)Q.unitId=db.units.find(u=>u.words.length>0)?.id||null;
+  document.getElementById('unit-selector').innerHTML=
+    db.units.filter(u=>u.words.length>0).map(u=>`
+      <button class="unit-sel-btn${u.id===Q.unitId?' active':''}" data-uid="${u.id}" onclick="Q.pickUnit('${u.id}')">
+        ${esc(u.name)}<span style="opacity:.6;font-size:.75em;margin-left:4px;">${u.words.length}語</span>
+      </button>`).join('');
+  document.querySelectorAll('#tab-quiz .mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===Q.mode));
+  if(Q.unitId)Q.pickUnit(Q.unitId);
 }
 
-function startChunk(c){
-  cChunk=c;cInChunk=0;answered=false;hintLv=0;isRev=false;
-  cOrder=shuf(cIdx(c));cResults[c].entries=[];
-  renderNav();renderQ();
-}
-function renderNav(){
-  const nav=document.getElementById('chunk-nav');nav.innerHTML='';
-  for(let i=0;i<nChunks();i++){
-    const r=cResults[i];let cls='chunk-dot';
-    if(!isRev&&i===cChunk)cls+=' active';
-    else if(r.done){const p=r.correct/r.total;cls+=p===1?' perfect':p>=.8?' good':p>=.6?' mid':' bad';}
-    const b=document.createElement('button');b.className=cls;b.textContent=i+1;
-    if(r.done)b.onclick=()=>{isRev=false;showAnalysis(i);};
-    nav.appendChild(b);
-  }
-  if(missed.length){
-    const u=[...new Set(missed)];
-    const rb=document.createElement('button');
-    rb.className='review-pill'+(isRev?' active':'');
-    rb.textContent=`🔁 復習 ${u.length}語`;rb.onclick=startRev;
-    nav.appendChild(rb);
-  }
-}
-function renderQ(){
-  if(cInChunk>=cOrder.length){finishChunk();return;}
-  const idx=cOrder[cInChunk];answered=false;hintLv=0;
-  document.getElementById('prog-fill').style.width=Math.round(tAnswered/qWords.length*100)+'%';
-  const uname=getU(qUnitId)?.name||'';
-  if(mode==='mc'){renderQmc(idx,uname);}else{renderQtype(idx,uname);}
-}
-function renderQtype(idx,uname){
-  document.getElementById('main-area').innerHTML=`
-    <div class="q-card">
-      <div class="q-label">${qlabel()}</div>
-      <div class="q-word">${esc(getQ(idx))}</div>
-      <div class="q-sub">${esc(uname)} · グループ${cChunk+1} — ${cInChunk+1}/${cOrder.length}</div>
-    </div>
-    <div class="input-row">
-      <input type="text" id="ans-input" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <button class="sub-btn" id="sub-btn" onclick="checkAns()">確認</button>
-    </div>
-    <div class="hint-row"><span class="hint-txt" id="hint-txt"></span><button class="hint-link" id="hint-btn" onclick="doHint()">ヒント</button></div>
-    <div class="feedback" id="feedback"></div>
-    <div class="nav-row">
-      <span class="counter">${tAnswered+1} / ${qWords.length}</span>
-      <button class="next-btn" id="next-btn" onclick="nextQ()">次へ →</button>
-    </div>`;
-  bindInp(checkAns,nextQ);
-}
-function renderQmc(idx,uname){
-  const choices=makeChoices(idx);
-  const btns=choices.map(ci=>`
-    <button class="choice-btn" onclick="checkMC(${ci},${idx})">${esc(qWords[ci].jp)}</button>`).join('');
-  document.getElementById('main-area').innerHTML=`
-    <div class="q-card">
-      <div class="q-label">${qlabel()}</div>
-      <div class="q-word">${esc(qWords[idx].en)}</div>
-      <div class="q-sub">${esc(uname)} · グループ${cChunk+1} — ${cInChunk+1}/${cOrder.length}</div>
-    </div>
-    <div class="choices">${btns}</div>
-    <div class="feedback" id="feedback"></div>
-    <div class="nav-row">
-      <span class="counter">${tAnswered+1} / ${qWords.length}</span>
-      <button class="next-btn" id="next-btn" onclick="nextQ()">次へ →</button>
-    </div>`;
-}
-function checkMC(chosen,correct){
-  if(answered)return;
-  answered=true;
-  const ok=chosen===correct;
-  document.querySelectorAll('.choice-btn').forEach(b=>{
-    b.disabled=true;
-    if(b.textContent.trim()===qWords[correct].jp) b.classList.add('c-ok');
-  });
-  if(!ok) document.querySelectorAll('.choice-btn')[
-    [...document.querySelectorAll('.choice-btn')].findIndex(b=>b.textContent.trim()===qWords[chosen].jp)
-  ]?.classList.add('c-ng');
-  const fb=document.getElementById('feedback');
-  fb.className='feedback show '+(ok?'ok':'ng');
-  fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(qWords[correct].jp)}</strong>`;
-  document.getElementById('next-btn').style.display='inline-block';
-  document.getElementById('next-btn').focus();
-  if(ok){tCorrect++;cResults[cChunk].correct++;cResults[cChunk].entries.push({idx:correct,ok:true});tAnswered++;}
-  else{cResults[cChunk].entries.push({idx:correct,ok:false});tAnswered++;missed.push(correct);}
-}
-function renderRevQ(){
-  if(revIdx>=revQ.length){finishRev();return;}
-  const idx=revQ[revIdx];answered=false;hintLv=0;
-  document.getElementById('prog-fill').style.width=Math.round(revIdx/revQ.length*100)+'%';
-  document.getElementById('main-area').innerHTML=`
-    <div class="review-badge">🔁 復習モード — ${revIdx+1}/${revQ.length}</div>
-    <div class="q-card">
-      <div class="q-label">${qlabel()}</div>
-      <div class="q-word">${esc(getQ(idx))}</div>
-      <div class="q-sub">間違えた単語の復習</div>
-    </div>
-    <div class="input-row">
-      <input type="text" id="ans-input" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <button class="sub-btn" id="sub-btn" onclick="checkRevAns()">確認</button>
-    </div>
-    <div class="hint-row"><span class="hint-txt" id="hint-txt"></span><button class="hint-link" id="hint-btn" onclick="doHint()">ヒント</button></div>
-    <div class="feedback" id="feedback"></div>
-    <div class="nav-row">
-      <span class="counter">${revIdx+1} / ${revQ.length}</span>
-      <button class="next-btn" id="next-btn" onclick="nextRevQ()">次へ →</button>
-    </div>`;
-  bindInp(checkRevAns,nextRevQ);
-}
-function bindInp(onC,onN){
-  const inp=document.getElementById('ans-input');inp.focus();
-  inp.addEventListener('keydown',e=>{if(e.key==='Enter'){answered?onN():onC();}});
-}
-function doHint(){
-  const idx=isRev?revQ[revIdx]:cOrder[cInChunk];
-  const ans=getA(idx);hintLv=Math.min(hintLv+2,ans.length-1);
-  document.getElementById('hint-txt').textContent=ans.split('').map((c,i)=>i<hintLv?c:'_').join('');
-  if(hintLv>=ans.length-1)document.getElementById('hint-btn').style.display='none';
-}
-function doCheck(idx,onOk,onNg){
-  if(answered)return;
-  const ans=getA(idx),inp=document.getElementById('ans-input');
-  if(!inp.value.trim())return;
-  answered=true;document.getElementById('sub-btn').disabled=true;document.getElementById('hint-btn').style.display='none';
-  const ok=norm(inp.value)===norm(ans);
-  inp.className=ok?'ok':'ng';
-  const fb=document.getElementById('feedback');
-  fb.className='feedback show '+(ok?'ok':'ng');
-  fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(ans)}</strong>`;
-  document.getElementById('next-btn').style.display='inline-block';
-  document.getElementById('next-btn').focus();
-  ok?onOk():onNg();
-}
-function checkAns(){
-  const idx=cOrder[cInChunk];
-  doCheck(idx,
-    ()=>{tCorrect++;cResults[cChunk].correct++;cResults[cChunk].entries.push({idx,ok:true});tAnswered++;},
-    ()=>{cResults[cChunk].entries.push({idx,ok:false});tAnswered++;missed.push(idx);}
-  );
-}
-function checkRevAns(){
-  const idx=revQ[revIdx];
-  doCheck(idx,()=>{revOk++;revAns++;},()=>{revAns++;missed.push(idx);});
-}
-function nextQ(){cInChunk++;renderQ();}
-function nextRevQ(){revIdx++;renderRevQ();}
-function finishChunk(){cResults[cChunk].done=true;renderNav();showAnalysis(cChunk);}
-
-function showAnalysis(c){
-  const r=cResults[c];const pct=Math.round(r.correct/r.total*100);
-  const col=pct===100?'var(--green)':pct>=80?'#4fa832':pct>=60?'var(--yellow)':'var(--red)';
-  const lbl=pct===100?'完璧':pct>=80?'良好':pct>=60?'まずまず':'要復習';
-  const rows=r.entries.map(e=>`<tr><td class="en">${esc(qWords[e.idx].en)}</td><td>${esc(qWords[e.idx].jp)}</td><td><span class="badge ${e.ok?'badge-ok':'badge-ng'}">${e.ok?'正解':'不正解'}</span></td></tr>`).join('');
-  const allDone=cResults.every(x=>x.done);
-  const isCur=c===cChunk&&r.done&&!isRev;const nc=cChunk+1;
-  let nBtn='';
-  if(allDone)nBtn=`<button class="action-btn primary" onclick="showFinal()">全体結果を見る →</button>`;
-  else if(isCur&&nc<nChunks()){const f=nc*CHUNK+1,t=Math.min((nc+1)*CHUNK,qWords.length);nBtn=`<button class="action-btn primary" onclick="startChunk(${nc})">グループ${nc+1}へ（${f}〜${t}番）→</button>`;}
-  const uniq=[...new Set(missed)];
-  const rBtn=uniq.length?`<button class="action-btn review-act" onclick="startRev()">🔁 間違えた単語を復習 (${uniq.length}語)</button>`:'';
-  document.getElementById('main-area').innerHTML=`
-    <div class="card">
-      <div class="card-title">グループ${c+1}の結果</div>
-      <div class="stats-grid">
-        <div class="stat-box"><div class="stat-val">${r.correct}/${r.total}</div><div class="stat-lbl">正解数</div></div>
-        <div class="stat-box"><div class="stat-val" style="color:${col}">${pct}%</div><div class="stat-lbl">正解率</div></div>
-        <div class="stat-box"><div class="stat-val" style="color:${col};font-size:1.1rem;">${lbl}</div><div class="stat-lbl">評価</div></div>
-      </div>
-      <div class="thin-bar"><div class="thin-bar-fill" style="width:${pct}%;background:${col}"></div></div>
-      <table class="word-table"><thead><tr><th>英語</th><th>日本語</th><th>結果</th></tr></thead><tbody>${rows}</tbody></table>
-      ${rBtn}${nBtn}
-    </div>`;
-  document.getElementById('prog-fill').style.width=Math.round(tAnswered/qWords.length*100)+'%';
-}
-function startRev(){
-  const uniq=[...new Set(missed)];if(!uniq.length)return;
-  isRev=true;revQ=shuf(uniq);revIdx=0;revOk=0;revAns=0;answered=false;hintLv=0;
-  renderNav();renderRevQ();
-}
-function finishRev(){
-  const pct=Math.round(revOk/revQ.length*100);
-  const col=pct===100?'var(--green)':pct>=60?'var(--yellow)':'var(--red)';
-  const uniq=[...new Set(missed)];
-  document.getElementById('prog-fill').style.width='100%';renderNav();
-  document.getElementById('main-area').innerHTML=`
-    <div class="card">
-      <div class="card-title">復習完了</div>
-      <div class="stats-grid">
-        <div class="stat-box"><div class="stat-val">${revOk}/${revQ.length}</div><div class="stat-lbl">正解数</div></div>
-        <div class="stat-box"><div class="stat-val" style="color:${col}">${pct}%</div><div class="stat-lbl">正解率</div></div>
-        <div class="stat-box"><div class="stat-val" style="color:${col};font-size:1.1rem;">${pct===100?'完璧':pct>=80?'良好':pct>=60?'まずまず':'要復習'}</div><div class="stat-lbl">評価</div></div>
-      </div>
-      ${uniq.length?`<button class="action-btn review-act" onclick="startRev()">🔁 もう一度復習 (${uniq.length}語)</button>`:''}
-      ${cResults.every(r=>r.done)?`<button class="action-btn secondary" onclick="showFinal()">全体結果を見る</button>`:''}
-    </div>`;
-}
-function showFinal(){
-  const pct=Math.round(tCorrect/qWords.length*100);
-  const bars=cResults.map((r,i)=>{
-    const p=Math.round(r.correct/r.total*100);
-    const col=p===100?'var(--green)':p>=80?'#4fa832':p>=60?'var(--yellow)':'var(--red)';
-    return `<div class="chunk-bar-row"><span class="chunk-bar-label">G${i+1}</span><div class="chunk-bar-track"><div class="chunk-bar-fill" style="width:${p}%;background:${col}"></div></div><span class="chunk-bar-pct">${p}%</span></div>`;
-  }).join('');
-  const uniq=[...new Set(missed)];
-  document.getElementById('prog-fill').style.width='100%';
-  document.getElementById('main-area').innerHTML=`
-    <div class="final-score" style="color:${pct===100?'var(--green)':'var(--text)'}">${tCorrect}<span style="font-size:1.5rem;color:var(--text3)">/${qWords.length}</span></div>
-    <div class="final-comment">正解率 ${pct}% — ${pct===100?'完璧！全問正解！':pct>=80?'すばらしい！':pct>=60?'もう少し！':'復習しよう！'}</div>
-    <div class="card" style="margin-bottom:.75rem;"><div class="card-title">グループ別スコア</div>${bars}</div>
-    ${uniq.length?`<button class="action-btn review-act" onclick="startRev()" style="margin-bottom:8px;">🔁 間違えた単語をまとめて復習 (${uniq.length}語)</button>`:''}
-    <div class="restart-row">
-      <button class="btn btn-ghost" onclick="setMode('en-jp')">英語 → 日本語</button>
-      <button class="btn btn-ghost" onclick="setMode('mc')">英語 → 4択</button>
-      <button class="btn btn-accent" onclick="resetQuiz()">もう一度</button>
-      <button class="btn btn-ghost" onclick="setMode('jp-en')">日本語 → 英語</button>
-    </div>`;
-}
-
-// ══ TARGET 1900 ══
-// TARGET1900_DATAはtarget1900.jsで定義済みとして使用
-const T_CHUNK=50;
+// ══ TARGET1900クイズ ══
+const T_CHUNK=30,TQCHUNK=5;
 const T_SECTIONS=[];
 for(let i=0;i<TARGET1900_DATA.length;i+=T_CHUNK){
   const s=i+1,e=Math.min(i+T_CHUNK,TARGET1900_DATA.length);
   T_SECTIONS.push({label:`No.${s}–${e}`,words:TARGET1900_DATA.slice(i,i+T_CHUNK)});
 }
 
-let tqSec=0,tqMode='en-jp';
-let tqWords=[],tqResults=[],tqChunk=0,tqInChunk=0,tqOk=0,tqAns=0;
-let tqAnswered=false,tqHintLv=0,tqOrder=[];
-let tqMissed=[],tqIsRev=false,tqRevQ=[],tqRevIdx=0,tqRevOk=0,tqRevAns=0;
-const TQCHUNK=5;
+class TargetQuiz extends QuizEngine {
+  constructor(){
+    super({navId:'t-chunk-nav',fillId:'t-prog-fill',areaId:'t-main-area',tabId:'tab-target',CHUNK:TQCHUNK});
+    _engines['t-main-area']=this;
+    this.sec=0;
+  }
+  subtitle(){return 'TARGET1900 '+T_SECTIONS[this.sec].label;}
+  pickSec(i){
+    this.sec=i;
+    document.querySelectorAll('#t-unit-selector .unit-sel-btn').forEach((b,j)=>b.classList.toggle('active',j===i));
+    this.setWords(T_SECTIONS[i].words);
+  }
+}
+const T=new TargetQuiz();
 
 function initTarget(){
-  initTSlider();
-  updateTStepper();
-  tqSec=0;startTSection();
-}
-function initTSlider(){
-  const track=document.getElementById('t-track');
-  if(track._bound)return;
-  track._bound=true;
-  track.addEventListener('click',e=>{
-    const r=track.getBoundingClientRect();
-    const pct=(e.clientX-r.left)/r.width;
-    pickTSec(Math.max(0,Math.min(T_SECTIONS.length-1,Math.round(pct*(T_SECTIONS.length-1)))));
-  });
-}
-function updateTStepper(){
-  const s=T_SECTIONS[tqSec];
-  const pct=T_SECTIONS.length>1?Math.round(tqSec/(T_SECTIONS.length-1)*100):0;
-  document.getElementById('t-step-range').textContent=s.label;
-  document.getElementById('t-step-sub').textContent=`${tqSec+1} / ${T_SECTIONS.length}`;
-  document.getElementById('t-prev-btn').disabled=tqSec===0;
-  document.getElementById('t-next-btn').disabled=tqSec===T_SECTIONS.length-1;
-  document.getElementById('t-track-fill').style.width=pct+'%';
-  document.getElementById('t-track-thumb').style.left=pct+'%';
-}
-function tStepNav(dir){pickTSec(Math.max(0,Math.min(T_SECTIONS.length-1,tqSec+dir)));}
-function pickTSec(i){tqSec=i;updateTStepper();startTSection();}
-function setTMode(m){tqMode=m;document.getElementById('tm-en').classList.toggle('active',m==='en-jp');document.getElementById('tm-jp').classList.toggle('active',m==='jp-en');document.getElementById('tm-mc').classList.toggle('active',m==='mc');resetTQuiz();}
-function startTSection(){tqWords=T_SECTIONS[tqSec].words;resetTQuiz();}
-function resetTQuiz(){
-  const n=Math.ceil(tqWords.length/TQCHUNK);
-  tqResults=Array.from({length:n},(_,c)=>({done:false,correct:0,total:Math.min(TQCHUNK,tqWords.length-c*TQCHUNK),entries:[]}));
-  tqChunk=0;tqInChunk=0;tqOk=0;tqAns=0;tqAnswered=false;tqHintLv=0;tqIsRev=false;
-  tqMissed=[];tqRevQ=[];tqRevIdx=0;tqRevOk=0;tqRevAns=0;
-  tqStartChunk(0);
-}
-function tqNChunks(){return Math.ceil(tqWords.length/TQCHUNK);}
-function tqCIdx(c){let s=c*TQCHUNK;return Array.from({length:Math.min(TQCHUNK,tqWords.length-s)},(_,i)=>s+i);}
-function tqGetQ(i){return tqMode==='en-jp'?tqWords[i].en:tqWords[i].jp;}
-function tqGetA(i){return tqMode==='en-jp'?tqWords[i].jp:tqWords[i].en;}
-function tqQlabel(){return tqMode==='en-jp'?'英単語の意味を入力':tqMode==='jp-en'?'日本語を英語で入力':'英語に対応する日本語を選んでください';}
-
-function tqStartChunk(c){
-  tqChunk=c;tqInChunk=0;tqAnswered=false;tqHintLv=0;tqIsRev=false;
-  tqOrder=shuf(tqCIdx(c));tqResults[c].entries=[];
-  renderTNav();renderTQ();
-}
-function renderTNav(){
-  const nav=document.getElementById('t-chunk-nav');nav.innerHTML='';
-  for(let i=0;i<tqNChunks();i++){
-    const r=tqResults[i];let cls='chunk-dot';
-    if(!tqIsRev&&i===tqChunk)cls+=' active';
-    else if(r.done){const p=r.correct/r.total;cls+=p===1?' perfect':p>=.8?' good':p>=.6?' mid':' bad';}
-    const b=document.createElement('button');b.className=cls;b.textContent=i+1;
-    if(r.done)b.onclick=()=>{tqIsRev=false;showTAnalysis(i);};
-    nav.appendChild(b);
-  }
-  if(tqMissed.length){
-    const u=[...new Set(tqMissed)];
-    const rb=document.createElement('button');
-    rb.className='review-pill'+(tqIsRev?' active':'');
-    rb.textContent=`🔁 復習 ${u.length}語`;rb.onclick=startTRev;
-    nav.appendChild(rb);
-  }
-}
-function tqMakeChoices(correctIdx){
-  const pool=tqWords.map((_,i)=>i).filter(i=>i!==correctIdx);
-  const wrong=shuf(pool).slice(0,3);
-  return shuf([correctIdx,...wrong]);
-}
-function renderTQ(){
-  if(tqInChunk>=tqOrder.length){finishTChunk();return;}
-  const idx=tqOrder[tqInChunk];tqAnswered=false;tqHintLv=0;
-  document.getElementById('t-prog-fill').style.width=Math.round(tqAns/tqWords.length*100)+'%';
-  const sLabel=T_SECTIONS[tqSec].label;
-  if(tqMode==='mc'){renderTQmc(idx,sLabel);return;}
-  document.getElementById('t-main-area').innerHTML=`
-    <div class="q-card">
-      <div class="q-label">${tqQlabel()}</div>
-      <div class="q-word">${esc(tqGetQ(idx))}</div>
-      <div class="q-sub">TARGET1900 ${esc(sLabel)} · グループ${tqChunk+1} — ${tqInChunk+1}/${tqOrder.length}</div>
-    </div>
-    <div class="input-row">
-      <input type="text" id="t-ans-input" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <button class="sub-btn" id="t-sub-btn" onclick="checkTAns()">確認</button>
-    </div>
-    <div class="hint-row"><span class="hint-txt" id="t-hint-txt"></span><button class="hint-link" id="t-hint-btn" onclick="doTHint()">ヒント</button></div>
-    <div class="feedback" id="t-feedback"></div>
-    <div class="nav-row">
-      <span class="counter">${tqAns+1} / ${tqWords.length}</span>
-      <button class="next-btn" id="t-next-btn" onclick="nextTQ()">次へ →</button>
-    </div>`;
-  const inp=document.getElementById('t-ans-input');inp.focus();
-  inp.addEventListener('keydown',e=>{if(e.key==='Enter'){tqAnswered?nextTQ():checkTAns();}});
-}
-function renderTQmc(idx,sLabel){
-  const choices=tqMakeChoices(idx);
-  const btns=choices.map(ci=>`<button class="choice-btn" onclick="checkTMC(${ci},${idx})">${esc(tqWords[ci].jp)}</button>`).join('');
-  document.getElementById('t-main-area').innerHTML=`
-    <div class="q-card">
-      <div class="q-label">${tqQlabel()}</div>
-      <div class="q-word">${esc(tqWords[idx].en)}</div>
-      <div class="q-sub">TARGET1900 ${esc(sLabel)} · グループ${tqChunk+1} — ${tqInChunk+1}/${tqOrder.length}</div>
-    </div>
-    <div class="choices">${btns}</div>
-    <div class="feedback" id="t-feedback"></div>
-    <div class="nav-row">
-      <span class="counter">${tqAns+1} / ${tqWords.length}</span>
-      <button class="next-btn" id="t-next-btn" onclick="nextTQ()">次へ →</button>
-    </div>`;
-}
-function checkTMC(chosen,correct){
-  if(tqAnswered)return;
-  tqAnswered=true;
-  const ok=chosen===correct;
-  document.querySelectorAll('#t-main-area .choice-btn').forEach(b=>{
-    b.disabled=true;
-    if(b.textContent.trim()===tqWords[correct].jp)b.classList.add('c-ok');
-  });
-  if(!ok){
-    const btns=[...document.querySelectorAll('#t-main-area .choice-btn')];
-    const ci=btns.findIndex(b=>b.textContent.trim()===tqWords[chosen].jp);
-    if(ci>=0)btns[ci].classList.add('c-ng');
-  }
-  const fb=document.getElementById('t-feedback');
-  fb.className='feedback show '+(ok?'ok':'ng');
-  fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(tqWords[correct].jp)}</strong>`;
-  document.getElementById('t-next-btn').style.display='inline-block';
-  document.getElementById('t-next-btn').focus();
-  if(ok){tqOk++;tqResults[tqChunk].correct++;tqResults[tqChunk].entries.push({idx:correct,ok:true});tqAns++;}
-  else{tqResults[tqChunk].entries.push({idx:correct,ok:false});tqAns++;tqMissed.push(correct);}
-}
-function doTHint(){
-  const idx=tqIsRev?tqRevQ[tqRevIdx]:tqOrder[tqInChunk];
-  const ans=tqGetA(idx);tqHintLv=Math.min(tqHintLv+2,ans.length-1);
-  document.getElementById('t-hint-txt').textContent=ans.split('').map((c,i)=>i<tqHintLv?c:'_').join('');
-  if(tqHintLv>=ans.length-1)document.getElementById('t-hint-btn').style.display='none';
-}
-function checkTAns(){
-  if(tqAnswered)return;
-  const idx=tqOrder[tqInChunk];
-  const ans=tqGetA(idx);
-  const inp=document.getElementById('t-ans-input');
-  if(!inp.value.trim())return;
-  tqAnswered=true;
-  document.getElementById('t-sub-btn').disabled=true;
-  document.getElementById('t-hint-btn').style.display='none';
-  const ok=norm(inp.value)===norm(ans);
-  inp.className=ok?'ok':'ng';
-  const fb=document.getElementById('t-feedback');
-  fb.className='feedback show '+(ok?'ok':'ng');
-  fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(ans)}</strong>`;
-  document.getElementById('t-next-btn').style.display='inline-block';
-  document.getElementById('t-next-btn').focus();
-  if(ok){tqOk++;tqResults[tqChunk].correct++;tqResults[tqChunk].entries.push({idx,ok:true});tqAns++;}
-  else{tqResults[tqChunk].entries.push({idx,ok:false});tqAns++;tqMissed.push(idx);}
-}
-function nextTQ(){tqInChunk++;renderTQ();}
-function finishTChunk(){tqResults[tqChunk].done=true;renderTNav();showTAnalysis(tqChunk);}
-
-function showTAnalysis(c){
-  const r=tqResults[c];const pct=Math.round(r.correct/r.total*100);
-  const col=pct===100?'var(--green)':pct>=80?'#4fa832':pct>=60?'var(--yellow)':'var(--red)';
-  const lbl=pct===100?'完璧':pct>=80?'良好':pct>=60?'まずまず':'要復習';
-  const rows=r.entries.map(e=>`<tr><td class="en">${esc(tqWords[e.idx].en)}</td><td>${esc(tqWords[e.idx].jp)}</td><td><span class="badge ${e.ok?'badge-ok':'badge-ng'}">${e.ok?'正解':'不正解'}</span></td></tr>`).join('');
-  const allDone=tqResults.every(x=>x.done);
-  const isCur=c===tqChunk&&r.done&&!tqIsRev;const nc=tqChunk+1;
-  let nBtn='';
-  if(allDone)nBtn=`<button class="action-btn primary" onclick="showTFinal()">全体結果を見る →</button>`;
-  else if(isCur&&nc<tqNChunks()){const f=nc*TQCHUNK+1,t=Math.min((nc+1)*TQCHUNK,tqWords.length);nBtn=`<button class="action-btn primary" onclick="tqStartChunk(${nc})">グループ${nc+1}へ（${f}〜${t}番）→</button>`;}
-  const uniq=[...new Set(tqMissed)];
-  const rBtn=uniq.length?`<button class="action-btn review-act" onclick="startTRev()">🔁 間違えた単語を復習 (${uniq.length}語)</button>`:'';
-  document.getElementById('t-main-area').innerHTML=`
-    <div class="card">
-      <div class="card-title">グループ${c+1}の結果</div>
-      <div class="stats-grid">
-        <div class="stat-box"><div class="stat-val">${r.correct}/${r.total}</div><div class="stat-lbl">正解数</div></div>
-        <div class="stat-box"><div class="stat-val" style="color:${col}">${pct}%</div><div class="stat-lbl">正解率</div></div>
-        <div class="stat-box"><div class="stat-val" style="color:${col};font-size:1.1rem;">${lbl}</div><div class="stat-lbl">評価</div></div>
-      </div>
-      <div class="thin-bar"><div class="thin-bar-fill" style="width:${pct}%;background:${col}"></div></div>
-      <table class="word-table"><thead><tr><th>英語</th><th>日本語</th><th>結果</th></tr></thead><tbody>${rows}</tbody></table>
-      ${rBtn}${nBtn}
-    </div>`;
-  document.getElementById('t-prog-fill').style.width=Math.round(tqAns/tqWords.length*100)+'%';
-}
-function startTRev(){
-  const uniq=[...new Set(tqMissed)];if(!uniq.length)return;
-  tqIsRev=true;tqRevQ=shuf(uniq);tqRevIdx=0;tqRevOk=0;tqRevAns=0;tqAnswered=false;tqHintLv=0;
-  renderTNav();renderTRevQ();
-}
-function renderTRevQ(){
-  if(tqRevIdx>=tqRevQ.length){finishTRev();return;}
-  const idx=tqRevQ[tqRevIdx];tqAnswered=false;tqHintLv=0;
-  document.getElementById('t-prog-fill').style.width=Math.round(tqRevIdx/tqRevQ.length*100)+'%';
-  document.getElementById('t-main-area').innerHTML=`
-    <div class="review-badge">🔁 復習モード — ${tqRevIdx+1}/${tqRevQ.length}</div>
-    <div class="q-card">
-      <div class="q-label">${tqQlabel()}</div>
-      <div class="q-word">${esc(tqGetQ(idx))}</div>
-      <div class="q-sub">TARGET1900 — 間違えた単語の復習</div>
-    </div>
-    <div class="input-row">
-      <input type="text" id="t-ans-input" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <button class="sub-btn" id="t-sub-btn" onclick="checkTRevAns()">確認</button>
-    </div>
-    <div class="hint-row"><span class="hint-txt" id="t-hint-txt"></span><button class="hint-link" id="t-hint-btn" onclick="doTHint()">ヒント</button></div>
-    <div class="feedback" id="t-feedback"></div>
-    <div class="nav-row">
-      <span class="counter">${tqRevIdx+1} / ${tqRevQ.length}</span>
-      <button class="next-btn" id="t-next-btn" onclick="nextTRevQ()">次へ →</button>
-    </div>`;
-  const inp=document.getElementById('t-ans-input');inp.focus();
-  inp.addEventListener('keydown',e=>{if(e.key==='Enter'){tqAnswered?nextTRevQ():checkTRevAns();}});
-}
-function checkTRevAns(){
-  if(tqAnswered)return;
-  const idx=tqRevQ[tqRevIdx];
-  const ans=tqGetA(idx);
-  const inp=document.getElementById('t-ans-input');
-  if(!inp.value.trim())return;
-  tqAnswered=true;
-  document.getElementById('t-sub-btn').disabled=true;
-  document.getElementById('t-hint-btn').style.display='none';
-  const ok=norm(inp.value)===norm(ans);
-  inp.className=ok?'ok':'ng';
-  const fb=document.getElementById('t-feedback');
-  fb.className='feedback show '+(ok?'ok':'ng');
-  fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(ans)}</strong>`;
-  document.getElementById('t-next-btn').style.display='inline-block';
-  document.getElementById('t-next-btn').focus();
-  if(ok){tqRevOk++;tqRevAns++;}else{tqRevAns++;tqMissed.push(idx);}
-}
-function nextTRevQ(){tqRevIdx++;renderTRevQ();}
-function finishTRev(){
-  const pct=Math.round(tqRevOk/tqRevQ.length*100);
-  const col=pct===100?'var(--green)':pct>=60?'var(--yellow)':'var(--red)';
-  const uniq=[...new Set(tqMissed)];
-  document.getElementById('t-prog-fill').style.width='100%';renderTNav();
-  document.getElementById('t-main-area').innerHTML=`
-    <div class="card">
-      <div class="card-title">復習完了</div>
-      <div class="stats-grid">
-        <div class="stat-box"><div class="stat-val">${tqRevOk}/${tqRevQ.length}</div><div class="stat-lbl">正解数</div></div>
-        <div class="stat-box"><div class="stat-val" style="color:${col}">${pct}%</div><div class="stat-lbl">正解率</div></div>
-        <div class="stat-box"><div class="stat-val" style="color:${col};font-size:1.1rem;">${pct===100?'完璧':pct>=80?'良好':pct>=60?'まずまず':'要復習'}</div><div class="stat-lbl">評価</div></div>
-      </div>
-      ${uniq.length?`<button class="action-btn review-act" onclick="startTRev()">🔁 もう一度復習 (${uniq.length}語)</button>`:''}
-      ${tqResults.every(r=>r.done)?`<button class="action-btn secondary" onclick="showTFinal()">全体結果を見る</button>`:''}
-    </div>`;
-}
-function showTFinal(){
-  const pct=Math.round(tqOk/tqWords.length*100);
-  const bars=tqResults.map((r,i)=>{
-    const p=Math.round(r.correct/r.total*100);
-    const col=p===100?'var(--green)':p>=80?'#4fa832':p>=60?'var(--yellow)':'var(--red)';
-    return `<div class="chunk-bar-row"><span class="chunk-bar-label">G${i+1}</span><div class="chunk-bar-track"><div class="chunk-bar-fill" style="width:${p}%;background:${col}"></div></div><span class="chunk-bar-pct">${p}%</span></div>`;
-  }).join('');
-  const uniq=[...new Set(tqMissed)];
-  document.getElementById('t-prog-fill').style.width='100%';
-  document.getElementById('t-main-area').innerHTML=`
-    <div class="final-score" style="color:${pct===100?'var(--green)':'var(--text)'}">${tqOk}<span style="font-size:1.5rem;color:var(--text3)">/${tqWords.length}</span></div>
-    <div class="final-comment">正解率 ${pct}% — ${pct===100?'完璧！全問正解！':pct>=80?'すばらしい！':pct>=60?'もう少し！':'復習しよう！'}</div>
-    <div class="card" style="margin-bottom:.75rem;"><div class="card-title">グループ別スコア</div>${bars}</div>
-    ${uniq.length?`<button class="action-btn review-act" onclick="startTRev()" style="margin-bottom:8px;">🔁 間違えた単語をまとめて復習 (${uniq.length}語)</button>`:''}
-    <div class="restart-row">
-      <button class="btn btn-ghost" onclick="setTMode('en-jp')">英語 → 日本語</button>
-      <button class="btn btn-ghost" onclick="setTMode('mc')">英語 → 4択</button>
-      <button class="btn btn-accent" onclick="resetTQuiz()">もう一度</button>
-      <button class="btn btn-ghost" onclick="setTMode('jp-en')">日本語 → 英語</button>
-    </div>`;
+  document.getElementById('t-unit-selector').innerHTML=
+    T_SECTIONS.map((s,i)=>`<button class="unit-sel-btn${i===T.sec?' active':''}" onclick="T.pickSec(${i})">${esc(s.label)}</button>`).join('');
+  document.querySelectorAll('#tab-target .mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===T.mode));
+  T.pickSec(T.sec);
 }
 
 // ══ Toast ══
-let tt;
-function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2200);}
+let _tt;
+function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2200);}
 
 // ══ Boot ══
 load();seedDefaults();
