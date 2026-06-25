@@ -488,8 +488,8 @@ class QuizEngine {
   nChunks(){return Math.ceil(this.words.length/this.CHUNK);}
   chunkIdx(c){const s=c*this.CHUNK;return Array.from({length:Math.min(this.CHUNK,this.words.length-s)},(_,i)=>s+i);}
   makeChoices(ci){return shuf([ci,...shuf(this.words.map((_,i)=>i).filter(i=>i!==ci)).slice(0,3)]);}
-  getQ(i){return this.mode==='en-jp'?this.words[i].en:this.words[i].jp;}
-  getA(i){return this.mode==='en-jp'?this.words[i].jp:this.words[i].en;}
+  getQ(i){return (this.mode==='en-jp'||this.mode==='mc')?this.words[i].en:this.words[i].jp;}
+  getA(i){return (this.mode==='en-jp'||this.mode==='mc')?this.words[i].jp:this.words[i].en;}
   qlabel(){return this.mode==='en-jp'?'英単語の意味を入力':this.mode==='jp-en'?'日本語を英語で入力':'英語に対応する日本語を選んでください';}
 
   startChunk(c){
