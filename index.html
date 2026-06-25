@@ -2,186 +2,177 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>単語クイズ</title>
-<meta property="og:title" content="">
-<meta property="og:description" content="">
-<meta property="og:image" content="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
-<meta name="description" content="">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f4f4f8;--surface:#fff;--surface2:#eaeaf0;--border:#d6d6e2;
-  --text:#111118;--text2:#55556a;--text3:#9999b0;
-  --accent:#5b50e8;--accent-dim:#eceafe;
-  --green:#1a9e68;--green-dim:#e0f5ec;
-  --red:#d94f4f;--red-dim:#fdeaea;
-  --yellow:#b07d10;--yellow-dim:#fdf3da;
-  --shadow:0 1px 4px rgba(0,0,0,.08);
-  --r:8px;--mono:'DM Mono',monospace;--body:'Noto Sans JP',sans-serif;
+--bg:#f4f4f8;--sf:#fff;--sf2:#eaeaf0;--bd:#d6d6e2;
+--tx:#111118;--tx2:#55556a;--tx3:#9999b0;
+--ac:#5b50e8;--acd:#eceafe;
+--gn:#1a9e68;--gnd:#e0f5ec;
+--rd:#d94f4f;--rdd:#fdeaea;
+--yw:#b07d10;--ywd:#fdf3da;
+--sh:0 1px 4px rgba(0,0,0,.08);
+--r:8px;--mono:'DM Mono',monospace;--body:'Noto Sans JP',sans-serif;
 }
 @media(prefers-color-scheme:dark){:root{
-  --bg:#0f0f11;--surface:#18181c;--surface2:#222228;--border:#2e2e38;
-  --text:#e8e8f0;--text2:#8888a0;--text3:#55556a;
-  --accent:#7c6fff;--accent-dim:#2a2560;
-  --green:#3ecf8e;--green-dim:#0f2e20;
-  --red:#f26b6b;--red-dim:#2e0f0f;
-  --yellow:#f0b429;--yellow-dim:#2b1f06;
-  --shadow:0 1px 6px rgba(0,0,0,.4);
+--bg:#0f0f11;--sf:#18181c;--sf2:#222228;--bd:#2e2e38;
+--tx:#e8e8f0;--tx2:#8888a0;--tx3:#55556a;
+--ac:#7c6fff;--acd:#2a2560;
+--gn:#3ecf8e;--gnd:#0f2e20;
+--rd:#f26b6b;--rdd:#2e0f0f;
+--yw:#f0b429;--ywd:#2b1f06;
+--sh:0 1px 6px rgba(0,0,0,.4);
 }}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{font-size:16px;}
-body{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;}
-.app{max-width:680px;margin:0 auto;padding:1.5rem 1rem 4rem;}
-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem;padding-bottom:1rem;border-bottom:1px solid var(--border);}
-.logo{font-family:var(--mono);font-size:.85rem;color:var(--text2);letter-spacing:.1em;}
-.logo span{color:var(--accent);}
-.tabs{display:flex;gap:2px;background:var(--surface2);border-radius:calc(var(--r)+2px);padding:3px;margin-bottom:1.5rem;}
-.tab{flex:1;padding:8px 10px;border:none;border-radius:var(--r);background:transparent;color:var(--text2);font-family:var(--body);font-size:.83rem;cursor:pointer;transition:all .2s;white-space:nowrap;}
-.tab.active{background:var(--surface);color:var(--text);box-shadow:var(--shadow);}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:1rem;}
-.card-title{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:.75rem;font-family:var(--mono);}
-.btn{padding:9px 16px;border:none;border-radius:var(--r);font-family:var(--body);font-size:.85rem;cursor:pointer;transition:all .2s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;}
-.btn-accent{background:var(--accent);color:#fff;}.btn-accent:hover{opacity:.85;}
-.btn-ghost{background:var(--surface2);color:var(--text2);border:1px solid var(--border);}.btn-ghost:hover{color:var(--text);border-color:var(--text3);}
-.btn-danger{background:var(--red-dim);color:var(--red);border:1px solid transparent;}.btn-danger:hover{border-color:var(--red);}
-.btn-sm{padding:5px 10px;font-size:.78rem;}
-input[type=text]{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;color:var(--text);font-family:var(--body);font-size:.9rem;outline:none;transition:border-color .2s;width:100%;}
-input[type=text]:focus{border-color:var(--accent);}
-input::placeholder{color:var(--text3);}
-textarea{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;color:var(--text);font-family:var(--mono);font-size:.83rem;outline:none;transition:border-color .2s;line-height:1.7;resize:vertical;width:100%;}
-textarea:focus{border-color:var(--accent);}
-.hint-text{font-size:.73rem;color:var(--text3);margin-top:.4rem;line-height:1.5;}
-.drop-zone{border:1.5px dashed var(--border);border-radius:var(--r);padding:1.1rem;text-align:center;cursor:pointer;transition:all .2s;color:var(--text3);font-size:.85rem;margin-bottom:.5rem;}
-.drop-zone:hover,.drop-zone.drag-over{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
-.unit-list{display:flex;flex-direction:column;gap:6px;}
-.unit-item{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;cursor:pointer;transition:all .15s;}
-.unit-item:hover{border-color:var(--accent);}
-.unit-item.sel{border-color:var(--accent);background:var(--accent-dim);}
-.unit-name{font-size:.9rem;font-weight:500;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.unit-count{font-size:.75rem;color:var(--text3);font-family:var(--mono);flex-shrink:0;}
-.unit-actions{display:flex;gap:3px;flex-shrink:0;}
-.icon-btn{width:26px;height:26px;border:none;background:none;color:var(--text3);cursor:pointer;border-radius:4px;font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:color .2s;}
-.icon-btn:hover{color:var(--red);}
-.icon-btn.edit-ico:hover{color:var(--accent);}
-.word-list{display:flex;flex-direction:column;gap:4px;max-height:300px;overflow-y:auto;}
-.word-list::-webkit-scrollbar{width:4px;}
-.word-list::-webkit-scrollbar-track{background:transparent;}
-.word-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
-.word-item{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:8px 12px;font-size:.85rem;}
-.word-item .en{font-family:var(--mono);color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.word-item .jp{color:var(--text2);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.word-item .del{margin-left:auto;flex-shrink:0;width:22px;height:22px;border:none;background:none;color:var(--text3);cursor:pointer;font-size:1rem;border-radius:4px;transition:color .2s;display:flex;align-items:center;justify-content:center;}
-.word-item .del:hover{color:var(--red);}
-.flex-row{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;}
-.flex-row>input{flex:1;min-width:120px;}
-.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:.625rem;}
-/* Quiz unit selector — grouped grid */
-.unit-group{margin-bottom:.75rem;}
-.unit-group:last-child{margin-bottom:0;}
-.unit-group-label{font-size:.68rem;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;padding:0 2px;}
-.unit-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
-.unit-sel-btn{padding:7px 10px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);font-family:var(--body);font-size:.8rem;cursor:pointer;color:var(--text2);transition:all .15s;text-align:left;display:flex;flex-direction:column;gap:2px;}
-.unit-sel-btn:hover{border-color:var(--text3);color:var(--text);}
-.unit-sel-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);}
-.unit-sel-btn .usl-cnt{font-size:.7rem;opacity:.65;font-family:var(--mono);}
-/* TARGET slider */
-.t-slider-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.6rem;}
-.t-slider-range{font-size:1rem;font-weight:600;color:var(--text);font-family:var(--body);}
-.t-slider-sub{font-size:.72rem;color:var(--text3);}
-.t-slider-row{display:flex;align-items:center;gap:8px;}
-.t-slider-nav{width:30px;height:30px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);color:var(--text);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s;flex-shrink:0;}
-.t-slider-nav:hover:not(:disabled){background:var(--surface2);}
-.t-slider-nav:disabled{opacity:.25;cursor:default;}
-.t-track{flex:1;height:3px;background:var(--border);border-radius:2px;position:relative;cursor:pointer;}
-.t-track-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .15s;}
-.t-track-thumb{width:14px;height:14px;border-radius:50%;background:var(--accent);border:2px solid var(--surface);box-shadow:0 0 0 1.5px var(--accent);position:absolute;top:50%;transform:translate(-50%,-50%);transition:left .15s;pointer-events:none;}
-.mode-row{display:flex;gap:8px;margin-bottom:1rem;}
-.mode-btn{flex:1;padding:7px;border:1px solid var(--border);border-radius:var(--r);background:transparent;color:var(--text2);font-family:var(--body);font-size:.82rem;cursor:pointer;transition:all .15s;}
-.mode-btn.active{background:var(--accent-dim);color:var(--accent);border-color:var(--accent);}
-.chunk-nav{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:1rem;align-items:center;}
-.chunk-dot{width:30px;height:30px;border-radius:50%;border:1px solid var(--border);background:transparent;font-size:.72rem;font-weight:500;cursor:pointer;color:var(--text2);transition:all .15s;display:flex;align-items:center;justify-content:center;font-family:var(--mono);}
-.chunk-dot.active{background:var(--accent);color:#fff;border-color:var(--accent);}
-.chunk-dot.perfect{background:var(--green);color:#000;border-color:var(--green);}
-.chunk-dot.good{background:var(--green-dim);color:var(--green);border-color:var(--green);}
-.chunk-dot.mid{background:var(--yellow-dim);color:var(--yellow);border-color:var(--yellow);}
-.chunk-dot.bad{background:var(--red-dim);color:var(--red);border-color:var(--red);}
-.review-pill{padding:4px 12px;border:1px solid var(--accent);border-radius:20px;background:var(--accent-dim);font-family:var(--body);font-size:.75rem;cursor:pointer;color:var(--accent);transition:all .15s;white-space:nowrap;}
-.review-pill.active{background:var(--accent);color:#fff;}
-.progress-bar{height:2px;background:var(--surface2);border-radius:1px;margin-bottom:1.25rem;overflow:hidden;}
-.progress-fill{height:100%;background:var(--accent);border-radius:1px;transition:width .4s ease;}
-.q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;margin-bottom:.875rem;}
-.q-label{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:.5rem;font-family:var(--mono);}
-.q-word{font-size:2.2rem;font-weight:700;color:var(--text);line-height:1.2;font-family:var(--mono);}
-.q-sub{font-size:.72rem;color:var(--text3);margin-top:.35rem;font-family:var(--mono);}
-.review-badge{display:inline-flex;align-items:center;gap:5px;background:var(--accent-dim);color:var(--accent);font-size:.72rem;padding:3px 10px;border-radius:20px;margin-bottom:.75rem;font-family:var(--mono);}
-.input-row{display:flex;gap:8px;margin-bottom:.5rem;}
-.ans-input{flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:var(--r);font-size:1rem;font-family:var(--body);color:var(--text);background:var(--surface2);outline:none;transition:all .2s;}
-.ans-input:focus{border-color:var(--accent);}
-.ans-input.ok{border-color:var(--green);background:var(--green-dim);color:var(--green);}
-.ans-input.ng{border-color:var(--red);background:var(--red-dim);color:var(--red);}
-.sub-btn{padding:10px 18px;border:none;border-radius:var(--r);background:var(--accent);color:#fff;font-family:var(--body);font-size:.9rem;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
-.sub-btn:hover{opacity:.82;}.sub-btn:disabled{opacity:.35;cursor:default;}
-.hint-row{display:flex;align-items:center;gap:8px;min-height:18px;margin-bottom:.75rem;}
-.hint-txt{font-size:.82rem;color:var(--text2);font-family:var(--mono);letter-spacing:.1em;}
-.hint-link{font-size:.75rem;color:var(--text3);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:var(--body);}
-.hint-link:hover{color:var(--text2);}
-.feedback{padding:10px 14px;border-radius:var(--r);font-size:.88rem;margin-bottom:.75rem;display:none;}
-.feedback.show{display:block;}
-.feedback.ok{background:var(--green-dim);color:var(--green);border:1px solid #1a4d35;}
-.feedback.ng{background:var(--red-dim);color:var(--red);border:1px solid #4d1a1a;}
-.feedback strong{font-weight:700;}
-.nav-row{display:flex;align-items:center;justify-content:space-between;}
-.counter{font-size:.78rem;color:var(--text3);font-family:var(--mono);}
-.next-btn{padding:9px 18px;border:none;border-radius:var(--r);background:var(--accent);color:#fff;font-size:.88rem;cursor:pointer;display:none;transition:opacity .15s;font-family:var(--body);}
-.next-btn:hover{opacity:.82;}
-.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem;}
-.stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:.875rem;text-align:center;}
-.stat-val{font-size:1.5rem;font-weight:700;font-family:var(--mono);}
-.stat-lbl{font-size:.7rem;color:var(--text3);margin-top:2px;}
-.thin-bar{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;margin-bottom:1rem;}
-.thin-bar-fill{height:100%;border-radius:3px;transition:width .6s ease;}
-.word-table{width:100%;border-collapse:collapse;font-size:.83rem;margin-top:.75rem;}
-.word-table th{text-align:left;padding:5px 8px;color:var(--text3);border-bottom:1px solid var(--border);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);font-weight:400;}
-.word-table td{padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:middle;}
-.word-table tr:last-child td{border-bottom:none;}
-.word-table .en{font-family:var(--mono);}
-.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.7rem;font-family:var(--mono);}
-.badge-ok{background:var(--green-dim);color:var(--green);}
-.badge-ng{background:var(--red-dim);color:var(--red);}
-.action-btn{width:100%;padding:11px;border:none;border-radius:var(--r);font-family:var(--body);font-size:.9rem;cursor:pointer;margin-top:8px;transition:opacity .15s;}
-.action-btn.primary{background:var(--accent);color:#fff;}.action-btn.primary:hover{opacity:.85;}
-.action-btn.secondary{background:var(--surface2);color:var(--text2);border:1px solid var(--border);}
-.action-btn.review-act{background:var(--accent-dim);color:var(--accent);}.action-btn.review-act:hover{opacity:.85;}
-.chunk-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.chunk-bar-label{font-size:.75rem;color:var(--text2);width:42px;flex-shrink:0;font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.chunk-bar-track{flex:1;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;}
-.chunk-bar-fill{height:100%;border-radius:3px;}
-.chunk-bar-pct{font-size:.72rem;color:var(--text3);width:32px;text-align:right;font-family:var(--mono);}
-.final-score{font-size:3.5rem;font-weight:700;font-family:var(--mono);text-align:center;margin-bottom:.25rem;}
-.final-comment{text-align:center;font-size:.9rem;color:var(--text2);margin-bottom:1.5rem;}
-.restart-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
-.empty{text-align:center;padding:2rem 1rem;color:var(--text3);font-size:.9rem;}
-.empty .eico{display:block;font-size:2rem;margin-bottom:.5rem;}
-.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:10px 18px;font-size:.85rem;color:var(--text);box-shadow:0 4px 20px rgba(0,0,0,.3);transition:transform .3s ease;z-index:100;white-space:nowrap;}
-.toast.show{transform:translateX(-50%) translateY(0);}
-.kb-help{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:.75rem 1rem;margin-bottom:1rem;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;}
-.kb-help-title{font-size:.68rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);width:100%;margin-bottom:2px;font-family:var(--mono);}
-.kb-item{display:flex;align-items:center;gap:5px;font-size:.75rem;color:var(--text2);}
-.kb-key{display:inline-block;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-family:var(--mono);font-size:.72rem;color:var(--text);box-shadow:0 1px 0 var(--border);white-space:nowrap;}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem;}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:calc(var(--r)*1.5);padding:1.5rem;width:100%;max-width:460px;box-shadow:0 8px 32px rgba(0,0,0,.3);}
-.modal h3{font-size:1rem;margin-bottom:1rem;}
-.modal-actions{display:flex;gap:8px;margin-top:1rem;justify-content:flex-end;}
-.preview-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;font-size:.83rem;margin-top:.75rem;}
-.choices{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.875rem;}
-.choice-btn{padding:12px 14px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface2);font-family:var(--body);font-size:.88rem;color:var(--text);cursor:pointer;text-align:left;line-height:1.4;transition:all .15s;}
-.choice-btn:hover:not(:disabled){background:var(--surface);border-color:var(--text3);}
-.choice-btn.c-ok{background:var(--green-dim);border-color:var(--green);color:var(--green);}
-.choice-btn.c-ng{background:var(--red-dim);border-color:var(--red);color:var(--red);}
-.choice-btn:disabled{cursor:default;}
-@media(max-width:480px){.choices{grid-template-columns:1fr;}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}
+body{font-family:var(--body);background:var(--bg);color:var(--tx);min-height:100vh;line-height:1.6}
+.app{max-width:680px;margin:0 auto;padding:1.5rem 1rem 4rem}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem;padding-bottom:1rem;border-bottom:1px solid var(--bd)}
+.logo{font-family:var(--mono);font-size:.85rem;color:var(--tx2);letter-spacing:.1em}
+.logo span{color:var(--ac)}
+.tabs{display:flex;gap:2px;background:var(--sf2);border-radius:calc(var(--r) + 2px);padding:3px;margin-bottom:1.5rem}
+.tab{flex:1;padding:8px 10px;border:none;border-radius:var(--r);background:transparent;color:var(--tx2);font-family:var(--body);font-size:.83rem;cursor:pointer;transition:all .2s;white-space:nowrap}
+.tab.active{background:var(--sf);color:var(--tx);box-shadow:var(--sh)}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:1rem}
+.card-title{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);margin-bottom:.75rem;font-family:var(--mono)}
+.btn{padding:9px 16px;border:none;border-radius:var(--r);font-family:var(--body);font-size:.85rem;cursor:pointer;transition:opacity .2s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+.btn-ac{background:var(--ac);color:#fff}.btn-ac:hover{opacity:.85}
+.btn-gh{background:var(--sf2);color:var(--tx2);border:1px solid var(--bd)}.btn-gh:hover{color:var(--tx);border-color:var(--tx3)}
+.btn-dn{background:var(--rdd);color:var(--rd);border:1px solid transparent}.btn-dn:hover{border-color:var(--rd)}
+.btn-sm{padding:5px 10px;font-size:.78rem}
+input[type=text]{background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);padding:9px 12px;color:var(--tx);font-family:var(--body);font-size:.9rem;outline:none;transition:border-color .2s;width:100%}
+input[type=text]:focus{border-color:var(--ac)}
+input::placeholder{color:var(--tx3)}
+textarea{background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);padding:10px 12px;color:var(--tx);font-family:var(--mono);font-size:.83rem;outline:none;transition:border-color .2s;line-height:1.7;resize:vertical;width:100%}
+textarea:focus{border-color:var(--ac)}
+.hint-text{font-size:.73rem;color:var(--tx3);margin-top:.4rem;line-height:1.5}
+.drop-zone{border:1.5px dashed var(--bd);border-radius:var(--r);padding:1.1rem;text-align:center;cursor:pointer;transition:all .2s;color:var(--tx3);font-size:.85rem;margin-bottom:.5rem}
+.drop-zone:hover,.drop-zone.drag-over{border-color:var(--ac);color:var(--ac);background:var(--acd)}
+.unit-list{display:flex;flex-direction:column;gap:6px}
+.unit-item{display:flex;align-items:center;gap:8px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);padding:10px 12px;cursor:pointer;transition:border-color .15s}
+.unit-item:hover,.unit-item.sel{border-color:var(--ac)}
+.unit-item.sel{background:var(--acd)}
+.unit-name{font-size:.9rem;font-weight:500;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.unit-count{font-size:.75rem;color:var(--tx3);font-family:var(--mono);flex-shrink:0}
+.unit-actions{display:flex;gap:3px;flex-shrink:0}
+.icon-btn{width:26px;height:26px;border:none;background:none;color:var(--tx3);cursor:pointer;border-radius:4px;font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:color .2s}
+.icon-btn:hover{color:var(--rd)}
+.icon-btn.edit-ico:hover{color:var(--ac)}
+.word-list{display:flex;flex-direction:column;gap:4px;max-height:300px;overflow-y:auto}
+.word-list::-webkit-scrollbar{width:4px}
+.word-list::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+.word-item{display:flex;align-items:center;gap:10px;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);padding:8px 12px;font-size:.85rem}
+.word-item .en{font-family:var(--mono);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.word-item .jp{color:var(--tx2);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.word-item .del{margin-left:auto;flex-shrink:0;width:22px;height:22px;border:none;background:none;color:var(--tx3);cursor:pointer;font-size:1rem;border-radius:4px;transition:color .2s;display:flex;align-items:center;justify-content:center}
+.word-item .del:hover{color:var(--rd)}
+.flex-row{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+.flex-row>input{flex:1;min-width:120px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:.625rem}
+.unit-group{margin-bottom:.75rem}
+.unit-group:last-child{margin-bottom:0}
+.unit-group-label{font-size:.68rem;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--tx3);margin-bottom:5px;padding:0 2px}
+.unit-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.unit-sel-btn{padding:7px 10px;border:1px solid var(--bd);border-radius:var(--r);background:var(--sf);font-family:var(--body);font-size:.8rem;cursor:pointer;color:var(--tx2);transition:all .15s;text-align:left;display:flex;flex-direction:column;gap:2px}
+.unit-sel-btn:hover{border-color:var(--tx3);color:var(--tx)}
+.unit-sel-btn.active{background:var(--acd);border-color:var(--ac);color:var(--ac)}
+.unit-sel-btn .usl-cnt{font-size:.7rem;opacity:.65;font-family:var(--mono)}
+.t-slider-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.6rem}
+.t-slider-range{font-size:1rem;font-weight:600}
+.t-slider-sub{font-size:.72rem;color:var(--tx3)}
+.t-slider-row{display:flex;align-items:center;gap:8px}
+.t-slider-nav{width:30px;height:30px;border:1px solid var(--bd);border-radius:var(--r);background:var(--sf);color:var(--tx);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s;flex-shrink:0}
+.t-slider-nav:hover:not(:disabled){background:var(--sf2)}
+.t-slider-nav:disabled{opacity:.25;cursor:default}
+.t-track{flex:1;height:3px;background:var(--bd);border-radius:2px;position:relative;cursor:pointer}
+.t-track-fill{height:100%;border-radius:2px;background:var(--ac);transition:width .15s}
+.t-track-thumb{width:14px;height:14px;border-radius:50%;background:var(--ac);border:2px solid var(--sf);box-shadow:0 0 0 1.5px var(--ac);position:absolute;top:50%;transform:translate(-50%,-50%);transition:left .15s;pointer-events:none}
+.mode-row{display:flex;gap:8px;margin-bottom:1rem}
+.mode-btn{flex:1;padding:7px;border:1px solid var(--bd);border-radius:var(--r);background:transparent;color:var(--tx2);font-family:var(--body);font-size:.82rem;cursor:pointer;transition:all .15s}
+.mode-btn.active{background:var(--acd);color:var(--ac);border-color:var(--ac)}
+.chunk-nav{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:1rem;align-items:center}
+.chunk-dot{width:30px;height:30px;border-radius:50%;border:1px solid var(--bd);background:transparent;font-size:.72rem;font-weight:500;cursor:pointer;color:var(--tx2);transition:all .15s;display:flex;align-items:center;justify-content:center;font-family:var(--mono)}
+.chunk-dot.active{background:var(--ac);color:#fff;border-color:var(--ac)}
+.chunk-dot.perfect{background:var(--gn);color:#000;border-color:var(--gn)}
+.chunk-dot.good{background:var(--gnd);color:var(--gn);border-color:var(--gn)}
+.chunk-dot.mid{background:var(--ywd);color:var(--yw);border-color:var(--yw)}
+.chunk-dot.bad{background:var(--rdd);color:var(--rd);border-color:var(--rd)}
+.review-pill{padding:4px 12px;border:1px solid var(--ac);border-radius:20px;background:var(--acd);font-family:var(--body);font-size:.75rem;cursor:pointer;color:var(--ac);transition:all .15s;white-space:nowrap}
+.review-pill.active{background:var(--ac);color:#fff}
+.progress-bar{height:2px;background:var(--sf2);border-radius:1px;margin-bottom:1.25rem;overflow:hidden}
+.progress-fill{height:100%;background:var(--ac);border-radius:1px;transition:width .4s ease}
+.q-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:1.5rem;margin-bottom:.875rem}
+.q-label{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);margin-bottom:.5rem;font-family:var(--mono)}
+.q-word{font-size:2.2rem;font-weight:700;line-height:1.2;font-family:var(--mono)}
+.q-sub{font-size:.72rem;color:var(--tx3);margin-top:.35rem;font-family:var(--mono)}
+.review-badge{display:inline-flex;align-items:center;gap:5px;background:var(--acd);color:var(--ac);font-size:.72rem;padding:3px 10px;border-radius:20px;margin-bottom:.75rem;font-family:var(--mono)}
+.input-row{display:flex;gap:8px;margin-bottom:.5rem}
+.ans-input{flex:1;padding:10px 14px;border:1px solid var(--bd);border-radius:var(--r);font-size:1rem;font-family:var(--body);color:var(--tx);background:var(--sf2);outline:none;transition:all .2s}
+.ans-input:focus{border-color:var(--ac)}
+.ans-input.ok{border-color:var(--gn);background:var(--gnd);color:var(--gn)}
+.ans-input.ng{border-color:var(--rd);background:var(--rdd);color:var(--rd)}
+.sub-btn{padding:10px 18px;border:none;border-radius:var(--r);background:var(--ac);color:#fff;font-family:var(--body);font-size:.9rem;cursor:pointer;transition:opacity .15s;white-space:nowrap}
+.sub-btn:hover{opacity:.82}.sub-btn:disabled{opacity:.35;cursor:default}
+.hint-row{display:flex;align-items:center;gap:8px;min-height:18px;margin-bottom:.75rem}
+.hint-txt{font-size:.82rem;color:var(--tx2);font-family:var(--mono);letter-spacing:.1em}
+.hint-link{font-size:.75rem;color:var(--tx3);background:none;border:none;cursor:pointer;text-decoration:underline;font-family:var(--body)}
+.hint-link:hover{color:var(--tx2)}
+.feedback{padding:10px 14px;border-radius:var(--r);font-size:.88rem;margin-bottom:.75rem;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:var(--gnd);color:var(--gn);border:1px solid #1a4d35}
+.feedback.ng{background:var(--rdd);color:var(--rd);border:1px solid #4d1a1a}
+.feedback strong{font-weight:700}
+.nav-row{display:flex;align-items:center;justify-content:space-between}
+.counter{font-size:.78rem;color:var(--tx3);font-family:var(--mono)}
+.next-btn{padding:9px 18px;border:none;border-radius:var(--r);background:var(--ac);color:#fff;font-size:.88rem;cursor:pointer;display:none;transition:opacity .15s;font-family:var(--body)}
+.next-btn:hover{opacity:.82}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem}
+.stat-box{background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);padding:.875rem;text-align:center}
+.stat-val{font-size:1.5rem;font-weight:700;font-family:var(--mono)}
+.stat-lbl{font-size:.7rem;color:var(--tx3);margin-top:2px}
+.thin-bar{height:6px;background:var(--sf2);border-radius:3px;overflow:hidden;margin-bottom:1rem}
+.thin-bar-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.word-table{width:100%;border-collapse:collapse;font-size:.83rem;margin-top:.75rem}
+.word-table th{text-align:left;padding:5px 8px;color:var(--tx3);border-bottom:1px solid var(--bd);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;font-family:var(--mono);font-weight:400}
+.word-table td{padding:7px 8px;border-bottom:1px solid var(--bd);vertical-align:middle}
+.word-table tr:last-child td{border-bottom:none}
+.word-table .en{font-family:var(--mono)}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.7rem;font-family:var(--mono)}
+.badge-ok{background:var(--gnd);color:var(--gn)}
+.badge-ng{background:var(--rdd);color:var(--rd)}
+.action-btn{width:100%;padding:11px;border:none;border-radius:var(--r);font-family:var(--body);font-size:.9rem;cursor:pointer;margin-top:8px;transition:opacity .15s}
+.action-btn.primary{background:var(--ac);color:#fff}.action-btn.primary:hover{opacity:.85}
+.action-btn.secondary{background:var(--sf2);color:var(--tx2);border:1px solid var(--bd)}
+.action-btn.review-act{background:var(--acd);color:var(--ac)}.action-btn.review-act:hover{opacity:.85}
+.chunk-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.chunk-bar-label{font-size:.75rem;color:var(--tx2);width:42px;flex-shrink:0;font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chunk-bar-track{flex:1;height:6px;background:var(--sf2);border-radius:3px;overflow:hidden}
+.chunk-bar-fill{height:100%;border-radius:3px}
+.chunk-bar-pct{font-size:.72rem;color:var(--tx3);width:32px;text-align:right;font-family:var(--mono)}
+.final-score{font-size:3.5rem;font-weight:700;font-family:var(--mono);text-align:center;margin-bottom:.25rem}
+.final-comment{text-align:center;font-size:.9rem;color:var(--tx2);margin-bottom:1.5rem}
+.restart-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.empty{text-align:center;padding:2rem 1rem;color:var(--tx3);font-size:.9rem}
+.empty .eico{display:block;font-size:2rem;margin-bottom:.5rem}
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:10px 18px;font-size:.85rem;color:var(--tx);box-shadow:0 4px 20px rgba(0,0,0,.3);transition:transform .3s ease;z-index:100;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal{background:var(--sf);border:1px solid var(--bd);border-radius:calc(var(--r)*1.5);padding:1.5rem;width:100%;max-width:460px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.modal h3{font-size:1rem;margin-bottom:1rem}
+.modal-actions{display:flex;gap:8px;margin-top:1rem;justify-content:flex-end}
+.preview-box{background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);padding:10px 12px;font-size:.83rem;margin-top:.75rem}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.875rem}
+.choice-btn{padding:10px 12px;border:1px solid var(--bd);border-radius:var(--r);background:var(--sf2);font-family:var(--body);font-size:.88rem;color:var(--tx);cursor:pointer;text-align:left;line-height:1.4;transition:all .15s;display:flex;align-items:baseline;gap:8px}
+.choice-btn:hover:not(:disabled){background:var(--sf);border-color:var(--tx3)}
+.choice-btn.c-ok{background:var(--gnd);border-color:var(--gn);color:var(--gn)}
+.choice-btn.c-ng{background:var(--rdd);border-color:var(--rd);color:var(--rd)}
+.choice-btn:disabled{cursor:default}
+.choice-num{font-family:var(--mono);font-size:.72rem;color:var(--tx3);flex-shrink:0;min-width:14px}
+.choice-btn.c-ok .choice-num,.choice-btn.c-ng .choice-num{color:inherit;opacity:.7}
+@media(max-width:480px){.choices{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -189,8 +180,8 @@ textarea:focus{border-color:var(--accent);}
   <header>
     <div class="logo"><span>//</span> 単語クイズ</div>
     <div style="display:flex;align-items:center;gap:10px;">
-      <div style="font-size:.75rem;color:var(--text3);font-family:var(--mono);" id="header-info"></div>
-      <button class="btn btn-danger btn-sm" onclick="resetAll()">🗑 リセット</button>
+      <div style="font-size:.75rem;color:var(--tx3);font-family:var(--mono)" id="hdr"></div>
+      <button class="btn btn-dn btn-sm" onclick="resetAll()">🗑 リセット</button>
     </div>
   </header>
   <div class="tabs">
@@ -199,20 +190,19 @@ textarea:focus{border-color:var(--accent);}
     <button class="tab" onclick="switchTab('target')">📖 TARGET1900</button>
   </div>
 
-  <!-- ══ MANAGE ══ -->
   <div id="tab-manage">
     <div class="card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
-        <div class="card-title" style="margin-bottom:0;">単元</div>
-        <div style="display:flex;gap:6px;">
-          <button class="btn btn-ghost btn-sm" onclick="openImportModal()">📂 CSVインポート</button>
-          <button class="btn btn-accent btn-sm" onclick="openNewUnitModal()">＋ 新しい単元</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
+        <div class="card-title" style="margin-bottom:0">単元</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-gh btn-sm" onclick="openImportModal()">📂 CSVインポート</button>
+          <button class="btn btn-ac btn-sm" onclick="openNewUnitModal()">＋ 新しい単元</button>
         </div>
       </div>
       <div class="unit-list" id="unit-list"></div>
       <div class="empty" id="unit-empty"><span class="eico">📂</span>単元がまだありません<br>「新しい単元」または「インポート」で追加できます</div>
     </div>
-    <div id="word-area" style="display:none;">
+    <div id="word-area" style="display:none">
       <div class="card">
         <div class="card-title" id="word-list-title">登録済み単語</div>
         <div class="word-list" id="word-list"></div>
@@ -220,36 +210,34 @@ textarea:focus{border-color:var(--accent);}
       </div>
       <div class="card">
         <div class="card-title" id="word-add-title">単語を追加</div>
-        <div class="flex-row" style="margin-bottom:.75rem;">
+        <div class="flex-row" style="margin-bottom:.75rem">
           <input type="text" id="in-en" placeholder="英語 (例: rapidly)" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" onkeydown="if(event.key==='Enter')document.getElementById('in-jp').focus()">
           <input type="text" id="in-jp" placeholder="日本語 (例: 急速に)" autocomplete="off" onkeydown="if(event.key==='Enter')addWord()">
-          <button class="btn btn-accent" onclick="addWord()">追加</button>
+          <button class="btn btn-ac" onclick="addWord()">追加</button>
         </div>
-        <div class="card-title" style="margin-top:1rem;">まとめて追加（CSV）</div>
-        <div class="drop-zone" id="bulk-drop" onclick="document.getElementById('bulk-file').click()"
-          ondragover="dzOver(event,this)" ondragleave="dzOut(this)" ondrop="dzDrop(event,this,'bulk')">
+        <div class="card-title" style="margin-top:1rem">まとめて追加（CSV）</div>
+        <div class="drop-zone" id="bulk-drop" onclick="document.getElementById('bulk-file').click()" ondragover="dzOver(event,this)" ondragleave="dzOut(this)" ondrop="dzDrop(event,this,'bulk')">
           <input type="file" id="bulk-file" accept=".csv,.txt" style="display:none" onchange="fileSelected(event,'bulk')">
           📄 CSVファイルをドロップ、またはクリックして選択
         </div>
-        <div class="hint-text" style="margin-bottom:.75rem;">形式: <code>英語,日本語</code>（1行1単語）　ファイル名が単元名になります。</div>
+        <div class="hint-text" style="margin-bottom:.75rem">形式: <code>英語,日本語</code>（1行1単語）　ファイル名が単元名になります。</div>
         <textarea id="bulk-text" rows="6" placeholder="直接入力も可:&#10;rapidly,急速に&#10;vehicle,乗り物&#10;crop,作物"></textarea>
         <div class="btn-row">
-          <button class="btn btn-ghost" onclick="bulkFromText()">テキストから追加</button>
-          <button class="btn btn-ghost" onclick="exportCSV()">CSVで書き出す</button>
-          <button class="btn btn-danger btn-sm" onclick="clearWords()">単語を全削除</button>
+          <button class="btn btn-gh" onclick="bulkFromText()">テキストから追加</button>
+          <button class="btn btn-gh" onclick="exportCSV()">CSVで書き出す</button>
+          <button class="btn btn-dn btn-sm" onclick="clearWords()">単語を全削除</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ══ QUIZ ══ -->
-  <div id="tab-quiz" style="display:none;">
-    <div id="quiz-empty" class="empty" style="display:none;padding:3rem 1rem;">
+  <div id="tab-quiz" style="display:none">
+    <div id="quiz-empty" class="empty" style="display:none;padding:3rem 1rem">
       <span class="eico">📝</span>単語を登録してからクイズを始めましょう<br>
-      <button class="btn btn-accent" style="margin-top:1rem;" onclick="switchTab('manage')">単語を登録する</button>
+      <button class="btn btn-ac" style="margin-top:1rem" onclick="switchTab('manage')">単語を登録する</button>
     </div>
-    <div id="quiz-body" style="display:none;">
-      <div class="card" style="margin-bottom:1rem;">
+    <div id="quiz-body" style="display:none">
+      <div class="card" style="margin-bottom:1rem">
         <div class="card-title">単元を選択</div>
         <div id="unit-selector"></div>
       </div>
@@ -258,35 +246,26 @@ textarea:focus{border-color:var(--accent);}
         <button class="mode-btn" data-mode="jp-en" onclick="Q.setMode('jp-en')">日本語 → 英語</button>
         <button class="mode-btn" data-mode="mc" onclick="Q.setMode('mc')">英語 → 4択</button>
       </div>
-      <div class="kb-help">
-        <div class="kb-help-title">⌨️ キーボード操作</div>
-        <span class="kb-item"><kbd class="kb-key">Enter</kbd> 確認 / 次へ</span>
-        <span class="kb-item"><kbd class="kb-key">1</kbd>–<kbd class="kb-key">4</kbd> 4択を選ぶ</span>
-        <span class="kb-item"><kbd class="kb-key">←</kbd><kbd class="kb-key">→</kbd> グループを移動</span>
-        <span class="kb-item"><kbd class="kb-key">Tab</kbd> 単元を切り替え</span>
-        <span class="kb-item"><kbd class="kb-key">Esc</kbd> モーダルを閉じる</span>
-      </div>
       <div class="chunk-nav" id="chunk-nav"></div>
       <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
       <div id="main-area"></div>
     </div>
   </div>
 
-  <!-- ══ TARGET1900 ══ -->
-  <div id="tab-target" style="display:none;">
-    <div class="card" style="margin-bottom:1rem;">
+  <div id="tab-target" style="display:none">
+    <div class="card" style="margin-bottom:1rem">
       <div class="card-title">範囲を選択</div>
       <div class="t-slider-top">
         <span class="t-slider-range" id="t-step-range">No.1–50</span>
         <span class="t-slider-sub" id="t-step-sub">1 / 20</span>
       </div>
       <div class="t-slider-row">
-        <button class="t-slider-nav" id="t-prev-btn" onclick="tStepNav(-1)" disabled>&#8249;</button>
+        <button class="t-slider-nav" id="t-prev-btn" onclick="tNav(-1)" disabled>&#8249;</button>
         <div class="t-track" id="t-track">
           <div class="t-track-fill" id="t-track-fill" style="width:0%"></div>
           <div class="t-track-thumb" id="t-track-thumb" style="left:0%"></div>
         </div>
-        <button class="t-slider-nav" id="t-next-btn" onclick="tStepNav(1)">&#8250;</button>
+        <button class="t-slider-nav" id="t-next-btn" onclick="tNav(1)">&#8250;</button>
       </div>
     </div>
     <div class="mode-row">
@@ -294,46 +273,36 @@ textarea:focus{border-color:var(--accent);}
       <button class="mode-btn" data-mode="jp-en" onclick="T.setMode('jp-en')">日本語 → 英語</button>
       <button class="mode-btn" data-mode="mc" onclick="T.setMode('mc')">英語 → 4択</button>
     </div>
-    <div class="kb-help">
-      <div class="kb-help-title">⌨️ キーボード操作</div>
-      <span class="kb-item"><kbd class="kb-key">Enter</kbd> 確認 / 次へ</span>
-      <span class="kb-item"><kbd class="kb-key">1</kbd>–<kbd class="kb-key">4</kbd> 4択を選ぶ</span>
-      <span class="kb-item"><kbd class="kb-key">←</kbd><kbd class="kb-key">→</kbd> グループを移動</span>
-      <span class="kb-item"><kbd class="kb-key">Esc</kbd> モーダルを閉じる</span>
-    </div>
     <div class="chunk-nav" id="t-chunk-nav"></div>
     <div class="progress-bar"><div class="progress-fill" id="t-prog-fill" style="width:0%"></div></div>
     <div id="t-main-area"></div>
   </div>
 </div>
 
-<!-- Modal: unit name -->
-<div class="modal-overlay" id="unit-modal" style="display:none;" onclick="if(event.target===this)closeModal('unit-modal')">
+<div class="modal-overlay" id="unit-modal" style="display:none" onclick="if(event.target===this)closeModal('unit-modal')">
   <div class="modal">
     <h3 id="unit-modal-h">新しい単元を作成</h3>
     <input type="text" id="unit-name-input" placeholder="例: Unit2 Reading1" autocomplete="off" onkeydown="if(event.key==='Enter')saveUnit()">
     <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('unit-modal')">キャンセル</button>
-      <button class="btn btn-accent" onclick="saveUnit()">保存</button>
+      <button class="btn btn-gh" onclick="closeModal('unit-modal')">キャンセル</button>
+      <button class="btn btn-ac" onclick="saveUnit()">保存</button>
     </div>
   </div>
 </div>
 
-<!-- Modal: import CSV -->
-<div class="modal-overlay" id="import-modal" style="display:none;" onclick="if(event.target===this)closeModal('import-modal')">
+<div class="modal-overlay" id="import-modal" style="display:none" onclick="if(event.target===this)closeModal('import-modal')">
   <div class="modal">
     <h3>CSVファイルから単元を作成</h3>
-    <p style="font-size:.85rem;color:var(--text2);margin-bottom:.875rem;">CSVファイル（英語,日本語 形式）を選択してください。ファイル名が単元名になります。</p>
-    <div class="drop-zone" id="import-drop" onclick="document.getElementById('import-file').click()"
-      ondragover="dzOver(event,this)" ondragleave="dzOut(this)" ondrop="dzDrop(event,this,'import')">
+    <p style="font-size:.85rem;color:var(--tx2);margin-bottom:.875rem">CSVファイル（英語,日本語 形式）を選択してください。ファイル名が単元名になります。</p>
+    <div class="drop-zone" id="import-drop" onclick="document.getElementById('import-file').click()" ondragover="dzOver(event,this)" ondragleave="dzOut(this)" ondrop="dzDrop(event,this,'import')">
       <input type="file" id="import-file" accept=".csv,.txt" style="display:none" onchange="fileSelected(event,'import')">
       📄 CSVファイルをドロップ、またはクリックして選択
     </div>
-    <p style="font-size:.78rem;color:var(--text3);margin-top:.5rem;font-family:var(--mono);">形式例： rapidly,急速に</p>
+    <p style="font-size:.78rem;color:var(--tx3);margin-top:.5rem;font-family:var(--mono)">形式例： rapidly,急速に</p>
     <div id="import-preview"></div>
     <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('import-modal')">キャンセル</button>
-      <button class="btn btn-accent" id="import-ok" style="display:none;" onclick="confirmImport()">この単元を追加</button>
+      <button class="btn btn-gh" onclick="closeModal('import-modal')">キャンセル</button>
+      <button class="btn btn-ac" id="import-ok" style="display:none" onclick="confirmImport()">この単元を追加</button>
     </div>
   </div>
 </div>
@@ -344,38 +313,33 @@ textarea:focus{border-color:var(--accent);}
 <script src="words_defaults.js"></script>
 <script src="words_defaults_2.js"></script>
 <script>
-// ══ Storage ══
 const SK='quiz_v2';
-let db={units:[]};
-let selId=null,editId=null,pending=null;
+let db={units:[]},selId=null,editId=null,pending=null,curTab='manage';
 
-function save(){localStorage.setItem(SK,JSON.stringify(db));}
+const $ = id => document.getElementById(id);
+const save = () => localStorage.setItem(SK,JSON.stringify(db));
+const uid  = () => Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const esc  = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const getU = id => db.units.find(u=>u.id===id);
+const selU = () => getU(selId);
+const shuf = a => {let b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;};
+const norm = s => s.trim().toLowerCase().replace(/[・。、\s]+/g,'');
+const scoreColor = p => p===100?'var(--gn)':p>=80?'#4fa832':p>=60?'var(--yw)':'var(--rd)';
+const scoreLbl   = p => p===100?'完璧':p>=80?'良好':p>=60?'まずまず':'要復習';
+
 function load(){try{db=JSON.parse(localStorage.getItem(SK))||{units:[]};}catch{db={units:[]};}if(!db.units)db.units=[];}
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function getU(id){return db.units.find(u=>u.id===id);}
-function selU(){return getU(selId);}
-function shuf(a){let b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
-function norm(s){return s.trim().toLowerCase().replace(/[・。、\s]+/g,'');}
-function scoreColor(p){return p===100?'var(--green)':p>=80?'#4fa832':p>=60?'var(--yellow)':'var(--red)';}
-function scoreLbl(p){return p===100?'完璧':p>=80?'良好':p>=60?'まずまず':'要復習';}
 
-// ══ CSV parse ══
 function parseCSV(text){
-  const out=[];
-  for(const line of text.split('\n')){
-    const t=line.trim();if(!t)continue;
-    const i=t.indexOf(',');if(i<0)continue;
-    const en=t.slice(0,i).trim(),jp=t.slice(i+1).trim();
-    if(en&&jp)out.push({en,jp});
-  }
-  return out;
+  return text.split('\n').reduce((out,line)=>{
+    const t=line.trim(),i=t.indexOf(',');
+    if(i>0){const en=t.slice(0,i).trim(),jp=t.slice(i+1).trim();if(en&&jp)out.push({en,jp});}
+    return out;
+  },[]);
 }
 
-// ══ Manage: Units ══
 function renderUnits(){
-  const ul=document.getElementById('unit-list'),ue=document.getElementById('unit-empty');
-  document.getElementById('header-info').textContent=`${db.units.length}単元 / ${db.units.reduce((s,u)=>s+u.words.length,0)}語`;
+  const ul=$('unit-list'),ue=$('unit-empty');
+  $('hdr').textContent=`${db.units.length}単元 / ${db.units.reduce((s,u)=>s+u.words.length,0)}語`;
   if(!db.units.length){ul.innerHTML='';ue.style.display='block';return;}
   ue.style.display='none';
   ul.innerHTML=db.units.map(u=>`
@@ -390,12 +354,12 @@ function renderUnits(){
 }
 function selectUnit(id){selId=id;renderUnits();renderWords();}
 function renderWords(){
-  const u=selU(),area=document.getElementById('word-area');
+  const u=selU(),area=$('word-area');
   if(!u){area.style.display='none';return;}
   area.style.display='block';
-  document.getElementById('word-add-title').textContent=`「${u.name}」に単語を追加`;
-  document.getElementById('word-list-title').textContent=`登録済み単語 — ${u.words.length}語`;
-  const wl=document.getElementById('word-list'),we=document.getElementById('word-empty');
+  $('word-add-title').textContent=`「${u.name}」に単語を追加`;
+  $('word-list-title').textContent=`登録済み単語 — ${u.words.length}語`;
+  const wl=$('word-list'),we=$('word-empty');
   if(!u.words.length){wl.innerHTML='';we.style.display='block';return;}
   we.style.display='none';
   wl.innerHTML=u.words.map((w,i)=>`
@@ -406,13 +370,12 @@ function renderWords(){
     </div>`).join('');
 }
 
-// ══ Manage: Unit CRUD ══
-function openNewUnitModal(){editId=null;document.getElementById('unit-modal-h').textContent='新しい単元を作成';document.getElementById('unit-name-input').value='';document.getElementById('unit-modal').style.display='flex';setTimeout(()=>document.getElementById('unit-name-input').focus(),50);}
-function openEditUnit(id){editId=id;document.getElementById('unit-modal-h').textContent='単元名を変更';document.getElementById('unit-name-input').value=getU(id).name;document.getElementById('unit-modal').style.display='flex';setTimeout(()=>document.getElementById('unit-name-input').focus(),50);}
+function openNewUnitModal(){editId=null;$('unit-modal-h').textContent='新しい単元を作成';$('unit-name-input').value='';$('unit-modal').style.display='flex';setTimeout(()=>$('unit-name-input').focus(),50);}
+function openEditUnit(id){editId=id;$('unit-modal-h').textContent='単元名を変更';$('unit-name-input').value=getU(id).name;$('unit-modal').style.display='flex';setTimeout(()=>$('unit-name-input').focus(),50);}
 function saveUnit(){
-  const name=document.getElementById('unit-name-input').value.trim();
+  const name=$('unit-name-input').value.trim();
   if(!name){showToast('単元名を入力してください');return;}
-  if(editId){getU(editId).name=name;}
+  if(editId)getU(editId).name=name;
   else{const nu={id:uid(),name,words:[]};db.units.push(nu);selId=nu.id;}
   save();closeModal('unit-modal');renderUnits();renderWords();
 }
@@ -422,28 +385,24 @@ function deleteUnit(id){
   if(selId===id)selId=db.units[0]?.id||null;
   save();renderUnits();renderWords();
 }
-function closeModal(id){document.getElementById(id).style.display='none';}
+function closeModal(id){$(id).style.display='none';}
 
-// ══ Manage: Word CRUD ══
 function addWord(){
   const u=selU();if(!u)return;
-  const en=document.getElementById('in-en').value.trim(),jp=document.getElementById('in-jp').value.trim();
+  const en=$('in-en').value.trim(),jp=$('in-jp').value.trim();
   if(!en||!jp){showToast('英語と日本語を入力してください');return;}
   if(u.words.some(w=>w.en.toLowerCase()===en.toLowerCase())){showToast('すでに登録されています');return;}
   u.words.push({en,jp});save();renderWords();renderUnits();
-  document.getElementById('in-en').value='';document.getElementById('in-jp').value='';
-  document.getElementById('in-en').focus();showToast(`「${en}」を追加`);
+  $('in-en').value='';$('in-jp').value='';$('in-en').focus();showToast(`「${en}」を追加`);
 }
 function delWord(i){const u=selU();if(!u)return;u.words.splice(i,1);save();renderWords();renderUnits();}
 function clearWords(){const u=selU();if(!u||!confirm(`「${u.name}」の単語${u.words.length}語を全削除しますか？`))return;u.words=[];save();renderWords();renderUnits();}
 
-// ══ Manage: Bulk / File ══
 function bulkFromText(){
   const u=selU();if(!u){showToast('先に単元を選択してください');return;}
-  const words=parseCSV(document.getElementById('bulk-text').value);
+  const words=parseCSV($('bulk-text').value);
   let n=0;words.forEach(w=>{if(!u.words.some(x=>x.en.toLowerCase()===w.en.toLowerCase())){u.words.push(w);n++;}});
-  save();renderWords();renderUnits();document.getElementById('bulk-text').value='';
-  showToast(`${n}語を追加しました`);
+  save();renderWords();renderUnits();$('bulk-text').value='';showToast(`${n}語を追加しました`);
 }
 function dzOver(e,el){e.preventDefault();el.classList.add('drag-over');}
 function dzOut(el){el.classList.remove('drag-over');}
@@ -452,8 +411,7 @@ function fileSelected(e,mode){const f=e.target.files[0];if(f)readFile(f,mode);e.
 function readFile(file,mode){
   const r=new FileReader();
   r.onload=ev=>{
-    const words=parseCSV(ev.target.result);
-    const name=file.name.replace(/\.(csv|txt)$/i,'');
+    const words=parseCSV(ev.target.result),name=file.name.replace(/\.(csv|txt)$/i,'');
     if(mode==='bulk'){
       const u=selU();if(!u){showToast('先に単元を選択してください');return;}
       let n=0;words.forEach(w=>{if(!u.words.some(x=>x.en.toLowerCase()===w.en.toLowerCase())){u.words.push(w);n++;}});
@@ -461,25 +419,13 @@ function readFile(file,mode){
     } else {
       if(!words.length){showToast('単語が見つかりませんでした');return;}
       pending={name,words};
-      document.getElementById('import-preview').innerHTML=`
-        <div class="preview-box">
-          <strong>${esc(name)}</strong>（${words.length}語）<br>
-          <span style="color:var(--text3);font-size:.8rem;font-family:var(--mono);">
-            ${words.slice(0,5).map(w=>esc(w.en)+' / '+esc(w.jp)).join('　')}${words.length>5?' …':''}
-          </span>
-        </div>`;
-      document.getElementById('import-ok').style.display='inline-flex';
+      $('import-preview').innerHTML=`<div class="preview-box"><strong>${esc(name)}</strong>（${words.length}語）<br><span style="color:var(--tx3);font-size:.8rem;font-family:var(--mono)">${words.slice(0,5).map(w=>esc(w.en)+' / '+esc(w.jp)).join('　')}${words.length>5?' …':''}</span></div>`;
+      $('import-ok').style.display='inline-flex';
     }
   };
   r.readAsText(file,'UTF-8');
 }
-function openImportModal(){
-  pending=null;
-  document.getElementById('import-preview').innerHTML='';
-  document.getElementById('import-ok').style.display='none';
-  document.getElementById('import-file').value='';
-  document.getElementById('import-modal').style.display='flex';
-}
+function openImportModal(){pending=null;$('import-preview').innerHTML='';$('import-ok').style.display='none';$('import-file').value='';$('import-modal').style.display='flex';}
 function confirmImport(){
   if(!pending)return;
   const nu={id:uid(),name:pending.name,words:pending.words};
@@ -493,17 +439,11 @@ function exportCSV(){
   a.download=`${u.name}.csv`;a.click();
 }
 
-// ══ Seed / Reset ══
 const REMOVED_DEFAULTS=['EngComm3 U2R1 英英','Unit2 Reading1 英英'];
 function seedDefaults(){
   let changed=false;
-  REMOVED_DEFAULTS.forEach(name=>{
-    const idx=db.units.findIndex(u=>u.name===name);
-    if(idx>=0){db.units.splice(idx,1);changed=true;}
-  });
-  DEFAULTS.forEach(d=>{
-    if(!db.units.find(u=>u.name===d.name)){db.units.push({id:uid(),name:d.name,words:d.words});changed=true;}
-  });
+  REMOVED_DEFAULTS.forEach(name=>{const i=db.units.findIndex(u=>u.name===name);if(i>=0){db.units.splice(i,1);changed=true;}});
+  DEFAULTS.forEach(d=>{if(!db.units.find(u=>u.name===d.name)){db.units.push({id:uid(),name:d.name,words:d.words});changed=true;}});
   if(changed)save();
 }
 function resetAll(){
@@ -512,35 +452,29 @@ function resetAll(){
   selId=db.units[0]?.id||null;renderUnits();renderWords();showToast('リセットしました');
 }
 
-// ══ Tab ══
 function switchTab(t){
-  ['manage','quiz','target'].forEach(id=>document.getElementById('tab-'+id).style.display=t===id?'block':'none');
+  ['manage','quiz','target'].forEach(id=>$('tab-'+id).style.display=t===id?'block':'none');
   document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['manage','quiz','target'][i]===t));
+  curTab=t;
   if(t==='quiz')initQuiz();
   if(t==='target')initTarget();
 }
 
-// ══ Quiz Engine (shared) ══
-// 共通化されたクイズエンジン。マイ単元(Q)とTARGET1900(T)の両方で使用。
 class QuizEngine {
-  constructor(cfg){
-    // cfg: {navId, fillId, areaId, tabId, CHUNK}
-    this.navId=cfg.navId;this.fillId=cfg.fillId;this.areaId=cfg.areaId;
-    this.tabId=cfg.tabId;this.CHUNK=cfg.CHUNK||5;
+  constructor(navId,fillId,areaId,tabId,CHUNK){
+    this.navId=navId;this.fillId=fillId;this.areaId=areaId;this.tabId=tabId;this.CHUNK=CHUNK||5;
     this.words=[];this.mode='en-jp';
     this.results=[];this.chunk=0;this.inChunk=0;this.ok=0;this.ans=0;
     this.answered=false;this.hintLv=0;this.order=[];
     this.missed=[];this.isRev=false;this.revQ=[];this.revIdx=0;this.revOk=0;this.revAns=0;
   }
-  get area(){return document.getElementById(this.areaId);}
-  get fill(){return document.getElementById(this.fillId);}
+  get area(){return $(this.areaId);}
+  get fill(){return $(this.fillId);}
 
-  setWords(words){this.words=words;this.reset();}
+  setWords(w){this.words=w;this.reset();}
   setMode(m){
     this.mode=m;
-    document.querySelectorAll(`#${this.tabId} .mode-btn`).forEach(b=>{
-      b.classList.toggle('active',b.dataset.mode===m);
-    });
+    document.querySelectorAll(`#${this.tabId} .mode-btn`).forEach(b=>b.classList.toggle('active',b.dataset.mode===m));
     this.reset();
   }
   reset(){
@@ -564,142 +498,103 @@ class QuizEngine {
     this.renderNav();this.renderQ();
   }
   renderNav(){
-    const nav=document.getElementById(this.navId);nav.innerHTML='';
-    const self=this;
+    const nav=$(this.navId);nav.innerHTML='';
     for(let i=0;i<this.nChunks();i++){
       const r=this.results[i];
       let cls='chunk-dot';
       if(!this.isRev&&i===this.chunk)cls+=' active';
       else if(r.done){const p=r.correct/r.total;cls+=p===1?' perfect':p>=.8?' good':p>=.6?' mid':' bad';}
       const b=document.createElement('button');b.className=cls;b.textContent=i+1;
-      if(r.done)b.onclick=(j=>()=>{self.isRev=false;self.showAnalysis(j);})(i);
+      if(r.done)b.onclick=(j=>()=>{this.isRev=false;this.showAnalysis(j);})(i);
       nav.appendChild(b);
     }
     if(this.missed.length){
-      const u=[...new Set(this.missed)];
       const rb=document.createElement('button');
       rb.className='review-pill'+(this.isRev?' active':'');
-      rb.textContent=`🔁 復習 ${u.length}語`;rb.onclick=()=>this.startRev();
+      rb.textContent=`🔁 復習 ${[...new Set(this.missed)].length}語`;rb.onclick=()=>this.startRev();
       nav.appendChild(rb);
     }
   }
   renderQ(){
     if(this.inChunk>=this.order.length){this.finishChunk();return;}
-    const idx=this.order[this.inChunk];
     this.answered=false;this.hintLv=0;
-    if(this._analysisEnter){document.removeEventListener('keydown',this._analysisEnter);this._analysisEnter=null;}
+    if(this._ae){document.removeEventListener('keydown',this._ae);this._ae=null;}
     this.fill.style.width=Math.round(this.ans/this.words.length*100)+'%';
-    if(this.mode==='mc'){this.renderMC(idx);}else{this.renderType(idx);}
+    const idx=this.order[this.inChunk];
+    this.mode==='mc'?this.renderMC(idx):this.renderInput(idx,false);
   }
-  renderType(idx){
-    this.area.innerHTML=`
-      <div class="q-card">
-        <div class="q-label">${this.qlabel()}</div>
-        <div class="q-word">${esc(this.getQ(idx))}</div>
-        <div class="q-sub">${this.subtitle()} · グループ${this.chunk+1} — ${this.inChunk+1}/${this.order.length}</div>
-      </div>
+  _qCard(idx,sub){
+    return `<div class="q-card"><div class="q-label">${this.qlabel()}</div><div class="q-word">${esc(this.getQ(idx))}</div><div class="q-sub">${sub}</div></div>`;
+  }
+  renderInput(idx,isRev){
+    const id=this.areaId,checkFn=isRev?'_rc':'_c',nextFn=isRev?'_rn':'_n';
+    const sub=isRev?'間違えた単語の復習':`${this.subtitle()} · グループ${this.chunk+1} — ${this.inChunk+1}/${this.order.length}`;
+    const ctr=isRev?`${this.revIdx+1} / ${this.revQ.length}`:`${this.ans+1} / ${this.words.length}`;
+    const badge=isRev?`<div class="review-badge">🔁 復習モード — ${this.revIdx+1}/${this.revQ.length}</div>`:'';
+    this.area.innerHTML=`${badge}${this._qCard(idx,sub)}
       <div class="input-row">
-        <input class="ans-input" id="${this.areaId}-inp" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-        <button class="sub-btn" id="${this.areaId}-sub" onclick="_qe_check('${this.areaId}')">確認</button>
+        <input class="ans-input" id="${id}-inp" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+        <button class="sub-btn" id="${id}-sub" onclick="${checkFn}('${id}')">確認</button>
       </div>
-      <div class="hint-row"><span class="hint-txt" id="${this.areaId}-ht"></span><button class="hint-link" id="${this.areaId}-hb" onclick="_qe_hint('${this.areaId}')">ヒント</button></div>
-      <div class="feedback" id="${this.areaId}-fb"></div>
-      <div class="nav-row">
-        <span class="counter">${this.ans+1} / ${this.words.length}</span>
-        <button class="next-btn" id="${this.areaId}-nx" onclick="_qe_next('${this.areaId}')">次へ →</button>
-      </div>`;
-    const inp=document.getElementById(this.areaId+'-inp');inp.focus();
-    inp.addEventListener('keydown',e=>{if(e.key==='Enter'){this.answered?this.nextQ():this.checkAns();}});
-  }
-  renderMC(idx){
-    const choices=this.makeChoices(idx);
-    const id=this.areaId;
-    this.area.innerHTML=`
-      <div class="q-card">
-        <div class="q-label">${this.qlabel()}</div>
-        <div class="q-word">${esc(this.words[idx].en)}</div>
-        <div class="q-sub">${this.subtitle()} · グループ${this.chunk+1} — ${this.inChunk+1}/${this.order.length}</div>
-      </div>
-      <div class="choices">${choices.map(ci=>`<button class="choice-btn" onclick="_qe_mc('${id}',${ci},${idx})">${esc(this.words[ci].jp)}</button>`).join('')}</div>
+      <div class="hint-row"><span class="hint-txt" id="${id}-ht"></span><button class="hint-link" id="${id}-hb" onclick="_h('${id}')">ヒント</button></div>
       <div class="feedback" id="${id}-fb"></div>
-      <div class="nav-row">
-        <span class="counter">${this.ans+1} / ${this.words.length}</span>
-        <button class="next-btn" id="${id}-nx" onclick="_qe_next('${id}')">次へ →</button>
-      </div>`;
+      <div class="nav-row"><span class="counter">${ctr}</span><button class="next-btn" id="${id}-nx" onclick="${nextFn}('${id}')">次へ →</button></div>`;
+    const inp=$(id+'-inp');inp.focus();
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter'){this.answered?(isRev?this.nextRevQ():this.nextQ()):(isRev?this.checkRevAns():this.checkAns());}});
   }
   renderRevQ(){
     if(this.revIdx>=this.revQ.length){this.finishRev();return;}
-    const idx=this.revQ[this.revIdx];
     this.answered=false;this.hintLv=0;
     this.fill.style.width=Math.round(this.revIdx/this.revQ.length*100)+'%';
-    this.area.innerHTML=`
-      <div class="review-badge">🔁 復習モード — ${this.revIdx+1}/${this.revQ.length}</div>
-      <div class="q-card">
-        <div class="q-label">${this.qlabel()}</div>
-        <div class="q-word">${esc(this.getQ(idx))}</div>
-        <div class="q-sub">間違えた単語の復習</div>
-      </div>
-      <div class="input-row">
-        <input class="ans-input" id="${this.areaId}-inp" placeholder="ここに入力..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-        <button class="sub-btn" id="${this.areaId}-sub" onclick="_qe_rcheck('${this.areaId}')">確認</button>
-      </div>
-      <div class="hint-row"><span class="hint-txt" id="${this.areaId}-ht"></span><button class="hint-link" id="${this.areaId}-hb" onclick="_qe_hint('${this.areaId}')">ヒント</button></div>
-      <div class="feedback" id="${this.areaId}-fb"></div>
-      <div class="nav-row">
-        <span class="counter">${this.revIdx+1} / ${this.revQ.length}</span>
-        <button class="next-btn" id="${this.areaId}-nx" onclick="_qe_rnext('${this.areaId}')">次へ →</button>
-      </div>`;
-    const inp=document.getElementById(this.areaId+'-inp');inp.focus();
-    inp.addEventListener('keydown',e=>{if(e.key==='Enter'){this.answered?this.nextRevQ():this.checkRevAns();}});
+    this.renderInput(this.revQ[this.revIdx],true);
+  }
+  renderMC(idx){
+    const choices=this.makeChoices(idx),id=this.areaId;
+    this.area.innerHTML=`${this._qCard(idx,`${this.subtitle()} · グループ${this.chunk+1} — ${this.inChunk+1}/${this.order.length}`)}
+      <div class="choices">${choices.map((ci,n)=>`<button class="choice-btn" data-ci="${ci}" onclick="_mc('${id}',${ci},${idx})"><span class="choice-num">${n+1}</span>${esc(this.words[ci].jp)}</button>`).join('')}</div>
+      <div class="feedback" id="${id}-fb"></div>
+      <div class="nav-row"><span class="counter">${this.ans+1} / ${this.words.length}</span><button class="next-btn" id="${id}-nx" onclick="_n('${id}')">次へ →</button></div>`;
   }
   doHint(){
-    const idx=this.isRev?this.revQ[this.revIdx]:this.order[this.inChunk];
-    const ans=this.getA(idx);
+    const idx=this.isRev?this.revQ[this.revIdx]:this.order[this.inChunk],ans=this.getA(idx);
     this.hintLv=Math.min(this.hintLv+2,ans.length-1);
-    document.getElementById(this.areaId+'-ht').textContent=ans.split('').map((c,i)=>i<this.hintLv?c:'_').join('');
-    if(this.hintLv>=ans.length-1)document.getElementById(this.areaId+'-hb').style.display='none';
+    $(this.areaId+'-ht').textContent=ans.split('').map((c,i)=>i<this.hintLv?c:'_').join('');
+    if(this.hintLv>=ans.length-1)$(this.areaId+'-hb').style.display='none';
   }
   _doCheck(ans,inp,onOk,onNg){
-    if(this.answered)return;
-    if(!inp.value.trim())return;
+    if(this.answered||!inp.value.trim())return;
     this.answered=true;
-    document.getElementById(this.areaId+'-sub').disabled=true;
-    document.getElementById(this.areaId+'-hb').style.display='none';
-    const ok=norm(inp.value)===norm(ans);
+    const id=this.areaId,ok=norm(inp.value)===norm(ans);
+    $(id+'-sub').disabled=true;$(id+'-hb').style.display='none';
     inp.className='ans-input '+(ok?'ok':'ng');
-    const fb=document.getElementById(this.areaId+'-fb');
-    fb.className='feedback show '+(ok?'ok':'ng');
+    const fb=$(id+'-fb');fb.className='feedback show '+(ok?'ok':'ng');
     fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(ans)}</strong>`;
-    const nx=document.getElementById(this.areaId+'-nx');nx.style.display='inline-block';nx.focus();
+    const nx=$(id+'-nx');nx.style.display='inline-block';nx.focus();
     ok?onOk():onNg();
   }
   checkAns(){
-    const idx=this.order[this.inChunk],ans=this.getA(idx),inp=document.getElementById(this.areaId+'-inp');
+    const idx=this.order[this.inChunk],ans=this.getA(idx),inp=$(this.areaId+'-inp');
     this._doCheck(ans,inp,
       ()=>{this.ok++;this.results[this.chunk].correct++;this.results[this.chunk].entries.push({idx,ok:true});this.ans++;},
-      ()=>{this.results[this.chunk].entries.push({idx,ok:false});this.ans++;this.missed.push(idx);}
-    );
+      ()=>{this.results[this.chunk].entries.push({idx,ok:false});this.ans++;this.missed.push(idx);});
   }
   checkRevAns(){
-    const idx=this.revQ[this.revIdx],ans=this.getA(idx),inp=document.getElementById(this.areaId+'-inp');
+    const idx=this.revQ[this.revIdx],ans=this.getA(idx),inp=$(this.areaId+'-inp');
     this._doCheck(ans,inp,()=>{this.revOk++;this.revAns++;},()=>{this.revAns++;this.missed.push(idx);});
   }
   checkMC(chosen,correct){
     if(this.answered)return;
     this.answered=true;
-    const ok=chosen===correct;
-    document.querySelectorAll(`#${this.areaId} .choice-btn`).forEach(b=>{
+    const ok=chosen===correct,id=this.areaId;
+    document.querySelectorAll(`#${id} .choice-btn`).forEach(b=>{
       b.disabled=true;
-      if(b.textContent.trim()===this.words[correct].jp)b.classList.add('c-ok');
+      const ci=parseInt(b.dataset.ci);
+      if(ci===correct)b.classList.add('c-ok');
+      else if(!ok&&ci===chosen)b.classList.add('c-ng');
     });
-    if(!ok){
-      const btns=[...document.querySelectorAll(`#${this.areaId} .choice-btn`)];
-      btns.find(b=>b.textContent.trim()===this.words[chosen].jp)?.classList.add('c-ng');
-    }
-    const fb=document.getElementById(this.areaId+'-fb');
-    fb.className='feedback show '+(ok?'ok':'ng');
+    const fb=$(id+'-fb');fb.className='feedback show '+(ok?'ok':'ng');
     fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(this.words[correct].jp)}</strong>`;
-    const nx=document.getElementById(this.areaId+'-nx');nx.style.display='inline-block';nx.focus();
+    const nx=$(id+'-nx');nx.style.display='inline-block';nx.focus();
     if(ok){this.ok++;this.results[this.chunk].correct++;this.results[this.chunk].entries.push({idx:correct,ok:true});this.ans++;}
     else{this.results[this.chunk].entries.push({idx:correct,ok:false});this.ans++;this.missed.push(correct);}
   }
@@ -707,39 +602,26 @@ class QuizEngine {
   nextRevQ(){this.revIdx++;this.renderRevQ();}
   finishChunk(){this.results[this.chunk].done=true;this.renderNav();this.showAnalysis(this.chunk);}
   showAnalysis(c){
-    const r=this.results[c];
-    const pct=Math.round(r.correct/r.total*100);
-    const col=scoreColor(pct),lbl=scoreLbl(pct);
+    const r=this.results[c],pct=Math.round(r.correct/r.total*100),col=scoreColor(pct),lbl=scoreLbl(pct);
     const rows=r.entries.map(e=>`<tr><td class="en">${esc(this.words[e.idx].en)}</td><td>${esc(this.words[e.idx].jp)}</td><td><span class="badge ${e.ok?'badge-ok':'badge-ng'}">${e.ok?'正解':'不正解'}</span></td></tr>`).join('');
-    const allDone=this.results.every(x=>x.done);
-    const isCur=c===this.chunk&&r.done&&!this.isRev;
-    const nc=this.chunk+1;
+    const allDone=this.results.every(x=>x.done),isCur=c===this.chunk&&r.done&&!this.isRev,nc=this.chunk+1;
     let nBtn='';
-    if(allDone)nBtn=`<button class="action-btn primary" onclick="_qe_final('${this.areaId}')">全体結果を見る →</button>`;
-    else if(isCur&&nc<this.nChunks()){const f=nc*this.CHUNK+1,t=Math.min((nc+1)*this.CHUNK,this.words.length);nBtn=`<button class="action-btn primary" onclick="_qe_sc('${this.areaId}',${nc})">グループ${nc+1}へ（${f}〜${t}番）→</button>`;}
+    if(allDone)nBtn=`<button class="action-btn primary" onclick="_fin('${this.areaId}')">全体結果を見る →</button>`;
+    else if(isCur&&nc<this.nChunks()){const f=nc*this.CHUNK+1,t=Math.min((nc+1)*this.CHUNK,this.words.length);nBtn=`<button class="action-btn primary" onclick="_sc('${this.areaId}',${nc})">グループ${nc+1}へ（${f}〜${t}番）→</button>`;}
     const uniq=[...new Set(this.missed)];
-    const rBtn=uniq.length?`<button class="action-btn review-act" onclick="_qe_rev('${this.areaId}')">🔁 間違えた単語を復習 (${uniq.length}語)</button>`:'';
-    this.area.innerHTML=`
-      <div class="card">
-        <div class="card-title">グループ${c+1}の結果</div>
-        <div class="stats-grid">
-          <div class="stat-box"><div class="stat-val">${r.correct}/${r.total}</div><div class="stat-lbl">正解数</div></div>
-          <div class="stat-box"><div class="stat-val" style="color:${col}">${pct}%</div><div class="stat-lbl">正解率</div></div>
-          <div class="stat-box"><div class="stat-val" style="color:${col};font-size:1.1rem;">${lbl}</div><div class="stat-lbl">評価</div></div>
-        </div>
-        <div class="thin-bar"><div class="thin-bar-fill" style="width:${pct}%;background:${col}"></div></div>
-        <table class="word-table"><thead><tr><th>英語</th><th>日本語</th><th>結果</th></tr></thead><tbody>${rows}</tbody></table>
-        ${rBtn}${nBtn}
-      </div>`;
+    const rBtn=uniq.length?`<button class="action-btn review-act" onclick="_rev('${this.areaId}')">🔁 間違えた単語を復習 (${uniq.length}語)</button>`:'';
+    this.area.innerHTML=`<div class="card"><div class="card-title">グループ${c+1}の結果</div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="stat-val">${r.correct}/${r.total}</div><div class="stat-lbl">正解数</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:${col}">${pct}%</div><div class="stat-lbl">正解率</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:${col};font-size:1.1rem">${lbl}</div><div class="stat-lbl">評価</div></div>
+      </div>
+      <div class="thin-bar"><div class="thin-bar-fill" style="width:${pct}%;background:${col}"></div></div>
+      <table class="word-table"><thead><tr><th>英語</th><th>日本語</th><th>結果</th></tr></thead><tbody>${rows}</tbody></table>
+      ${rBtn}${nBtn}</div>`;
     this.fill.style.width=Math.round(this.ans/this.words.length*100)+'%';
-    // グループ結果画面でEnterを押すと主ボタンを実行
-    this._analysisEnter=e=>{
-      if(e.key!=='Enter')return;
-      const btn=this.area.querySelector('.action-btn.primary');
-      if(btn){btn.click();}
-    };
-    document.removeEventListener('keydown',this._analysisEnter);
-    document.addEventListener('keydown',this._analysisEnter,{once:true});
+    this._ae=e=>{if(e.key==='Enter'){const b=this.area.querySelector('.action-btn.primary');if(b)b.click();}};
+    document.addEventListener('keydown',this._ae,{once:true});
   }
   startRev(){
     const uniq=[...new Set(this.missed)];if(!uniq.length)return;
@@ -747,69 +629,53 @@ class QuizEngine {
     this.renderNav();this.renderRevQ();
   }
   finishRev(){
-    const pct=Math.round(this.revOk/this.revQ.length*100);
-    const col=scoreColor(pct);
-    const uniq=[...new Set(this.missed)];
+    const pct=Math.round(this.revOk/this.revQ.length*100),col=scoreColor(pct),uniq=[...new Set(this.missed)];
     this.fill.style.width='100%';this.renderNav();
-    this.area.innerHTML=`
-      <div class="card">
-        <div class="card-title">復習完了</div>
-        <div class="stats-grid">
-          <div class="stat-box"><div class="stat-val">${this.revOk}/${this.revQ.length}</div><div class="stat-lbl">正解数</div></div>
-          <div class="stat-box"><div class="stat-val" style="color:${col}">${pct}%</div><div class="stat-lbl">正解率</div></div>
-          <div class="stat-box"><div class="stat-val" style="color:${col};font-size:1.1rem;">${scoreLbl(pct)}</div><div class="stat-lbl">評価</div></div>
-        </div>
-        ${uniq.length?`<button class="action-btn review-act" onclick="_qe_rev('${this.areaId}')">🔁 もう一度復習 (${uniq.length}語)</button>`:''}
-        ${this.results.every(r=>r.done)?`<button class="action-btn secondary" onclick="_qe_final('${this.areaId}')">全体結果を見る</button>`:''}
-      </div>`;
+    this.area.innerHTML=`<div class="card"><div class="card-title">復習完了</div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="stat-val">${this.revOk}/${this.revQ.length}</div><div class="stat-lbl">正解数</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:${col}">${pct}%</div><div class="stat-lbl">正解率</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:${col};font-size:1.1rem">${scoreLbl(pct)}</div><div class="stat-lbl">評価</div></div>
+      </div>
+      ${uniq.length?`<button class="action-btn review-act" onclick="_rev('${this.areaId}')">🔁 もう一度復習 (${uniq.length}語)</button>`:''}
+      ${this.results.every(r=>r.done)?`<button class="action-btn secondary" onclick="_fin('${this.areaId}')">全体結果を見る</button>`:''}</div>`;
   }
   showFinal(){
-    const pct=Math.round(this.ok/this.words.length*100);
-    const bars=this.results.map((r,i)=>{
-      const p=Math.round(r.correct/r.total*100),col=scoreColor(p);
-      return `<div class="chunk-bar-row"><span class="chunk-bar-label">G${i+1}</span><div class="chunk-bar-track"><div class="chunk-bar-fill" style="width:${p}%;background:${col}"></div></div><span class="chunk-bar-pct">${p}%</span></div>`;
-    }).join('');
-    const uniq=[...new Set(this.missed)];
-    this.fill.style.width='100%';
-    const id=this.areaId;
+    const pct=Math.round(this.ok/this.words.length*100),id=this.areaId;
+    const bars=this.results.map((r,i)=>{const p=Math.round(r.correct/r.total*100),col=scoreColor(p);return `<div class="chunk-bar-row"><span class="chunk-bar-label">G${i+1}</span><div class="chunk-bar-track"><div class="chunk-bar-fill" style="width:${p}%;background:${col}"></div></div><span class="chunk-bar-pct">${p}%</span></div>`;}).join('');
+    const uniq=[...new Set(this.missed)];this.fill.style.width='100%';
     this.area.innerHTML=`
-      <div class="final-score" style="color:${pct===100?'var(--green)':'var(--text)'}">${this.ok}<span style="font-size:1.5rem;color:var(--text3)">/${this.words.length}</span></div>
+      <div class="final-score" style="color:${pct===100?'var(--gn)':'var(--tx)'}">${this.ok}<span style="font-size:1.5rem;color:var(--tx3)">/${this.words.length}</span></div>
       <div class="final-comment">正解率 ${pct}% — ${pct===100?'完璧！全問正解！':pct>=80?'すばらしい！':pct>=60?'もう少し！':'復習しよう！'}</div>
-      <div class="card" style="margin-bottom:.75rem;"><div class="card-title">グループ別スコア</div>${bars}</div>
-      ${uniq.length?`<button class="action-btn review-act" onclick="_qe_rev('${id}')" style="margin-bottom:8px;">🔁 間違えた単語をまとめて復習 (${uniq.length}語)</button>`:''}
+      <div class="card" style="margin-bottom:.75rem"><div class="card-title">グループ別スコア</div>${bars}</div>
+      ${uniq.length?`<button class="action-btn review-act" onclick="_rev('${id}')" style="margin-bottom:8px">🔁 間違えた単語をまとめて復習 (${uniq.length}語)</button>`:''}
       <div class="restart-row">
-        <button class="btn btn-ghost" onclick="_qe_mode('${id}','en-jp')">英語 → 日本語</button>
-        <button class="btn btn-ghost" onclick="_qe_mode('${id}','mc')">英語 → 4択</button>
-        <button class="btn btn-accent" onclick="_qe_rst('${id}')">もう一度</button>
-        <button class="btn btn-ghost" onclick="_qe_mode('${id}','jp-en')">日本語 → 英語</button>
+        <button class="btn btn-gh" onclick="_mode('${id}','en-jp')">英語 → 日本語</button>
+        <button class="btn btn-gh" onclick="_mode('${id}','mc')">英語 → 4択</button>
+        <button class="btn btn-ac" onclick="_rst('${id}')">もう一度</button>
+        <button class="btn btn-gh" onclick="_mode('${id}','jp-en')">日本語 → 英語</button>
       </div>`;
   }
-  subtitle(){return '';}// override in subclass
+  subtitle(){return '';}
 }
 
-// ══ グローバルブリッジ（onclick文字列からエンジンへ） ══
-// HTMLのonclick属性からクラスのメソッドを呼ぶためのブリッジ関数
+// グローバルブリッジ（短縮版）
 const _engines={};
-function _qe_get(id){return _engines[id];}
-function _qe_check(id){_qe_get(id).checkAns();}
-function _qe_rcheck(id){_qe_get(id).checkRevAns();}
-function _qe_mc(id,ch,co){_qe_get(id).checkMC(ch,co);}
-function _qe_next(id){_qe_get(id).nextQ();}
-function _qe_rnext(id){_qe_get(id).nextRevQ();}
-function _qe_hint(id){_qe_get(id).doHint();}
-function _qe_rev(id){_qe_get(id).startRev();}
-function _qe_final(id){_qe_get(id).showFinal();}
-function _qe_sc(id,c){_qe_get(id).startChunk(c);}
-function _qe_rst(id){_qe_get(id).reset();}
-function _qe_mode(id,m){_qe_get(id).setMode(m);}
+const _g = id => _engines[id];
+const _c   = id => _g(id).checkAns();
+const _rc  = id => _g(id).checkRevAns();
+const _mc  = (id,ch,co) => _g(id).checkMC(ch,co);
+const _n   = id => _g(id).nextQ();
+const _rn  = id => _g(id).nextRevQ();
+const _h   = id => _g(id).doHint();
+const _rev = id => _g(id).startRev();
+const _fin = id => _g(id).showFinal();
+const _sc  = (id,c) => _g(id).startChunk(c);
+const _rst = id => _g(id).reset();
+const _mode= (id,m) => _g(id).setMode(m);
 
-// ══ マイ単元クイズ ══
 class MyQuiz extends QuizEngine {
-  constructor(){
-    super({navId:'chunk-nav',fillId:'prog-fill',areaId:'main-area',tabId:'tab-quiz',CHUNK:5});
-    _engines['main-area']=this;
-    this.unitId=null;
-  }
+  constructor(){super('chunk-nav','prog-fill','main-area','tab-quiz',5);_engines['main-area']=this;this.unitId=null;}
   subtitle(){return getU(this.unitId)?.name||'';}
   pickUnit(id){
     this.unitId=id;
@@ -821,36 +687,23 @@ const Q=new MyQuiz();
 
 function initQuiz(){
   const has=db.units.some(u=>u.words.length>0);
-  document.getElementById('quiz-empty').style.display=has?'none':'block';
-  document.getElementById('quiz-body').style.display=has?'block':'none';
+  $('quiz-empty').style.display=has?'none':'block';
+  $('quiz-body').style.display=has?'block':'none';
   if(!has)return;
-  if(!Q.unitId||!getU(Q.unitId)||!getU(Q.unitId).words.length)Q.unitId=db.units.find(u=>u.words.length>0)?.id||null;
-  // グループ化グリッド描画
-  const units=db.units.filter(u=>u.words.length>0);
-  const groups={};
+  if(!Q.unitId||!getU(Q.unitId)?.words.length)Q.unitId=db.units.find(u=>u.words.length>0)?.id||null;
+  const units=db.units.filter(u=>u.words.length>0),groups={};
   units.forEach(u=>{
-    const parts=u.name.split(' ');
-    const prefix=parts.length>1?parts[0]:'その他';
-    const label=parts.length>1?parts.slice(1).join(' '):u.name;
-    if(!groups[prefix])groups[prefix]=[];
-    groups[prefix].push({u,label});
+    const p=u.name.split(' '),prefix=p.length>1?p[0]:'その他',label=p.length>1?p.slice(1).join(' '):u.name;
+    (groups[prefix]||(groups[prefix]=[])).push({u,label});
   });
-  document.getElementById('unit-selector').innerHTML=Object.entries(groups).map(([prefix,items])=>`
-    <div class="unit-group">
-      <div class="unit-group-label">${esc(prefix)}</div>
-      <div class="unit-grid">
-        ${items.map(({u,label})=>`
-          <button class="unit-sel-btn${u.id===Q.unitId?' active':''}" data-uid="${u.id}" onclick="Q.pickUnit('${u.id}')">
-            <span>${esc(label)}</span>
-            <span class="usl-cnt">${u.words.length}語</span>
-          </button>`).join('')}
-      </div>
-    </div>`).join('');
+  $('unit-selector').innerHTML=Object.entries(groups).map(([prefix,items])=>`
+    <div class="unit-group"><div class="unit-group-label">${esc(prefix)}</div><div class="unit-grid">
+      ${items.map(({u,label})=>`<button class="unit-sel-btn${u.id===Q.unitId?' active':''}" data-uid="${u.id}" onclick="Q.pickUnit('${u.id}')"><span>${esc(label)}</span><span class="usl-cnt">${u.words.length}語</span></button>`).join('')}
+    </div></div>`).join('');
   document.querySelectorAll('#tab-quiz .mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===Q.mode));
   if(Q.unitId)Q.pickUnit(Q.unitId);
 }
 
-// ══ TARGET1900クイズ ══
 const T_CHUNK=50,TQCHUNK=5;
 const T_SECTIONS=[];
 for(let i=0;i<TARGET1900_DATA.length;i+=T_CHUNK){
@@ -859,119 +712,57 @@ for(let i=0;i<TARGET1900_DATA.length;i+=T_CHUNK){
 }
 
 class TargetQuiz extends QuizEngine {
-  constructor(){
-    super({navId:'t-chunk-nav',fillId:'t-prog-fill',areaId:'t-main-area',tabId:'tab-target',CHUNK:TQCHUNK});
-    _engines['t-main-area']=this;
-    this.sec=0;
-  }
+  constructor(){super('t-chunk-nav','t-prog-fill','t-main-area','tab-target',TQCHUNK);_engines['t-main-area']=this;this.sec=0;}
   subtitle(){return 'TARGET1900 '+T_SECTIONS[this.sec].label;}
-  pickSec(i){
-    this.sec=i;
-    updateTStepper();
-    this.setWords(T_SECTIONS[i].words);
-  }
+  pickSec(i){this.sec=i;updateTStepper();this.setWords(T_SECTIONS[i].words);}
 }
 const T=new TargetQuiz();
 
 function initTarget(){
-  initTSlider();
+  const track=$('t-track');
+  if(!track._b){track._b=true;track.addEventListener('click',e=>{const r=track.getBoundingClientRect();T.pickSec(Math.max(0,Math.min(T_SECTIONS.length-1,Math.round((e.clientX-r.left)/r.width*(T_SECTIONS.length-1)))))});}
   updateTStepper();
   document.querySelectorAll('#tab-target .mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===T.mode));
   T.pickSec(T.sec);
 }
-function initTSlider(){
-  const track=document.getElementById('t-track');
-  if(track._bound)return;
-  track._bound=true;
-  track.addEventListener('click',e=>{
-    const r=track.getBoundingClientRect();
-    const pct=(e.clientX-r.left)/r.width;
-    T.pickSec(Math.max(0,Math.min(T_SECTIONS.length-1,Math.round(pct*(T_SECTIONS.length-1)))));
-  });
-}
 function updateTStepper(){
-  const s=T_SECTIONS[T.sec];
-  const pct=T_SECTIONS.length>1?Math.round(T.sec/(T_SECTIONS.length-1)*100):0;
-  document.getElementById('t-step-range').textContent=s.label;
-  document.getElementById('t-step-sub').textContent=`${T.sec+1} / ${T_SECTIONS.length}`;
-  document.getElementById('t-prev-btn').disabled=T.sec===0;
-  document.getElementById('t-next-btn').disabled=T.sec===T_SECTIONS.length-1;
-  document.getElementById('t-track-fill').style.width=pct+'%';
-  document.getElementById('t-track-thumb').style.left=pct+'%';
+  const s=T_SECTIONS[T.sec],pct=T_SECTIONS.length>1?Math.round(T.sec/(T_SECTIONS.length-1)*100):0;
+  $('t-step-range').textContent=s.label;$('t-step-sub').textContent=`${T.sec+1} / ${T_SECTIONS.length}`;
+  $('t-prev-btn').disabled=T.sec===0;$('t-next-btn').disabled=T.sec===T_SECTIONS.length-1;
+  $('t-track-fill').style.width=pct+'%';$('t-track-thumb').style.left=pct+'%';
 }
-function tStepNav(dir){T.pickSec(Math.max(0,Math.min(T_SECTIONS.length-1,T.sec+dir)));}
+function tNav(dir){T.pickSec(Math.max(0,Math.min(T_SECTIONS.length-1,T.sec+dir)));}
 
-// ══ Toast ══
 let _tt;
-function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2200);}
-
-// ══ Keyboard shortcuts ══
-function _activeTab(){
-  const tabs=['manage','quiz','target'];
-  return tabs.find(t=>document.getElementById('tab-'+t).style.display!=='none')||'manage';
-}
-function _activeEngine(){
-  const t=_activeTab();
-  if(t==='quiz')return Q;
-  if(t==='target')return T;
-  return null;
-}
-function _isTyping(){
-  const el=document.activeElement;
-  return el&&(el.tagName==='INPUT'||el.tagName==='TEXTAREA');
-}
+function showToast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2200);}
 
 document.addEventListener('keydown',e=>{
-  // Esc: モーダルを閉じる
   if(e.key==='Escape'){
-    ['unit-modal','import-modal'].forEach(id=>{
-      if(document.getElementById(id).style.display!=='none')closeModal(id);
-    });
+    ['unit-modal','import-modal'].forEach(id=>{if($(id).style.display!=='none')closeModal(id);});
     return;
   }
-
-  // テキスト入力中は以下のショートカットをスキップ
-  if(_isTyping())return;
-
-  const eng=_activeEngine();
-
-  // 数字キー 1〜4: 4択の選択肢を選ぶ
-  if(['1','2','3','4'].includes(e.key)&&eng&&eng.mode==='mc'&&!eng.answered){
+  const tag=document.activeElement?.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA')return;
+  const eng=curTab==='quiz'?Q:curTab==='target'?T:null;
+  if(!eng)return;
+  if(['1','2','3','4'].includes(e.key)&&eng.mode==='mc'&&!eng.answered){
     const btns=[...document.querySelectorAll(`#${eng.areaId} .choice-btn:not(:disabled)`)];
-    const idx=parseInt(e.key)-1;
-    if(btns[idx])btns[idx].click();
+    const b=btns[+e.key-1];if(b)b.click();
     return;
   }
-
-  // ←→ キー: グループ（チャンク）移動（結果表示後のみ）
-  if((e.key==='ArrowLeft'||e.key==='ArrowRight')&&eng){
-    const done=eng.results.filter(r=>r.done);
-    if(!done.length)return;
-    const dir=e.key==='ArrowRight'?1:-1;
-    const cur=eng.chunk;
-    const next=cur+dir;
-    if(next>=0&&next<eng.nChunks()&&eng.results[next].done){
-      eng.isRev=false;
-      eng.showAnalysis(next);
-      eng.chunk=next;
-      eng.renderNav();
-    }
+  if(e.key==='ArrowLeft'||e.key==='ArrowRight'){
+    const dir=e.key==='ArrowRight'?1:-1,next=eng.chunk+dir;
+    if(next>=0&&next<eng.nChunks()&&eng.results[next].done){eng.isRev=false;eng.chunk=next;eng.showAnalysis(next);eng.renderNav();}
     return;
   }
-
-  // Tab: 単元を切り替え（マイ単元タブのみ）
-  if(e.key==='Tab'&&_activeTab()==='quiz'){
+  if(e.key==='Tab'&&curTab==='quiz'){
     e.preventDefault();
-    const units=db.units.filter(u=>u.words.length>0);
-    if(!units.length)return;
-    const cur=units.findIndex(u=>u.id===Q.unitId);
-    const next=units[(cur+(e.shiftKey?-1:1)+units.length)%units.length];
+    const units=db.units.filter(u=>u.words.length>0);if(!units.length)return;
+    const cur=units.findIndex(u=>u.id===Q.unitId),next=units[(cur+(e.shiftKey?-1:1)+units.length)%units.length];
     if(next)Q.pickUnit(next.id);
-    return;
   }
 });
 
-// ══ Boot ══
 load();seedDefaults();
 selId=db.units[0]?.id||null;
 renderUnits();renderWords();
