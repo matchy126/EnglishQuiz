@@ -877,6 +877,72 @@ function tStepNav(dir){T.pickSec(Math.max(0,Math.min(T_SECTIONS.length-1,T.sec+d
 let _tt;
 function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2200);}
 
+// ══ Keyboard shortcuts ══
+function _activeTab(){
+  const tabs=['manage','quiz','target'];
+  return tabs.find(t=>document.getElementById('tab-'+t).style.display!=='none')||'manage';
+}
+function _activeEngine(){
+  const t=_activeTab();
+  if(t==='quiz')return Q;
+  if(t==='target')return T;
+  return null;
+}
+function _isTyping(){
+  const el=document.activeElement;
+  return el&&(el.tagName==='INPUT'||el.tagName==='TEXTAREA');
+}
+
+document.addEventListener('keydown',e=>{
+  // Esc: モーダルを閉じる
+  if(e.key==='Escape'){
+    ['unit-modal','import-modal'].forEach(id=>{
+      if(document.getElementById(id).style.display!=='none')closeModal(id);
+    });
+    return;
+  }
+
+  // テキスト入力中は以下のショートカットをスキップ
+  if(_isTyping())return;
+
+  const eng=_activeEngine();
+
+  // 数字キー 1〜4: 4択の選択肢を選ぶ
+  if(['1','2','3','4'].includes(e.key)&&eng&&eng.mode==='mc'&&!eng.answered){
+    const btns=[...document.querySelectorAll(`#${eng.areaId} .choice-btn:not(:disabled)`)];
+    const idx=parseInt(e.key)-1;
+    if(btns[idx])btns[idx].click();
+    return;
+  }
+
+  // ←→ キー: グループ（チャンク）移動（結果表示後のみ）
+  if((e.key==='ArrowLeft'||e.key==='ArrowRight')&&eng){
+    const done=eng.results.filter(r=>r.done);
+    if(!done.length)return;
+    const dir=e.key==='ArrowRight'?1:-1;
+    const cur=eng.chunk;
+    const next=cur+dir;
+    if(next>=0&&next<eng.nChunks()&&eng.results[next].done){
+      eng.isRev=false;
+      eng.showAnalysis(next);
+      eng.chunk=next;
+      eng.renderNav();
+    }
+    return;
+  }
+
+  // Tab: 単元を切り替え（マイ単元タブのみ）
+  if(e.key==='Tab'&&_activeTab()==='quiz'){
+    e.preventDefault();
+    const units=db.units.filter(u=>u.words.length>0);
+    if(!units.length)return;
+    const cur=units.findIndex(u=>u.id===Q.unitId);
+    const next=units[(cur+(e.shiftKey?-1:1)+units.length)%units.length];
+    if(next)Q.pickUnit(next.id);
+    return;
+  }
+});
+
 // ══ Boot ══
 load();seedDefaults();
 selId=db.units[0]?.id||null;
