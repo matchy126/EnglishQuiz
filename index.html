@@ -488,8 +488,8 @@ class QuizEngine {
   nChunks(){return Math.ceil(this.words.length/this.CHUNK);}
   chunkIdx(c){const s=c*this.CHUNK;return Array.from({length:Math.min(this.CHUNK,this.words.length-s)},(_,i)=>s+i);}
   makeChoices(ci){return shuf([ci,...shuf(this.words.map((_,i)=>i).filter(i=>i!==ci)).slice(0,3)]);}
-  getQ(i){return (this.mode==='en-jp'||this.mode==='mc')?this.words[i].en:this.words[i].jp;}
-  getA(i){return (this.mode==='en-jp'||this.mode==='mc')?this.words[i].jp:this.words[i].en;}
+  getQ(i){return this.mode==='en-jp'?this.words[i].en:this.words[i].jp;}
+  getA(i){return this.mode==='en-jp'?this.words[i].jp:this.words[i].en;}
   qlabel(){return this.mode==='en-jp'?'英単語の意味を入力':this.mode==='jp-en'?'日本語を英語で入力':'英語に対応する日本語を選んでください';}
 
   startChunk(c){
@@ -546,7 +546,32 @@ class QuizEngine {
     if(this.revIdx>=this.revQ.length){this.finishRev();return;}
     this.answered=false;this.hintLv=0;
     this.fill.style.width=Math.round(this.revIdx/this.revQ.length*100)+'%';
-    this.renderInput(this.revQ[this.revIdx],true);
+    const idx=this.revQ[this.revIdx];
+    this.mode==='mc'?this.renderRevMC(idx):this.renderInput(idx,true);
+  }
+  renderRevMC(idx){
+    const choices=this.makeChoices(idx),id=this.areaId;
+    this.area.innerHTML=`<div class="review-badge">🔁 復習モード — ${this.revIdx+1}/${this.revQ.length}</div>
+      ${this._qCard(idx,'間違えた単語の復習')}
+      <div class="choices">${choices.map((ci,n)=>`<button class="choice-btn" data-ci="${ci}" onclick="_rmc('${id}',${ci},${idx})"><span class="choice-num">${n+1}</span>${esc(this.words[ci].jp)}</button>`).join('')}</div>
+      <div class="feedback" id="${id}-fb"></div>
+      <div class="nav-row"><span class="counter">${this.revIdx+1} / ${this.revQ.length}</span><button class="next-btn" id="${id}-nx" onclick="_rn('${id}')">次へ →</button></div>`;
+  }
+  checkRevMC(chosen,correct){
+    if(this.answered)return;
+    this.answered=true;
+    const ok=chosen===correct,id=this.areaId;
+    document.querySelectorAll(`#${id} .choice-btn`).forEach(b=>{
+      b.disabled=true;
+      const ci=parseInt(b.dataset.ci);
+      if(ci===correct)b.classList.add('c-ok');
+      else if(!ok&&ci===chosen)b.classList.add('c-ng');
+    });
+    const fb=$(id+'-fb');fb.className='feedback show '+(ok?'ok':'ng');
+    fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(this.words[correct].jp)}</strong>`;
+    const nx=$(id+'-nx');nx.style.display='inline-block';nx.focus();
+    ok?this.revOk++:this.missed.push(correct);
+    this.revAns++;
   }
   renderMC(idx){
     const choices=this.makeChoices(idx),id=this.areaId;
@@ -666,6 +691,7 @@ const _c   = id => _g(id).checkAns();
 const _rc  = id => _g(id).checkRevAns();
 const _mc  = (id,ch,co) => _g(id).checkMC(ch,co);
 const _n   = id => _g(id).nextQ();
+const _rmc = (id,ch,co) => _g(id).checkRevMC(ch,co);
 const _rn  = id => _g(id).nextRevQ();
 const _h   = id => _g(id).doHint();
 const _rev = id => _g(id).startRev();
