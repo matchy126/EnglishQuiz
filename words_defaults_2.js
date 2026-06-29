@@ -2,42 +2,42 @@ DEFAULTS.push(
   {
     name: 'EngComm3 U3R1 英日',
     words: [
-      {en:'universality',jp:'普遍性'},
-      {en:'organism',jp:'生物、有機体'},
-      {en:'assumption',jp:'仮定、思い込み'},
-      {en:'impose',jp:'課す、押し付ける'},
+      {en:'universality',jp:'普遍性，一般性'},
+      {en:'organism',jp:'有機体'},
+      {en:'assumption',jp:'仮定，仮説'},
+      {en:'impose',jp:'…を加える'},
       {en:'exaggerated',jp:'誇張された'},
-      {en:'chronological',jp:'年代順の、時系列の'},
-      {en:'clarity',jp:'明瞭さ、明確さ'},
+      {en:'chronological',jp:'年代順の'},
+      {en:'clarity',jp:'明確さ'},
       {en:'repetition',jp:'繰り返し'},
-      {en:'arise',jp:'生じる、起こる'},
-      {en:'punish',jp:'罰する'},
-      {en:'reward',jp:'報いる、褒美を与える'},
-      {en:'individualistic',jp:'個人主義的な'},
-      {en:'bravery',jp:'勇敢さ'},
-      {en:'determination',jp:'決意'},
-      {en:'emulate',jp:'見習う、まねる'},
-      {en:'migration',jp:'移住、移動'}
+      {en:'arise',jp:'生じる'},
+      {en:'punish',jp:'…を罰する'},
+      {en:'reward',jp:'…に報酬を与える'},
+      {en:'individualistic',jp:'個性的な'},
+      {en:'bravery',jp:'勇敢さ，勇気'},
+      {en:'determination',jp:'決意，決断'},
+      {en:'emulate',jp:'…を手本にする'},
+      {en:'migration',jp:'移動，移住'}
     ]
   },
 
   {
     name: 'EngComm3 U3R2 英日',
     words: [
-      {en:'refuse',jp:'断る'},
-      {en:'bang',jp:'バンと音を立てる'},
-      {en:'scratch',jp:'ひっかく'},
-      {en:'nearby',jp:'近くの'},
-      {en:'armful',jp:'ひとかかえ'},
-      {en:'stir',jp:'かき混ぜる'},
-      {en:'dip',jp:'浸す'},
-      {en:'magnificent',jp:'壮大な、見事な'},
+      {en:'refuse',jp:'（…すること）を拒む'},
+      {en:'bang',jp:'大きな音を立てる'},
+      {en:'scratch',jp:'…をかく，引っかく'},
+      {en:'nearby',jp:'すぐ近くの'},
+      {en:'armful',jp:'腕いっぱい'},
+      {en:'stir',jp:'…をかき混ぜる'},
+      {en:'dip',jp:'…を（液体に）ちょっと浸す'},
+      {en:'magnificent',jp:'すばらしい，見事な'},
       {en:'gladly',jp:'喜んで'},
-      {en:'townsfolk',jp:'町の人々'},
-      {en:'edge',jp:'端、縁'},
-      {en:'feast',jp:'ごちそう、宴会'},
-      {en:'repay',jp:'恩返しをする、返済する'},
-      {en:'tug',jp:'ぐいと引く'}
+      {en:'townsfolk',jp:'町民'},
+      {en:'edge',jp:'（町などの）はずれ'},
+      {en:'feast',jp:'ごちそう'},
+      {en:'repay',jp:'…に恩返しする'},
+      {en:'tug',jp:'強く引くこと'}
     ]
   },
 
@@ -45,8 +45,8 @@ DEFAULTS.push(
     name: 'EngComm3 U4R1 英日',
     words: [
       {en:'astonishing',jp:'驚くべき'},
-      {en:'confirm',jp:'確認する'},
-      {en:'exceptionally',jp:'並外れて、非常に'},
+      {en:'confirm',jp:'…を確証する'},
+      {en:'exceptionally',jp:'例外的に'},
       {en:'volcanic',jp:'火山の'},
       {en:'disaster',jp:'災害'},
       {en:'wealthy',jp:'裕福な'},
@@ -55,12 +55,12 @@ DEFAULTS.push(
       {en:'excavation',jp:'発掘'},
       {en:'literally',jp:'文字どおりに'},
       {en:'considerably',jp:'かなり'},
-      {en:'vibrant',jp:'活気のある'},
-      {en:'facade',jp:'正面、外観'},
-      {en:'mythical',jp:'神話上の'},
-      {en:'speculate',jp:'推測する'},
-      {en:'modify',jp:'修正する'},
-      {en:'purposely',jp:'故意に'}
+      {en:'vibrant',jp:'（色が）鮮やかな'},
+      {en:'facade',jp:'正面'},
+      {en:'mythical',jp:'神話の'},
+      {en:'speculate',jp:'…と推測する'},
+      {en:'modify',jp:'…を変える，加減する'},
+      {en:'purposely',jp:'意図的に'}
     ]
   },
 
@@ -68,19 +68,19 @@ DEFAULTS.push(
     name: 'EngComm3 U4R2 英日',
     words: [
       {en:'civilization',jp:'文明'},
-      {en:'intentionally',jp:'故意に'},
+      {en:'intentionally',jp:'故意に，意図的に'},
       {en:'tomb',jp:'墓'},
-      {en:'basement',jp:'地下室'},
-      {en:'seal',jp:'封印する'},
-      {en:'solid',jp:'固体の、頑丈な'},
-      {en:'propose',jp:'提案する'},
-      {en:'current',jp:'現在の'},
-      {en:'engaged',jp:'従事している'},
+      {en:'basement',jp:'地階'},
+      {en:'seal',jp:'…を密閉する'},
+      {en:'solid',jp:'硬い'},
+      {en:'propose',jp:'…を提案する'},
+      {en:'current',jp:'現在の，今の'},
+      {en:'engaged',jp:'従事して'},
       {en:'headquarters',jp:'本部'},
       {en:'controversy',jp:'論争'},
-      {en:'harsh',jp:'厳しい'},
-      {en:'artifact',jp:'工芸品、人工遺物'},
-      {en:'authority',jp:'権威、当局'}
+      {en:'harsh',jp:'厳しい，辛辣な'},
+      {en:'artifact',jp:'人工遺物'},
+      {en:'authority',jp:'《通例複数形～sで》当局'}
     ]
   },
 
