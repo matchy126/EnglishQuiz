@@ -195,5 +195,40 @@ DEFAULTS.push(
       {en:'reminder',jp:'something that helps someone remember something'},
       {en:'purposely',jp:'consciously'}
     ]
-  }
+  },
+
+  {
+    name: 'EngExe1 U3, 4',
+    words: [
+      {en:'surgery',jp:'手術'},
+      {en:'symptom',jp:'症状'},
+      {en:'proponent',jp:'支持者、提唱者'},
+      {en:'controversial',jp:'物議を醸す、論争の的となる'},
+      {en:'funded',jp:'資金提供を受けた'},
+      {en:'substance',jp:'物質'},
+      {en:'conventional',jp:'従来の、慣習的な'},
+      {en:'chief',jp:'主要な、最高位の'},
+      {en:'burden',jp:'負担'},
+      {en:'consultation',jp:'相談、診察'},
+      {en:'contribution',jp:'貢献、寄付'},
+      {en:'labor',jp:'労働'},
+      {en:'regardless',jp:'それにもかかわらず'},
+      {en:'safety net',jp:'セーフティネット、安全網'},
+      {en:'treatment',jp:'治療'},
+      {en:'drug dependency',jp:'薬物依存'},
+      {en:'epidemic',jp:'流行病、感染症の流行'},
+      {en:'patent',jp:'特許'},
+      {en:'preventable illness',jp:'予防可能な病気'},
+      {en:'sedentary lifestyle',jp:'座りがちな生活習慣'},
+      {en:'underfunding',jp:'資金不足'},
+      {en:'casualty',jp:'死傷者、犠牲者'},
+      {en:'disrupt',jp:'を混乱させる、を中断させる'},
+      {en:'infrastructure',jp:'インフラ、基盤設備'},
+      {en:'issue',jp:'問題、論点'},
+      {en:'monitor',jp:'を監視する'},
+      {en:'policy',jp:'政策、方針'},
+      {en:'rely on',jp:'に頼る、依存する'},
+      {en:'strategy',jp:'戦略'}
+    ]
+  },
 );
