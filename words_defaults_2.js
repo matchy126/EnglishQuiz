@@ -86,6 +86,7 @@ DEFAULTS.push(
 
   {
     name: 'EngComm3 U3R1 英英',
+    kind: 'enen',
     words: [
       {en:'universality',jp:'the state of existing everywhere or involving everyone'},
       {en:'organism',jp:'any living thing, such as an animal, plant or human'},
@@ -108,6 +109,7 @@ DEFAULTS.push(
 
   {
     name:'EngComm3 U4R1 英英',
+    kind:'enen',
     words:[
       {en:'astonishing',jp:'extremely surprising'},
       {en:'confirm',jp:'to prove that something is true'},

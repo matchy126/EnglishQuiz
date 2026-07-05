@@ -28,7 +28,7 @@ const DEFAULTS=[
     {en:'affectionate',jp:'愛情の込もった'},{en:'effectively',jp:'効果的に'},{en:'despair',jp:'絶望する'},
     {en:'periodic',jp:'定期的な'}
   ]},
-  {name:'EngComm3 U1R1 英英',words:[
+  {name:'EngComm3 U1R1 英英',kind:'enen',words:[
     {en:'recall',jp:'to think of something from the past'},
     {en:'implication',jp:'a possible outcome of an action or event'},
     {en:'actively',jp:'in an active or positive way'},

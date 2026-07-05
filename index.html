@@ -445,12 +445,23 @@ const REMOVED_DEFAULTS=['EngComm3 U2R1 英英','Unit2 Reading1 英英'];
 function seedDefaults(){
   let changed=false;
   REMOVED_DEFAULTS.forEach(name=>{const i=db.units.findIndex(u=>u.name===name);if(i>=0){db.units.splice(i,1);changed=true;}});
-  DEFAULTS.forEach(d=>{if(!db.units.find(u=>u.name===d.name)){db.units.push({id:uid(),name:d.name,words:d.words});changed=true;}});
+  DEFAULTS.forEach(d=>{if(!db.units.find(u=>u.name===d.name)){db.units.push({id:uid(),name:d.name,words:d.words,kind:d.kind||null});changed=true;}});
+  if(changed)save();
+}
+// 以前のバージョンで保存された単元にはkindが無いので、DEFAULTSの同名単元から補完する
+function migrateKinds(){
+  let changed=false;
+  db.units.forEach(u=>{
+    if(u.kind===undefined||u.kind===null){
+      const d=DEFAULTS.find(x=>x.name===u.name);
+      if(d&&d.kind){u.kind=d.kind;changed=true;}
+    }
+  });
   if(changed)save();
 }
 function resetAll(){
   if(!confirm('すべての単元とデータを削除してデフォルトに戻しますか？'))return;
-  localStorage.removeItem(SK);db={units:[]};seedDefaults();
+  localStorage.removeItem(SK);db={units:[]};seedDefaults();migrateKinds();
   selId=db.units[0]?.id||null;renderUnits();renderWords();showToast('リセットしました');
 }
 
@@ -491,6 +502,7 @@ class QuizEngine {
   chunkIdx(c){const s=c*this.CHUNK;return Array.from({length:Math.min(this.CHUNK,this.words.length-s)},(_,i)=>s+i);}
   makeChoices(ci){return shuf([ci,...shuf(this.words.map((_,i)=>i).filter(i=>i!==ci)).slice(0,3)]);}
   isEnEn(){return false;}
+  kind(){return null;} // 'enen'（英英）や 'kobun'（古典文法）などをサブクラスで返す
   getQ(i){
     if(this.mode==='mc')return this.isEnEn()?this.words[i].jp:this.words[i].en;
     return this.mode==='en-jp'?this.words[i].en:this.words[i].jp;
@@ -498,6 +510,11 @@ class QuizEngine {
   getA(i){return this.mode==='en-jp'?this.words[i].jp:this.words[i].en;}
   choiceText(i){return this.isEnEn()?this.words[i].en:this.words[i].jp;}
   qlabel(){
+    const k=this.kind();
+    if(k==='kobun'){
+      if(this.mode==='mc')return '傍線部の文法的意味を選んでください';
+      return this.mode==='en-jp'?'傍線部の文法的意味を（用語で）入力してください':'文法用語に対応する古文を選んでください';
+    }
     if(this.mode==='mc')return this.isEnEn()?'定義文に対応する英単語を選んでください':'英語に対応する日本語を選んでください';
     return this.mode==='en-jp'?'英単語の意味を入力':'日本語を英語で入力';
   }
@@ -714,10 +731,28 @@ const _mode= (id,m) => _g(id).setMode(m);
 class MyQuiz extends QuizEngine {
   constructor(){super('chunk-nav','prog-fill','main-area','tab-quiz',5);_engines['main-area']=this;this.unitId=null;}
   subtitle(){return getU(this.unitId)?.name||'';}
-  isEnEn(){const u=getU(this.unitId);return !!u&&/英英/.test(u.name);}
+  kind(){return getU(this.unitId)?.kind||null;}
+  isEnEn(){
+    const u=getU(this.unitId);if(!u)return false;
+    if(u.kind)return u.kind==='enen';
+    return /英英/.test(u.name); // kindを持たない古い自作単元との後方互換
+  }
+  // 古典文法など、日本語→英語モードが意味をなさない単元ではボタンを無効化する
+  updateModeAvailability(){
+    const disable=this.kind()==='kobun';
+    const jpBtn=document.querySelector('#tab-quiz .mode-btn[data-mode="jp-en"]');
+    if(!jpBtn)return;
+    jpBtn.disabled=disable;
+    jpBtn.style.opacity=disable?'.35':'';
+    jpBtn.style.cursor=disable?'default':'';
+    jpBtn.title=disable?'この単元では利用できません':'';
+    if(disable&&this.mode==='jp-en')this.mode='en-jp';
+  }
   pickUnit(id){
     this.unitId=id;
     document.querySelectorAll('#unit-selector .unit-sel-btn').forEach(b=>b.classList.toggle('active',b.dataset.uid===id));
+    this.updateModeAvailability();
+    document.querySelectorAll('#tab-quiz .mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===this.mode));
     this.setWords(getU(id)?.words||[]);
   }
 }
@@ -801,7 +836,7 @@ document.addEventListener('keydown',e=>{
   }
 });
 
-load();seedDefaults();
+load();seedDefaults();migrateKinds();
 selId=db.units[0]?.id||null;
 renderUnits();renderWords();
 </script>
