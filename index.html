@@ -107,6 +107,7 @@ textarea:focus{border-color:var(--ac)}
 .q-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:1.5rem;margin-bottom:.875rem}
 .q-label{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);margin-bottom:.5rem;font-family:var(--mono)}
 .q-word{font-size:2.2rem;font-weight:700;line-height:1.2;font-family:var(--mono)}
+.q-word.long{font-size:1.3rem;font-weight:600;line-height:1.5;font-family:var(--body)}
 .q-sub{font-size:.72rem;color:var(--tx3);margin-top:.35rem;font-family:var(--mono)}
 .review-badge{display:inline-flex;align-items:center;gap:5px;background:var(--acd);color:var(--ac);font-size:.72rem;padding:3px 10px;border-radius:20px;margin-bottom:.75rem;font-family:var(--mono)}
 .input-row{display:flex;gap:8px;margin-bottom:.5rem}
@@ -244,7 +245,7 @@ textarea:focus{border-color:var(--ac)}
       <div class="mode-row">
         <button class="mode-btn" data-mode="en-jp" onclick="Q.setMode('en-jp')">英語 → 日本語</button>
         <button class="mode-btn" data-mode="jp-en" onclick="Q.setMode('jp-en')">日本語 → 英語</button>
-        <button class="mode-btn" data-mode="mc" onclick="Q.setMode('mc')">英語 → 4択</button>
+        <button class="mode-btn" data-mode="mc" onclick="Q.setMode('mc')">4択</button>
       </div>
       <div class="chunk-nav" id="chunk-nav"></div>
       <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
@@ -271,7 +272,7 @@ textarea:focus{border-color:var(--ac)}
     <div class="mode-row">
       <button class="mode-btn" data-mode="en-jp" onclick="T.setMode('en-jp')">英語 → 日本語</button>
       <button class="mode-btn" data-mode="jp-en" onclick="T.setMode('jp-en')">日本語 → 英語</button>
-      <button class="mode-btn" data-mode="mc" onclick="T.setMode('mc')">英語 → 4択</button>
+      <button class="mode-btn" data-mode="mc" onclick="T.setMode('mc')">4択</button>
     </div>
     <div class="chunk-nav" id="t-chunk-nav"></div>
     <div class="progress-bar"><div class="progress-fill" id="t-prog-fill" style="width:0%"></div></div>
@@ -489,9 +490,17 @@ class QuizEngine {
   nChunks(){return Math.ceil(this.words.length/this.CHUNK);}
   chunkIdx(c){const s=c*this.CHUNK;return Array.from({length:Math.min(this.CHUNK,this.words.length-s)},(_,i)=>s+i);}
   makeChoices(ci){return shuf([ci,...shuf(this.words.map((_,i)=>i).filter(i=>i!==ci)).slice(0,3)]);}
-  getQ(i){return this.mode==='jp-en'?this.words[i].jp:this.words[i].en;}
-  getA(i){return this.mode==='jp-en'?this.words[i].en:this.words[i].jp;}
-  qlabel(){return this.mode==='en-jp'?'英単語の意味を入力':this.mode==='jp-en'?'日本語を英語で入力':'英語に対応する日本語を選んでください';}
+  isEnEn(){return false;}
+  getQ(i){
+    if(this.mode==='mc')return this.isEnEn()?this.words[i].jp:this.words[i].en;
+    return this.mode==='en-jp'?this.words[i].en:this.words[i].jp;
+  }
+  getA(i){return this.mode==='en-jp'?this.words[i].jp:this.words[i].en;}
+  choiceText(i){return this.isEnEn()?this.words[i].en:this.words[i].jp;}
+  qlabel(){
+    if(this.mode==='mc')return this.isEnEn()?'定義文に対応する英単語を選んでください':'英語に対応する日本語を選んでください';
+    return this.mode==='en-jp'?'英単語の意味を入力':'日本語を英語で入力';
+  }
 
   startChunk(c){
     this.chunk=c;this.inChunk=0;this.answered=false;this.hintLv=0;this.isRev=false;
@@ -525,7 +534,8 @@ class QuizEngine {
     this.mode==='mc'?this.renderMC(idx):this.renderInput(idx,false);
   }
   _qCard(idx,sub){
-    return `<div class="q-card"><div class="q-label">${this.qlabel()}</div><div class="q-word">${esc(this.getQ(idx))}</div><div class="q-sub">${sub}</div></div>`;
+    const txt=this.getQ(idx),longCls=txt.length>28?' long':'';
+    return `<div class="q-card"><div class="q-label">${this.qlabel()}</div><div class="q-word${longCls}">${esc(txt)}</div><div class="q-sub">${sub}</div></div>`;
   }
   renderInput(idx,isRev){
     const id=this.areaId,checkFn=isRev?'_rc':'_c',nextFn=isRev?'_rn':'_n';
@@ -554,7 +564,7 @@ class QuizEngine {
     const choices=this.makeChoices(idx),id=this.areaId;
     this.area.innerHTML=`<div class="review-badge">🔁 復習モード — ${this.revIdx+1}/${this.revQ.length}</div>
       ${this._qCard(idx,'間違えた単語の復習')}
-      <div class="choices">${choices.map((ci,n)=>`<button class="choice-btn" data-ci="${ci}" onclick="_rmc('${id}',${ci},${idx})"><span class="choice-num">${n+1}</span>${esc(this.words[ci].jp)}</button>`).join('')}</div>
+      <div class="choices">${choices.map((ci,n)=>`<button class="choice-btn" data-ci="${ci}" onclick="_rmc('${id}',${ci},${idx})"><span class="choice-num">${n+1}</span>${esc(this.choiceText(ci))}</button>`).join('')}</div>
       <div class="feedback" id="${id}-fb"></div>
       <div class="nav-row"><span class="counter">${this.revIdx+1} / ${this.revQ.length}</span><button class="next-btn" id="${id}-nx" onclick="_rn('${id}')">次へ →</button></div>`;
   }
@@ -569,7 +579,7 @@ class QuizEngine {
       else if(!ok&&ci===chosen)b.classList.add('c-ng');
     });
     const fb=$(id+'-fb');fb.className='feedback show '+(ok?'ok':'ng');
-    fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(this.words[correct].jp)}</strong>`;
+    fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(this.choiceText(correct))}</strong>`;
     const nx=$(id+'-nx');nx.style.display='inline-block';nx.focus();
     ok?this.revOk++:this.missed.push(correct);
     this.revAns++;
@@ -577,7 +587,7 @@ class QuizEngine {
   renderMC(idx){
     const choices=this.makeChoices(idx),id=this.areaId;
     this.area.innerHTML=`${this._qCard(idx,`${this.subtitle()} · グループ${this.chunk+1} — ${this.inChunk+1}/${this.order.length}`)}
-      <div class="choices">${choices.map((ci,n)=>`<button class="choice-btn" data-ci="${ci}" onclick="_mc('${id}',${ci},${idx})"><span class="choice-num">${n+1}</span>${esc(this.words[ci].jp)}</button>`).join('')}</div>
+      <div class="choices">${choices.map((ci,n)=>`<button class="choice-btn" data-ci="${ci}" onclick="_mc('${id}',${ci},${idx})"><span class="choice-num">${n+1}</span>${esc(this.choiceText(ci))}</button>`).join('')}</div>
       <div class="feedback" id="${id}-fb"></div>
       <div class="nav-row"><span class="counter">${this.ans+1} / ${this.words.length}</span><button class="next-btn" id="${id}-nx" onclick="_n('${id}')">次へ →</button></div>`;
   }
@@ -619,7 +629,7 @@ class QuizEngine {
       else if(!ok&&ci===chosen)b.classList.add('c-ng');
     });
     const fb=$(id+'-fb');fb.className='feedback show '+(ok?'ok':'ng');
-    fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(this.words[correct].jp)}</strong>`;
+    fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(this.choiceText(correct))}</strong>`;
     const nx=$(id+'-nx');nx.style.display='inline-block';nx.focus();
     if(ok){this.ok++;this.results[this.chunk].correct++;this.results[this.chunk].entries.push({idx:correct,ok:true});this.ans++;}
     else{this.results[this.chunk].entries.push({idx:correct,ok:false});this.ans++;this.missed.push(correct);}
@@ -677,7 +687,7 @@ class QuizEngine {
       ${uniq.length?`<button class="action-btn review-act" onclick="_rev('${id}')" style="margin-bottom:8px">🔁 間違えた単語をまとめて復習 (${uniq.length}語)</button>`:''}
       <div class="restart-row">
         <button class="btn btn-gh" onclick="_mode('${id}','en-jp')">英語 → 日本語</button>
-        <button class="btn btn-gh" onclick="_mode('${id}','mc')">英語 → 4択</button>
+        <button class="btn btn-gh" onclick="_mode('${id}','mc')">4択</button>
         <button class="btn btn-ac" onclick="_rst('${id}')">もう一度</button>
         <button class="btn btn-gh" onclick="_mode('${id}','jp-en')">日本語 → 英語</button>
       </div>`;
@@ -704,6 +714,7 @@ const _mode= (id,m) => _g(id).setMode(m);
 class MyQuiz extends QuizEngine {
   constructor(){super('chunk-nav','prog-fill','main-area','tab-quiz',5);_engines['main-area']=this;this.unitId=null;}
   subtitle(){return getU(this.unitId)?.name||'';}
+  isEnEn(){const u=getU(this.unitId);return !!u&&/英英/.test(u.name);}
   pickUnit(id){
     this.unitId=id;
     document.querySelectorAll('#unit-selector .unit-sel-btn').forEach(b=>b.classList.toggle('active',b.dataset.uid===id));
