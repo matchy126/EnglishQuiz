@@ -506,7 +506,26 @@ class QuizEngine {
   }
   nChunks(){return Math.ceil(this.words.length/this.CHUNK);}
   chunkIdx(c){const s=c*this.CHUNK;return Array.from({length:Math.min(this.CHUNK,this.words.length-s)},(_,i)=>s+i);}
-  makeChoices(ci){return shuf([ci,...shuf(this.words.map((_,i)=>i).filter(i=>i!==ci)).slice(0,3)]);}
+  makeChoices(ci){
+    const correctText=this.choiceText(ci);
+    const seen=new Set([correctText]);
+    const pool=shuf(this.words.map((_,i)=>i).filter(i=>i!==ci));
+    const picked=[];
+    // 1st pass: 表示テキストが正解や他の選択肢と重複しない候補だけを選ぶ
+    for(const i of pool){
+      const t=this.choiceText(i);
+      if(!seen.has(t)){seen.add(t);picked.push(i);}
+      if(picked.length===3)break;
+    }
+    // 候補が足りない場合のみ、重複を許して埋める（安全のためのフォールバック）
+    if(picked.length<3){
+      for(const i of pool){
+        if(picked.length>=3)break;
+        if(!picked.includes(i))picked.push(i);
+      }
+    }
+    return shuf([ci,...picked]);
+  }
   isEnEn(){return false;}
   kind(){return null;} // 'enen'（英英）や 'kobun'（古典文法）などをサブクラスで返す
   getQ(i){
