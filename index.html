@@ -108,6 +108,7 @@ textarea:focus{border-color:var(--ac)}
 .q-label{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);margin-bottom:.5rem;font-family:var(--mono)}
 .q-word{font-size:2.2rem;font-weight:700;line-height:1.2;font-family:var(--mono)}
 .q-word.long{font-size:1.3rem;font-weight:600;line-height:1.5;font-family:var(--body)}
+.q-word u{text-decoration:underline;text-decoration-color:var(--ac);text-decoration-thickness:2.5px;text-underline-offset:4px;color:var(--ac)}
 .q-sub{font-size:.72rem;color:var(--tx3);margin-top:.35rem;font-family:var(--mono)}
 .review-badge{display:inline-flex;align-items:center;gap:5px;background:var(--acd);color:var(--ac);font-size:.72rem;padding:3px 10px;border-radius:20px;margin-bottom:.75rem;font-family:var(--mono)}
 .input-row{display:flex;gap:8px;margin-bottom:.5rem}
@@ -322,6 +323,11 @@ const $ = id => document.getElementById(id);
 const save = () => localStorage.setItem(SK,JSON.stringify(db));
 const uid  = () => Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const esc  = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+// ##...## で囲まれた部分を下線表示するためのヘルパー（古典文法の設問で使用）
+const stripMarks = s => String(s).replace(/##/g,'');
+const renderMarked = s => String(s).split(/(##[^#]*##)/).map(p=>
+  (p.startsWith('##')&&p.endsWith('##')&&p.length>=4) ? '<u>'+esc(p.slice(2,-2))+'</u>' : esc(p)
+).join('');
 const getU = id => db.units.find(u=>u.id===id);
 const selU = () => getU(selId);
 const shuf = a => {let b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;};
@@ -366,7 +372,7 @@ function renderWords(){
   we.style.display='none';
   wl.innerHTML=u.words.map((w,i)=>`
     <div class="word-item">
-      <span class="en">${esc(w.en)}</span>
+      <span class="en">${esc(stripMarks(w.en))}</span>
       <span class="jp">${esc(w.jp)}</span>
       <button class="del" onclick="delWord(${i})">×</button>
     </div>`).join('');
@@ -437,7 +443,7 @@ function confirmImport(){
 function exportCSV(){
   const u=selU();if(!u)return;
   const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([u.words.map(w=>`${w.en},${w.jp}`).join('\n')],{type:'text/csv'}));
+  a.href=URL.createObjectURL(new Blob([u.words.map(w=>`${stripMarks(w.en)},${w.jp}`).join('\n')],{type:'text/csv'}));
   a.download=`${u.name}.csv`;a.click();
 }
 
@@ -551,8 +557,8 @@ class QuizEngine {
     this.mode==='mc'?this.renderMC(idx):this.renderInput(idx,false);
   }
   _qCard(idx,sub){
-    const txt=this.getQ(idx),longCls=txt.length>28?' long':'';
-    return `<div class="q-card"><div class="q-label">${this.qlabel()}</div><div class="q-word${longCls}">${esc(txt)}</div><div class="q-sub">${sub}</div></div>`;
+    const txt=this.getQ(idx),plain=stripMarks(txt),longCls=plain.length>28?' long':'';
+    return `<div class="q-card"><div class="q-label">${this.qlabel()}</div><div class="q-word${longCls}">${renderMarked(txt)}</div><div class="q-sub">${sub}</div></div>`;
   }
   renderInput(idx,isRev){
     const id=this.areaId,checkFn=isRev?'_rc':'_c',nextFn=isRev?'_rn':'_n';
@@ -656,7 +662,7 @@ class QuizEngine {
   finishChunk(){this.results[this.chunk].done=true;this.renderNav();this.showAnalysis(this.chunk);}
   showAnalysis(c){
     const r=this.results[c],pct=Math.round(r.correct/r.total*100),col=scoreColor(pct),lbl=scoreLbl(pct);
-    const rows=r.entries.map(e=>`<tr><td class="en">${esc(this.words[e.idx].en)}</td><td>${esc(this.words[e.idx].jp)}</td><td><span class="badge ${e.ok?'badge-ok':'badge-ng'}">${e.ok?'正解':'不正解'}</span></td></tr>`).join('');
+    const rows=r.entries.map(e=>`<tr><td class="en">${esc(stripMarks(this.words[e.idx].en))}</td><td>${esc(this.words[e.idx].jp)}</td><td><span class="badge ${e.ok?'badge-ok':'badge-ng'}">${e.ok?'正解':'不正解'}</span></td></tr>`).join('');
     const allDone=this.results.every(x=>x.done),isCur=c===this.chunk&&r.done&&!this.isRev,nc=this.chunk+1;
     let nBtn='';
     if(allDone)nBtn=`<button class="action-btn primary" onclick="_fin('${this.areaId}')">全体結果を見る →</button>`;
