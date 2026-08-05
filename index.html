@@ -90,6 +90,14 @@ textarea:focus{border-color:var(--ac)}
 .t-track{flex:1;height:3px;background:var(--bd);border-radius:2px;position:relative;cursor:pointer}
 .t-track-fill{height:100%;border-radius:2px;background:var(--ac);transition:width .15s}
 .t-track-thumb{width:14px;height:14px;border-radius:50%;background:var(--ac);border:2px solid var(--sf);box-shadow:0 0 0 1.5px var(--ac);position:absolute;top:50%;transform:translate(-50%,-50%);transition:left .15s;pointer-events:none}
+.t-dual-track{position:relative;height:28px;margin-top:.35rem}
+.t-dual-bg{position:absolute;left:0;right:0;top:50%;height:3px;background:var(--bd);border-radius:2px;transform:translateY(-50%)}
+.t-dual-fill{position:absolute;top:50%;height:3px;background:var(--ac);border-radius:2px;transform:translateY(-50%);pointer-events:none}
+.t-range-input{-webkit-appearance:none;appearance:none;position:absolute;left:0;top:0;width:100%;height:28px;margin:0;background:transparent;pointer-events:none}
+.t-range-input::-webkit-slider-runnable-track{-webkit-appearance:none;background:transparent;height:28px}
+.t-range-input::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;pointer-events:auto;width:18px;height:18px;border-radius:50%;background:var(--ac);border:2px solid var(--sf);box-shadow:0 0 0 1.5px var(--ac);cursor:pointer;margin-top:5px}
+.t-range-input::-moz-range-track{background:transparent;height:28px;border:none}
+.t-range-input::-moz-range-thumb{pointer-events:auto;width:18px;height:18px;border-radius:50%;background:var(--ac);border:2px solid var(--sf);box-shadow:0 0 0 1.5px var(--ac);cursor:pointer}
 .mode-row{display:flex;gap:8px;margin-bottom:1rem}
 .mode-btn{flex:1;padding:7px;border:1px solid var(--bd);border-radius:var(--r);background:transparent;color:var(--tx2);font-family:var(--body);font-size:.82rem;cursor:pointer;transition:all .15s}
 .mode-btn.active{background:var(--acd);color:var(--ac);border-color:var(--ac)}
@@ -256,18 +264,15 @@ textarea:focus{border-color:var(--ac)}
 
   <div id="tab-target" style="display:none">
     <div class="card" style="margin-bottom:1rem">
-      <div class="card-title">範囲を選択</div>
       <div class="t-slider-top">
-        <span class="t-slider-range" id="t-step-range">No.1–50</span>
-        <span class="t-slider-sub" id="t-step-sub">1 / 20</span>
+        <span class="t-slider-range" id="t-range-label">No.1–50</span>
+        <span class="t-slider-sub" id="t-range-info"></span>
       </div>
-      <div class="t-slider-row">
-        <button class="t-slider-nav" id="t-prev-btn" onclick="tNav(-1)" disabled>&#8249;</button>
-        <div class="t-track" id="t-track">
-          <div class="t-track-fill" id="t-track-fill" style="width:0%"></div>
-          <div class="t-track-thumb" id="t-track-thumb" style="left:0%"></div>
-        </div>
-        <button class="t-slider-nav" id="t-next-btn" onclick="tNav(1)">&#8250;</button>
+      <div class="t-dual-track">
+        <div class="t-dual-bg"></div>
+        <div class="t-dual-fill" id="t-dual-fill"></div>
+        <input type="range" class="t-range-input" id="t-range-start" min="0" max="19" step="1" value="0">
+        <input type="range" class="t-range-input" id="t-range-end" min="0" max="19" step="1" value="0">
       </div>
     </div>
     <div class="mode-row">
@@ -810,26 +815,55 @@ for(let i=0;i<TARGET1900_DATA.length;i+=T_CHUNK){
 }
 
 class TargetQuiz extends QuizEngine {
-  constructor(){super('t-chunk-nav','t-prog-fill','t-main-area','tab-target',TQCHUNK);_engines['t-main-area']=this;this.sec=0;}
-  subtitle(){return 'TARGET1900 '+T_SECTIONS[this.sec].label;}
-  pickSec(i){this.sec=i;updateTStepper();this.setWords(T_SECTIONS[i].words);}
+  constructor(){super('t-chunk-nav','t-prog-fill','t-main-area','tab-target',TQCHUNK);_engines['t-main-area']=this;this.rStart=0;this.rEnd=0;}
+  subtitle(){
+    const startNo=this.rStart*T_CHUNK+1,endNo=Math.min((this.rEnd+1)*T_CHUNK,TARGET1900_DATA.length);
+    return `TARGET1900 No.${startNo}–${endNo}（ランダム出題）`;
+  }
+  pickRange(s,e){
+    if(s>e)[s,e]=[e,s];
+    this.rStart=s;this.rEnd=e;
+    updateTRangeUI();
+    const startIdx=s*T_CHUNK,endIdx=Math.min((e+1)*T_CHUNK,TARGET1900_DATA.length);
+    this.setWords(shuf(TARGET1900_DATA.slice(startIdx,endIdx)));
+  }
 }
 const T=new TargetQuiz();
 
 function initTarget(){
-  const track=$('t-track');
-  if(!track._b){track._b=true;track.addEventListener('click',e=>{const r=track.getBoundingClientRect();T.pickSec(Math.max(0,Math.min(T_SECTIONS.length-1,Math.round((e.clientX-r.left)/r.width*(T_SECTIONS.length-1)))))});}
-  updateTStepper();
+  const sSel=$('t-range-start'),eSel=$('t-range-end'),maxIdx=T_SECTIONS.length-1;
+  if(!sSel._b){
+    sSel._b=true;
+    sSel.max=maxIdx;eSel.max=maxIdx;
+    const onDrag=e=>{
+      let s=+sSel.value,e2=+eSel.value;
+      if(s>e2){if(e.target===sSel)eSel.value=s;else sSel.value=e2;s=+sSel.value;e2=+eSel.value;}
+      renderTRangeLabel(s,e2);updateTFill(s,e2);
+    };
+    sSel.addEventListener('input',onDrag);eSel.addEventListener('input',onDrag);
+    sSel.addEventListener('change',onTRangeCommit);eSel.addEventListener('change',onTRangeCommit);
+  }
   document.querySelectorAll('#tab-target .mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===T.mode));
-  T.pickSec(T.sec);
+  sSel.value=T.rStart;eSel.value=T.rEnd;
+  T.pickRange(T.rStart,T.rEnd);
 }
-function updateTStepper(){
-  const s=T_SECTIONS[T.sec],pct=T_SECTIONS.length>1?Math.round(T.sec/(T_SECTIONS.length-1)*100):0;
-  $('t-step-range').textContent=s.label;$('t-step-sub').textContent=`${T.sec+1} / ${T_SECTIONS.length}`;
-  $('t-prev-btn').disabled=T.sec===0;$('t-next-btn').disabled=T.sec===T_SECTIONS.length-1;
-  $('t-track-fill').style.width=pct+'%';$('t-track-thumb').style.left=pct+'%';
+function onTRangeCommit(){
+  const s=+$('t-range-start').value,e=+$('t-range-end').value;
+  T.pickRange(Math.min(s,e),Math.max(s,e));
 }
-function tNav(dir){T.pickSec(Math.max(0,Math.min(T_SECTIONS.length-1,T.sec+dir)));}
+function renderTRangeLabel(s,e){
+  const startNo=s*T_CHUNK+1,endNo=Math.min((e+1)*T_CHUNK,TARGET1900_DATA.length);
+  $('t-range-label').textContent=`No.${startNo}–${endNo}`;
+  $('t-range-info').textContent=`${endNo-startNo+1}語をランダムな順番で出題します`;
+}
+function updateTFill(s,e){
+  const max=T_SECTIONS.length-1||1,pctS=s/max*100,pctE=e/max*100;
+  $('t-dual-fill').style.left=pctS+'%';$('t-dual-fill').style.width=(pctE-pctS)+'%';
+}
+function updateTRangeUI(){
+  $('t-range-start').value=T.rStart;$('t-range-end').value=T.rEnd;
+  renderTRangeLabel(T.rStart,T.rEnd);updateTFill(T.rStart,T.rEnd);
+}
 
 let _tt;
 function showToast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2200);}
