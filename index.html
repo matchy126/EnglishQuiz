@@ -556,14 +556,16 @@ class QuizEngine {
   }
   renderNav(){
     const nav=$(this.navId);nav.innerHTML='';
-    for(let i=0;i<this.nChunks();i++){
-      const r=this.results[i];
-      let cls='chunk-dot';
-      if(!this.isRev&&i===this.chunk)cls+=' active';
-      else if(r.done){const p=r.correct/r.total;cls+=p===1?' perfect':p>=.8?' good':p>=.6?' mid':' bad';}
-      const b=document.createElement('button');b.className=cls;b.textContent=i+1;
-      if(r.done)b.onclick=(j=>()=>{this.isRev=false;this.showAnalysis(j);})(i);
-      nav.appendChild(b);
+    if(this.nChunks()>1){
+      for(let i=0;i<this.nChunks();i++){
+        const r=this.results[i];
+        let cls='chunk-dot';
+        if(!this.isRev&&i===this.chunk)cls+=' active';
+        else if(r.done){const p=r.correct/r.total;cls+=p===1?' perfect':p>=.8?' good':p>=.6?' mid':' bad';}
+        const b=document.createElement('button');b.className=cls;b.textContent=i+1;
+        if(r.done)b.onclick=(j=>()=>{this.isRev=false;this.showAnalysis(j);})(i);
+        nav.appendChild(b);
+      }
     }
     if(this.missed.length){
       const rb=document.createElement('button');
@@ -584,10 +586,12 @@ class QuizEngine {
     const txt=this.getQ(idx),plain=stripMarks(txt),longCls=plain.length>28?' long':'';
     return `<div class="q-card"><div class="q-label">${this.qlabel()}</div><div class="q-word${longCls}">${renderMarked(txt)}</div><div class="q-sub">${sub}</div></div>`;
   }
+  groupSub(){return this.subtitle();}
+  progressPct(){return this.words.length?Math.round(this.ans/this.words.length*100):0;}
   renderInput(idx,isRev){
     const id=this.areaId,checkFn=isRev?'_rc':'_c',nextFn=isRev?'_rn':'_n';
-    const sub=isRev?'間違えた単語の復習':`${this.subtitle()} · グループ${this.chunk+1} — ${this.inChunk+1}/${this.order.length}`;
-    const ctr=isRev?`${this.revIdx+1} / ${this.revQ.length}`:`${this.ans+1} / ${this.words.length}`;
+    const sub=isRev?'間違えた単語の復習':this.groupSub();
+    const ctr=isRev?`${this.revIdx+1} / ${this.revQ.length}`:`${this.progressPct()}%`;
     const badge=isRev?`<div class="review-badge">🔁 復習モード — ${this.revIdx+1}/${this.revQ.length}</div>`:'';
     this.area.innerHTML=`${badge}${this._qCard(idx,sub)}
       <div class="input-row">
@@ -633,10 +637,10 @@ class QuizEngine {
   }
   renderMC(idx){
     const choices=this.makeChoices(idx),id=this.areaId;
-    this.area.innerHTML=`${this._qCard(idx,`${this.subtitle()} · グループ${this.chunk+1} — ${this.inChunk+1}/${this.order.length}`)}
+    this.area.innerHTML=`${this._qCard(idx,this.groupSub())}
       <div class="choices">${choices.map((ci,n)=>`<button class="choice-btn" data-ci="${ci}" onclick="_mc('${id}',${ci},${idx})"><span class="choice-num">${n+1}</span>${esc(this.choiceText(ci))}</button>`).join('')}</div>
       <div class="feedback" id="${id}-fb"></div>
-      <div class="nav-row"><span class="counter">${this.ans+1} / ${this.words.length}</span><button class="next-btn" id="${id}-nx" onclick="_n('${id}')">次へ →</button></div>`;
+      <div class="nav-row"><span class="counter">${this.progressPct()}%</span><button class="next-btn" id="${id}-nx" onclick="_n('${id}')">次へ →</button></div>`;
   }
   doHint(){
     const idx=this.isRev?this.revQ[this.revIdx]:this.order[this.inChunk],ans=this.getA(idx);
@@ -693,7 +697,7 @@ class QuizEngine {
     else if(isCur&&nc<this.nChunks()){const f=nc*this.CHUNK+1,t=Math.min((nc+1)*this.CHUNK,this.words.length);nBtn=`<button class="action-btn primary" onclick="_sc('${this.areaId}',${nc})">グループ${nc+1}へ（${f}〜${t}番）→</button>`;}
     const uniq=[...new Set(this.missed)];
     const rBtn=uniq.length?`<button class="action-btn review-act" onclick="_rev('${this.areaId}')">🔁 間違えた単語を復習 (${uniq.length}語)</button>`:'';
-    this.area.innerHTML=`<div class="card"><div class="card-title">グループ${c+1}の結果</div>
+    this.area.innerHTML=`<div class="card"><div class="card-title">${this.nChunks()>1?`グループ${c+1}の結果`:'結果'}</div>
       <div class="stats-grid">
         <div class="stat-box"><div class="stat-val">${r.correct}/${r.total}</div><div class="stat-lbl">正解数</div></div>
         <div class="stat-box"><div class="stat-val" style="color:${col}">${pct}%</div><div class="stat-lbl">正解率</div></div>
@@ -730,7 +734,7 @@ class QuizEngine {
     this.area.innerHTML=`
       <div class="final-score" style="color:${pct===100?'var(--gn)':'var(--tx)'}">${this.ok}<span style="font-size:1.5rem;color:var(--tx3)">/${this.words.length}</span></div>
       <div class="final-comment">正解率 ${pct}% — ${pct===100?'完璧！全問正解！':pct>=80?'すばらしい！':pct>=60?'もう少し！':'復習しよう！'}</div>
-      <div class="card" style="margin-bottom:.75rem"><div class="card-title">グループ別スコア</div>${bars}</div>
+      ${this.nChunks()>1?`<div class="card" style="margin-bottom:.75rem"><div class="card-title">グループ別スコア</div>${bars}</div>`:''}
       ${uniq.length?`<button class="action-btn review-act" onclick="_rev('${id}')" style="margin-bottom:8px">🔁 間違えた単語をまとめて復習 (${uniq.length}語)</button>`:''}
       <div class="restart-row">
         <button class="btn btn-gh" onclick="_mode('${id}','en-jp')">英語 → 日本語</button>
@@ -783,7 +787,9 @@ class MyQuiz extends QuizEngine {
     document.querySelectorAll('#unit-selector .unit-sel-btn').forEach(b=>b.classList.toggle('active',b.dataset.uid===id));
     this.updateModeAvailability();
     document.querySelectorAll('#tab-quiz .mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===this.mode));
-    this.setWords(getU(id)?.words||[]);
+    const words=getU(id)?.words||[];
+    this.CHUNK=words.length||1; // 区切らず単元全体を通しで出題
+    this.setWords(words);
   }
 }
 const Q=new MyQuiz();
@@ -825,7 +831,9 @@ class TargetQuiz extends QuizEngine {
     this.rStart=s;this.rEnd=e;
     updateTRangeUI();
     const startIdx=s*T_CHUNK,endIdx=Math.min((e+1)*T_CHUNK,TARGET1900_DATA.length);
-    this.setWords(shuf(TARGET1900_DATA.slice(startIdx,endIdx)));
+    const words=shuf(TARGET1900_DATA.slice(startIdx,endIdx));
+    this.CHUNK=words.length||1; // ランダム出題は区切らず全体を1グループとして通しで出題
+    this.setWords(words);
   }
 }
 const T=new TargetQuiz();
