@@ -85,6 +85,11 @@ textarea:focus{border-color:var(--ac)}
 .unit-select:focus{border-color:var(--ac)}
 .unit-select optgroup{font-family:var(--body);font-weight:600;color:var(--tx2)}
 .unit-select option{color:var(--tx);background:var(--sf);font-weight:400}
+.unit-select-row{display:flex;gap:8px;align-items:center}
+.unit-select-row .unit-select{flex:1;min-width:0}
+.unit-select-row .icon-btn{width:34px;height:34px;flex-shrink:0;border:1px solid var(--bd);border-radius:var(--r);background:var(--sf2);font-size:.9rem}
+.unit-select-row .icon-btn:hover{border-color:var(--tx3);background:var(--sf)}
+.unit-select-row .icon-btn.edit-ico:hover{color:var(--ac);border-color:var(--ac)}
 .t-slider-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.6rem}
 .t-slider-range{font-size:1rem;font-weight:600}
 .t-slider-sub{font-size:.72rem;color:var(--tx3)}
@@ -340,6 +345,15 @@ const renderMarked = s => String(s).split(/(##[^#]*##)/).map(p=>
 ).join('');
 const getU = id => db.units.find(u=>u.id===id);
 const selU = () => getU(selId);
+// 単元名の先頭語をプレフィックスとしてグループ化する（プルダウンのoptgroup用に共通利用）
+function groupUnits(units){
+  const groups={};
+  units.forEach(u=>{
+    const p=u.name.split(' '),prefix=p.length>1?p[0]:'その他',label=p.length>1?p.slice(1).join(' '):u.name;
+    (groups[prefix]||(groups[prefix]=[])).push({u,label});
+  });
+  return groups;
+}
 const shuf = a => {let b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;};
 const norm = s => s.trim().toLowerCase().replace(/[・。、\s]+/g,'');
 const scoreColor = p => p===100?'var(--gn)':p>=80?'#4fa832':p>=60?'var(--yw)':'var(--rd)';
@@ -360,15 +374,18 @@ function renderUnits(){
   $('hdr').textContent=`${db.units.length}単元 / ${db.units.reduce((s,u)=>s+u.words.length,0)}語`;
   if(!db.units.length){ul.innerHTML='';ue.style.display='block';return;}
   ue.style.display='none';
-  ul.innerHTML=db.units.map(u=>`
-    <div class="unit-item${u.id===selId?' sel':''}" onclick="selectUnit('${u.id}')">
-      <span class="unit-name">${esc(u.name)}</span>
-      <span class="unit-count">${u.words.length}語</span>
-      <div class="unit-actions" onclick="event.stopPropagation()">
-        <button class="icon-btn edit-ico" title="名前を変更" onclick="openEditUnit('${u.id}')">✏️</button>
-        <button class="icon-btn" title="削除" onclick="deleteUnit('${u.id}')">🗑</button>
-      </div>
-    </div>`).join('');
+  if(!selId||!getU(selId))selId=db.units[0].id;
+  const groups=groupUnits(db.units);
+  ul.innerHTML=`<div style="display:flex;gap:6px;align-items:center">
+    <select class="unit-select" id="unit-select-manage" style="flex:1;min-width:0" onchange="selectUnit(this.value)">
+      ${Object.entries(groups).map(([prefix,items])=>`
+        <optgroup label="${esc(prefix)}">
+          ${items.map(({u,label})=>`<option value="${u.id}"${u.id===selId?' selected':''}>${esc(label)}（${u.words.length}語）</option>`).join('')}
+        </optgroup>`).join('')}
+    </select>
+    <button class="icon-btn edit-ico" title="名前を変更" onclick="openEditUnit(selId)">✏️</button>
+    <button class="icon-btn" title="削除" onclick="deleteUnit(selId)">🗑</button>
+  </div>`;
 }
 function selectUnit(id){selId=id;renderUnits();renderWords();}
 function renderWords(){
@@ -805,11 +822,7 @@ function initQuiz(){
   $('quiz-body').style.display=has?'block':'none';
   if(!has)return;
   if(!Q.unitId||!getU(Q.unitId)?.words.length)Q.unitId=db.units.find(u=>u.words.length>0)?.id||null;
-  const units=db.units.filter(u=>u.words.length>0),groups={};
-  units.forEach(u=>{
-    const p=u.name.split(' '),prefix=p.length>1?p[0]:'その他',label=p.length>1?p.slice(1).join(' '):u.name;
-    (groups[prefix]||(groups[prefix]=[])).push({u,label});
-  });
+  const units=db.units.filter(u=>u.words.length>0),groups=groupUnits(units);
   $('unit-selector').innerHTML=`<select class="unit-select" id="unit-select" onchange="Q.pickUnit(this.value)">
     ${Object.entries(groups).map(([prefix,items])=>`
       <optgroup label="${esc(prefix)}">
