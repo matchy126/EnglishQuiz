@@ -80,6 +80,11 @@ textarea:focus{border-color:var(--ac)}
 .unit-sel-btn:hover{border-color:var(--tx3);color:var(--tx)}
 .unit-sel-btn.active{background:var(--acd);border-color:var(--ac);color:var(--ac)}
 .unit-sel-btn .usl-cnt{font-size:.7rem;opacity:.65;font-family:var(--mono)}
+.unit-select{width:100%;appearance:none;-webkit-appearance:none;background:var(--sf2) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6"><path d="M0 0l5 6 5-6z" fill="%239999b0"/></svg>') no-repeat right 12px center;border:1px solid var(--bd);border-radius:var(--r);padding:10px 34px 10px 12px;color:var(--tx);font-family:var(--body);font-size:.88rem;font-weight:500;outline:none;cursor:pointer;transition:border-color .2s}
+.unit-select:hover{border-color:var(--tx3)}
+.unit-select:focus{border-color:var(--ac)}
+.unit-select optgroup{font-family:var(--body);font-weight:600;color:var(--tx2)}
+.unit-select option{color:var(--tx);background:var(--sf);font-weight:400}
 .t-slider-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.6rem}
 .t-slider-range{font-size:1rem;font-weight:600}
 .t-slider-sub{font-size:.72rem;color:var(--tx3)}
@@ -784,7 +789,7 @@ class MyQuiz extends QuizEngine {
   }
   pickUnit(id){
     this.unitId=id;
-    document.querySelectorAll('#unit-selector .unit-sel-btn').forEach(b=>b.classList.toggle('active',b.dataset.uid===id));
+    const sel=$('unit-select');if(sel)sel.value=id;
     this.updateModeAvailability();
     document.querySelectorAll('#tab-quiz .mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===this.mode));
     const words=getU(id)?.words||[];
@@ -805,10 +810,12 @@ function initQuiz(){
     const p=u.name.split(' '),prefix=p.length>1?p[0]:'その他',label=p.length>1?p.slice(1).join(' '):u.name;
     (groups[prefix]||(groups[prefix]=[])).push({u,label});
   });
-  $('unit-selector').innerHTML=Object.entries(groups).map(([prefix,items])=>`
-    <div class="unit-group"><div class="unit-group-label">${esc(prefix)}</div><div class="unit-grid">
-      ${items.map(({u,label})=>`<button class="unit-sel-btn${u.id===Q.unitId?' active':''}" data-uid="${u.id}" onclick="Q.pickUnit('${u.id}')"><span>${esc(label)}</span><span class="usl-cnt">${u.words.length}語</span></button>`).join('')}
-    </div></div>`).join('');
+  $('unit-selector').innerHTML=`<select class="unit-select" id="unit-select" onchange="Q.pickUnit(this.value)">
+    ${Object.entries(groups).map(([prefix,items])=>`
+      <optgroup label="${esc(prefix)}">
+        ${items.map(({u,label})=>`<option value="${u.id}"${u.id===Q.unitId?' selected':''}>${esc(label)}（${u.words.length}語）</option>`).join('')}
+      </optgroup>`).join('')}
+  </select>`;
   document.querySelectorAll('#tab-quiz .mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===Q.mode));
   if(Q.unitId)Q.pickUnit(Q.unitId);
 }
