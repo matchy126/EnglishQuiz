@@ -33,7 +33,7 @@ const DEFAULTS=[
     {en:'need V-ing',jp:'to V と意味が違う：V-ing＝〜される必要がある（受動的） / to V＝〜する必要がある'},
     {en:'want V-ing',jp:'to V と意味が違う：V-ing＝〜される必要がある（口語的） / to V＝〜したい'}
   ]},
-  {name:'EngExe1 U5-1',words:[
+  {name:'EngExe1 U5',words:[
     {en:'compromise',jp:'妥協、譲歩'},
     {en:'conservation',jp:'保全、保護'},
     {en:'durable',jp:'耐久性のある'},
@@ -252,5 +252,19 @@ const DEFAULTS=[
     {en:'texture',jp:"the way something feels when you touch it"},
     {en:'on-site',jp:"at the place where something is happening, such as an event"},
     {en:'vary',jp:"to be different from each other"}
+  ]}
+    {name:'EngExe1 U6-1',words:[
+    {en:'biomass energy',jp:'バイオマスエネルギー'},
+    {en:'geothermal energy',jp:'地熱エネルギー'},
+    {en:'hydropower',jp:'水力発電'},
+    {en:'solar power',jp:'太陽光発電'},
+    {en:'wind power',jp:'風力発電'},
+    {en:'aquatic',jp:'水生の、水中の'},
+    {en:'offshore',jp:'沖合の、海上の'},
+    {en:'inexhaustible',jp:'尽きることのない、無尽蔵の'},
+    {en:'initial',jp:'初めの、最初の'},
+    {en:'generate',jp:'（電力・エネルギーなどを）発生させる、生み出す'},
+    {en:'universal',jp:'普遍的な、万人共通の'},
+    {en:'utilize',jp:'…を利用する、活用する'}
   ]}
 ];
