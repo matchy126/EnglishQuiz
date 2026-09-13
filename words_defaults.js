@@ -252,8 +252,8 @@ const DEFAULTS=[
     {en:'texture',jp:"the way something feels when you touch it"},
     {en:'on-site',jp:"at the place where something is happening, such as an event"},
     {en:'vary',jp:"to be different from each other"}
-  ]}
-    {name:'EngExe1 U6-1',words:[
+  ]},
+  {name:'EngExe1 U6-1',words:[
     {en:'biomass energy',jp:'バイオマスエネルギー'},
     {en:'geothermal energy',jp:'地熱エネルギー'},
     {en:'hydropower',jp:'水力発電'},
