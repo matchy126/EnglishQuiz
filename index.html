@@ -409,7 +409,7 @@ function openEditUnit(id){editId=id;$('unit-modal-h').textContent='単元名を�
 function saveUnit(){
   const name=$('unit-name-input').value.trim();
   if(!name){showToast('単元名を入力してください');return;}
-  if(editId)getU(editId).name=name;
+  if(editId){const u=getU(editId);u.name=name;u.isDefault=false;} // 名前を変更したら「自分の単元」として自動掃除の対象から外す
   else{const nu={id:uid(),name,words:[]};db.units.push(nu);selId=nu.id;}
   save();closeModal('unit-modal');renderUnits();renderWords();
 }
@@ -473,11 +473,29 @@ function exportCSV(){
   a.download=`${u.name}.csv`;a.click();
 }
 
-const REMOVED_DEFAULTS=['EngComm3 U2R1 英英','Unit2 Reading1 英英'];
+// 教材更新前の古いデフォルト単元名（一度きりの掃除用。以後はisDefaultフラグによる自動同期に置き換わる）
+const REMOVED_DEFAULTS=[
+  'EngComm3 U2R1 英英','Unit2 Reading1 英英',
+  'EngComm3 U1 英日','EngComm3 U2 英日','EngComm3 U1R1 英英',
+  'EngComm3 U3R1 英日','EngComm3 U3R2 英日','EngComm3 U4R1 英日','EngComm3 U4R2 英日',
+  'EngComm3 U3R1 英英','EngComm3 U4R1 英英','EngExe1 U3, 4'
+];
 function seedDefaults(){
   let changed=false;
+  // (1) 一度きりの明示的な掃除（古いバージョンからの移行用）
   REMOVED_DEFAULTS.forEach(name=>{const i=db.units.findIndex(u=>u.name===name);if(i>=0){db.units.splice(i,1);changed=true;}});
-  DEFAULTS.forEach(d=>{if(!db.units.find(u=>u.name===d.name)){db.units.push({id:uid(),name:d.name,words:d.words,kind:d.kind||null});changed=true;}});
+  // (2) 現在のDEFAULTSに存在する単元を追加、既存の同名単元にはisDefaultフラグを補完
+  DEFAULTS.forEach(d=>{
+    const ex=db.units.find(u=>u.name===d.name);
+    if(!ex){db.units.push({id:uid(),name:d.name,words:d.words,kind:d.kind||null,isDefault:true});changed=true;}
+    else if(!ex.isDefault){ex.isDefault=true;changed=true;}
+  });
+  // (3) 以前デフォルトだったが、今のDEFAULTS（words_defaults*.js）には無くなった単元を自動削除
+  //     ※ isDefaultフラグが付いた単元のみ対象。ユーザーが名前を変更した単元はフラグが外れるため保護される
+  const curNames=new Set(DEFAULTS.map(d=>d.name));
+  const before=db.units.length;
+  db.units=db.units.filter(u=>!(u.isDefault&&!curNames.has(u.name)));
+  if(db.units.length!==before)changed=true;
   if(changed)save();
 }
 // 以前のバージョンで保存された単元にはkindが無いので、DEFAULTSの同名単元から補完する

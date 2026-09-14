@@ -54,22 +54,22 @@ vehicle,a machine with an engine used to transport people and goods
 
 ## デフォルト単元
 
-| 単元名 | 語数 | 内容 |
-|---|---|---|
-| EngComm3 U2 英日 | 31語 | 英日 |
-| EngComm3 U1 英日 | 28語 | 英日 |
-| EngComm3 U1R1 英英 | 30語 | 英英（定義文） |
-| LogExp3 動名詞 | 28語 | 動名詞構文 |
-| EngComm3 U3R1 英日 | 16語 | 英日 |
-| EngComm3 U3R2 英日 | 14語 | 英日 |
-| EngComm3 U4R1 英日 | 17語 | 英日 |
-| EngComm3 U4R2 英日 | 14語 | 英日 |
-| EngComm3 U3R1 英英 | 49語 | 英英（定義文） |
-| EngComm3 U4R1 英英 | 51語 | 英英（定義文） |
-| EngExe1 U3, 4 | 29語 | 英日 |
-| 古典文法 助動詞 104-207 | 104語 | 古文の一文 → 文法用語 |
+| 単元名 | 内容 |
+|---|---|
+| LogExp3 動名詞 | 動名詞構文 |
+| EngExe1 U5 | 英日 |
+| EngComm3 U5R1 英日 | 英日 |
+| EngComm3 U5R2 英日 | 英日 |
+| EngComm3 U6R1 英日 | 英日 |
+| EngComm3 U6R2 英日 | 英日 |
+| EngComm3 U5R1 英英 | 英英（定義文） |
+| EngComm3 U6R1 英英 | 英英（定義文） |
+| EngExe1 U6-1 | 英日 |
+| 古典文法 助動詞 104-207 | 古文の一文 → 文法用語 |
 
 TARGET1900（No.1–1900）は「📖 TARGET1900」タブに内蔵されています。
+
+上記の一覧は `words_defaults.js` / `words_defaults_koten.js` の中身が更新されると自動的に追従します（教材が進んで単元を差し替えても、古い単元は次回起動時に自動的に片付き、新しい単元が追加されます）。ただし単元名をアプリ内で変更した場合、その単元は「自分の単元」として扱われ、自動整理の対象から外れます。
 
 ---
 
@@ -101,8 +101,7 @@ https://ユーザー名.github.io/リポジトリ名/
 
 ```
 index.html                # アプリ本体
-words_defaults.js         # デフォルト単元データ（U1〜U3）
-words_defaults_2.js       # デフォルト単元データ（U3〜U4、EngExe1）
+words_defaults.js         # デフォルト単元データ（授業進度に応じて随時更新）
 words_defaults_koten.js   # デフォルト単元データ（古典文法 助動詞）
 words_target1900.js       # TARGET1900 単語データ（No.1–1900）
 README.md                 # このファイル
