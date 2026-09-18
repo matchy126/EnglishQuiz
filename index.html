@@ -525,7 +525,7 @@ function switchTab(t){
 
 class QuizEngine {
   constructor(navId,fillId,areaId,tabId,CHUNK){
-    this.navId=navId;this.fillId=fillId;this.areaId=areaId;this.tabId=tabId;this.CHUNK=CHUNK||5;
+    this.navId=navId;this.fillId=fillId;this.areaId=areaId;this.tabId=tabId;this.baseChunk=CHUNK||5;this.CHUNK=this.baseChunk;
     this.words=[];this.mode='en-jp';
     this.results=[];this.chunk=0;this.inChunk=0;this.ok=0;this.ans=0;
     this.answered=false;this.hintLv=0;this.order=[];
@@ -537,6 +537,7 @@ class QuizEngine {
   setWords(w){this.words=w;this.reset();}
   setMode(m){
     this.mode=m;
+    this.CHUNK=m==='mc'?(this.words.length||1):this.baseChunk; // 記述（入力）モードは5問ごとに区切る、4択は区切らず通しで出題
     document.querySelectorAll(`#${this.tabId} .mode-btn`).forEach(b=>b.classList.toggle('active',b.dataset.mode===m));
     this.reset();
   }
@@ -827,7 +828,7 @@ class MyQuiz extends QuizEngine {
     this.updateModeAvailability();
     document.querySelectorAll('#tab-quiz .mode-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===this.mode));
     const words=getU(id)?.words||[];
-    this.CHUNK=words.length||1; // 区切らず単元全体を通しで出題
+    this.CHUNK=this.mode==='mc'?(words.length||1):this.baseChunk; // 記述モードは5問ごとに区切る、4択は区切らず通しで出題
     this.setWords(words);
   }
 }
@@ -869,7 +870,7 @@ class TargetQuiz extends QuizEngine {
     updateTRangeUI();
     const startIdx=s*T_CHUNK,endIdx=Math.min((e+1)*T_CHUNK,TARGET1900_DATA.length);
     const words=shuf(TARGET1900_DATA.slice(startIdx,endIdx));
-    this.CHUNK=words.length||1; // ランダム出題は区切らず全体を1グループとして通しで出題
+    this.CHUNK=this.mode==='mc'?(words.length||1):this.baseChunk; // 記述モードは5問ごとに区切る、4択は区切らず全体を1グループとして通しで出題
     this.setWords(words);
   }
 }
