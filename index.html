@@ -145,9 +145,9 @@ textarea:focus{border-color:var(--ac)}
 .feedback.ok{background:var(--gnd);color:var(--gn);border:1px solid #1a4d35}
 .feedback.ng{background:var(--rdd);color:var(--rd);border:1px solid #4d1a1a}
 .feedback strong{font-weight:700}
-.nav-row{display:flex;align-items:center;justify-content:space-between}
-.counter{font-size:.78rem;color:var(--tx3);font-family:var(--mono)}
-.next-btn{padding:9px 18px;border:none;border-radius:var(--r);background:var(--ac);color:#fff;font-size:.88rem;cursor:pointer;display:none;transition:opacity .15s;font-family:var(--body)}
+.nav-row{display:flex;flex-direction:column;align-items:stretch;gap:10px}
+.counter{font-size:.82rem;color:var(--tx2);font-family:var(--mono);text-align:center}
+.next-btn{width:100%;padding:16px 18px;border:none;border-radius:var(--r);background:var(--ac);color:#fff;font-size:1rem;font-weight:600;cursor:pointer;display:none;transition:opacity .15s;font-family:var(--body)}
 .next-btn:hover{opacity:.82}
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem}
 .stat-box{background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);padding:.875rem;text-align:center}
@@ -628,10 +628,18 @@ class QuizEngine {
   }
   groupSub(){return this.subtitle();}
   progressPct(){return this.words.length?Math.round(this.ans/this.words.length*100):0;}
+  ctrText(isRev){
+    let n,total,c,a;
+    if(isRev){n=this.revIdx+1;total=this.revQ.length;c=this.revOk;a=this.revAns;}
+    else{const r=this.results[this.chunk];n=this.inChunk+1;total=this.order.length;c=r.correct;a=r.entries.length;}
+    const acc=a?Math.round(c/a*100)+'%':'―';
+    return `${n} / ${total}問目 ・ 正答率 ${acc}`;
+  }
+  updCtr(){const el=$(this.areaId+'-ctr');if(el)el.textContent=this.ctrText(this.isRev);}
   renderInput(idx,isRev){
     const id=this.areaId,checkFn=isRev?'_rc':'_c',nextFn=isRev?'_rn':'_n';
     const sub=isRev?'間違えた単語の復習':this.groupSub();
-    const ctr=isRev?`${this.revIdx+1} / ${this.revQ.length}`:`${this.progressPct()}%`;
+    const ctr=this.ctrText(isRev);
     const badge=isRev?`<div class="review-badge">🔁 復習モード — ${this.revIdx+1}/${this.revQ.length}</div>`:'';
     this.area.innerHTML=`${badge}${this._qCard(idx,sub)}
       <div class="input-row">
@@ -640,7 +648,7 @@ class QuizEngine {
       </div>
       <div class="hint-row"><span class="hint-txt" id="${id}-ht"></span><button class="hint-link" id="${id}-hb" onclick="_h('${id}')">ヒント</button></div>
       <div class="feedback" id="${id}-fb"></div>
-      <div class="nav-row"><span class="counter">${ctr}</span><button class="next-btn" id="${id}-nx" onclick="${nextFn}('${id}')">次へ →</button></div>`;
+      <div class="nav-row"><span class="counter" id="${id}-ctr">${ctr}</span><button class="next-btn" id="${id}-nx" onclick="${nextFn}('${id}')">次へ →</button></div>`;
     const inp=$(id+'-inp');inp.focus();
     inp.addEventListener('keydown',e=>{if(e.key==='Enter'){this.answered?(isRev?this.nextRevQ():this.nextQ()):(isRev?this.checkRevAns():this.checkAns());}});
   }
@@ -657,7 +665,7 @@ class QuizEngine {
       ${this._qCard(idx,'間違えた単語の復習')}
       <div class="choices">${choices.map((ci,n)=>`<button class="choice-btn" data-ci="${ci}" onclick="_rmc('${id}',${ci},${idx})"><span class="choice-num">${n+1}</span>${esc(this.choiceText(ci))}</button>`).join('')}</div>
       <div class="feedback" id="${id}-fb"></div>
-      <div class="nav-row"><span class="counter">${this.revIdx+1} / ${this.revQ.length}</span><button class="next-btn" id="${id}-nx" onclick="_rn('${id}')">次へ →</button></div>`;
+      <div class="nav-row"><span class="counter" id="${id}-ctr">${this.ctrText(true)}</span><button class="next-btn" id="${id}-nx" onclick="_rn('${id}')">次へ →</button></div>`;
   }
   checkRevMC(chosen,correct){
     if(this.answered)return;
@@ -671,16 +679,16 @@ class QuizEngine {
     });
     const fb=$(id+'-fb');fb.className='feedback show '+(ok?'ok':'ng');
     fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(this.choiceText(correct))}</strong>`;
-    const nx=$(id+'-nx');nx.style.display='inline-block';nx.focus();
+    const nx=$(id+'-nx');nx.style.display='block';nx.focus();
     ok?this.revOk++:this.missed.push(correct);
-    this.revAns++;
+    this.revAns++;this.updCtr();
   }
   renderMC(idx){
     const choices=this.makeChoices(idx),id=this.areaId;
     this.area.innerHTML=`${this._qCard(idx,this.groupSub())}
       <div class="choices">${choices.map((ci,n)=>`<button class="choice-btn" data-ci="${ci}" onclick="_mc('${id}',${ci},${idx})"><span class="choice-num">${n+1}</span>${esc(this.choiceText(ci))}</button>`).join('')}</div>
       <div class="feedback" id="${id}-fb"></div>
-      <div class="nav-row"><span class="counter">${this.progressPct()}%</span><button class="next-btn" id="${id}-nx" onclick="_n('${id}')">次へ →</button></div>`;
+      <div class="nav-row"><span class="counter" id="${id}-ctr">${this.ctrText(false)}</span><button class="next-btn" id="${id}-nx" onclick="_n('${id}')">次へ →</button></div>`;
   }
   doHint(){
     const idx=this.isRev?this.revQ[this.revIdx]:this.order[this.inChunk],ans=this.getA(idx);
@@ -696,8 +704,8 @@ class QuizEngine {
     inp.className='ans-input '+(ok?'ok':'ng');
     const fb=$(id+'-fb');fb.className='feedback show '+(ok?'ok':'ng');
     fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(ans)}</strong>`;
-    const nx=$(id+'-nx');nx.style.display='inline-block';nx.focus();
-    ok?onOk():onNg();
+    const nx=$(id+'-nx');nx.style.display='block';nx.focus();
+    ok?onOk():onNg();this.updCtr();
   }
   checkAns(){
     const idx=this.order[this.inChunk],ans=this.getA(idx),inp=$(this.areaId+'-inp');
@@ -721,9 +729,10 @@ class QuizEngine {
     });
     const fb=$(id+'-fb');fb.className='feedback show '+(ok?'ok':'ng');
     fb.innerHTML=ok?'正解！':`不正解。正解は <strong>${esc(this.choiceText(correct))}</strong>`;
-    const nx=$(id+'-nx');nx.style.display='inline-block';nx.focus();
+    const nx=$(id+'-nx');nx.style.display='block';nx.focus();
     if(ok){this.ok++;this.results[this.chunk].correct++;this.results[this.chunk].entries.push({idx:correct,ok:true});this.ans++;}
     else{this.results[this.chunk].entries.push({idx:correct,ok:false});this.ans++;this.missed.push(correct);}
+    this.updCtr();
   }
   nextQ(){this.inChunk++;this.renderQ();}
   nextRevQ(){this.revIdx++;this.renderRevQ();}
